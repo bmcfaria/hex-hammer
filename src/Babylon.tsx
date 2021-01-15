@@ -57,8 +57,18 @@ const Babylon = (props: BabylonjsProps) => {
         }
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reactCanvas]);
-  return <canvas ref={reactCanvas} {...rest} />;
+  return (
+    <canvas
+      ref={reactCanvas}
+      style={{
+        width: '100%',
+        height: '100%',
+      }}
+      {...rest}
+    />
+  );
 };
 
 export default Babylon;

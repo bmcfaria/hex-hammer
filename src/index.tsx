@@ -4,6 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// Temp solution
+// https://stackoverflow.com/questions/62092201/babylonjs-and-react-referenceerror-earcut-is-not-defined
+import * as earcut from 'earcut';
+(window as any).earcut = earcut;
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
