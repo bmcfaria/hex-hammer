@@ -63,7 +63,8 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
 
   let counter = 0;
 
-  sharedBabylonObject.mainAction = () => {
+  sharedBabylonObject.current = {};
+  sharedBabylonObject.current.mainAction = () => {
     turnCentralAnimation(
       polygonPivot,
       materials[rowCounters[activeRow] % materials.length],

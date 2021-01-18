@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import './App.css';
 import Babylon from './Babylon';
 import { Scene } from '@babylonjs/core';
@@ -11,11 +11,17 @@ const onRender = (scene: Scene) => {
   }
 };
 
+interface RefObject {
+  mainAction: () => void;
+}
+
 function App() {
-  const sharedBabylonObject = { mainAction: () => {} };
+  const sharedBabylonObject = useRef<RefObject>();
 
   const onClickBaam = () => {
-    sharedBabylonObject.mainAction();
+    if (sharedBabylonObject?.current?.mainAction) {
+      sharedBabylonObject.current.mainAction();
+    }
   };
   return (
     <div
