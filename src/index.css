@@ -12,11 +12,46 @@ code {
     monospace;
 }
 
-.hexagon-button {
+/* .hexagon-button {
   position: absolute;
   left: 50%;
   bottom: 10px;
   transform: translate(-50%, 0);
   width: 150px;
   height: 50px;
+} */
+
+.hexagon-button-container {
+  position: absolute;
+  width: 100%;
+  bottom: 10%;
+}
+
+.hexagon-button {
+  position: relative;
+  width: 124px;
+  height: 100px;
+  background: #d8d8d8;
+  border: none;
+}
+
+.hexagon-button:after,
+.hexagon-button:before {
+  position: absolute;
+  content: '';
+  z-index: 1;
+  top: 0;
+  width: 0px;
+  background: #fff;
+  border-top: 50px transparent solid;
+  border-bottom: 50px transparent solid;
+}
+
+.hexagon-button:before {
+  left: 0;
+  border-right: 30px #d8d8d8 solid;
+}
+.hexagon-button:after {
+  right: 0;
+  border-left: 30px #d8d8d8 solid;
 }
