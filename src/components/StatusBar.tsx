@@ -25,6 +25,7 @@ const MenuButton = styled.button`
   padding: 0;
   background: none;
   outline: none;
+  overflow: hidden;
 
   & > svg {
     position: absolute;
