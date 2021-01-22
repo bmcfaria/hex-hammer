@@ -13,6 +13,7 @@ const Button = styled.button`
   border: none;
   padding: 0;
   background: none;
+  outline: none;
 `;
 
 const HexGrowing = styled(HexRectangleFill)<{ startAnimation: boolean }>`
@@ -47,6 +48,10 @@ const HexBorder = styled(HexRectangleStroke)`
   top: 0;
   left: 0;
   color: blue;
+
+  &:hover {
+    color: white;
+  }
 `;
 
 interface HammerButtonProps {

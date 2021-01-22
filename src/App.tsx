@@ -56,8 +56,8 @@ function App() {
           id="fps"
           style={{
             position: 'absolute',
-            top: 15,
-            right: 10,
+            bottom: 15,
+            left: 10,
             backgroundColor: 'black',
             border: '2px solid red',
             textAlign: 'center',
