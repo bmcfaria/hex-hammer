@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import './App.css';
@@ -39,6 +39,7 @@ function App() {
           flexDirection: 'column',
           width: '100%',
           height: '100%',
+          overflow: 'hidden',
         }}
       >
         <Babylon

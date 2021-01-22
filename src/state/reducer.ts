@@ -1,4 +1,4 @@
-import { INCREMENT_TYPE } from './actions';
+import { BUY_AUTO_TYPE, INCREMENT_TYPE } from './actions';
 
 export const initialState = {
   counter: 0,
@@ -21,6 +21,19 @@ export const reducer = (state = initialState, payload: any) => {
         lastCounter: currentTime,
       };
     }
+
+    case BUY_AUTO_TYPE: {
+      if (state.counter < 10) {
+        return state;
+      }
+
+      return {
+        ...state,
+        counter: state.counter - 10,
+        auto: true,
+      };
+    }
+
     default: {
       return state;
     }

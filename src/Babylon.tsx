@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Engine, EngineOptions, Scene, SceneOptions } from '@babylonjs/core';
 
 export type BabylonjsProps = {

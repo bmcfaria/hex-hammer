@@ -1,8 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { counterSelector } from '../state/selectors';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
+import Sidebar from './Sidebar';
 
 const Container = styled.div`
   position: absolute;
@@ -13,33 +13,6 @@ const Container = styled.div`
   background-color: black;
   color: white;
   display: flex;
-`;
-
-const MenuButton = styled.button`
-  position: absolute;
-  top: 0px;
-  right: 0;
-  width: 74px;
-  height: 60px;
-  border: none;
-  padding: 0;
-  background: none;
-  outline: none;
-  overflow: hidden;
-
-  & > svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    color: white;
-  }
-
-  &:hover {
-    & > svg {
-      color: red;
-    }
-  }
 `;
 
 const CurrencyContainer = styled.div`
@@ -62,9 +35,7 @@ const StatusBar = () => {
         <HexCurrency />
         {counter}
       </CurrencyContainer>
-      <MenuButton>
-        <Hex />
-      </MenuButton>
+      <Sidebar />
     </Container>
   );
 };
