@@ -10,6 +10,7 @@ export type BabylonjsProps = {
   onSceneReady: (scene: Scene) => void;
   onRender?: (scene: Scene) => void;
   id: string;
+  sharedBabylonObject: any;
   children?: React.ReactNode;
 };
 
@@ -22,8 +23,10 @@ const Babylon = (props: BabylonjsProps) => {
     sceneOptions,
     onRender,
     onSceneReady,
+    sharedBabylonObject,
     ...rest
   } = props;
+
   useEffect(() => {
     if (reactCanvas.current) {
       const engine = new Engine(

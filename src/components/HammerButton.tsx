@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { incrementAction } from '../state/actions';
-import { counterSelector } from '../state/selectors';
+import {
+  autoSelector,
+  counterSelector,
+  lastCounterSelector,
+} from '../state/selectors';
 import { ReactComponent as HexRectangleFill } from '../assets/HexRectangleFill.svg';
 import { ReactComponent as HexRectangleStroke } from '../assets/HexRectangleStroke.svg';
+import { ReactComponent as Hex } from '../assets/Hex.svg';
 
 const Button = styled.button`
   position: relative;
@@ -16,13 +21,13 @@ const Button = styled.button`
   outline: none;
 `;
 
-const HexGrowing = styled(HexRectangleFill)<{ startAnimation: boolean }>`
+const HexGrowing = styled(HexRectangleFill)<{ $startAnimation: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
   color: red;
-  animation-name: ${({ startAnimation }) =>
-    startAnimation ? 'hex-growing-animation' : 'none'};
+  animation-name: ${({ $startAnimation }) =>
+    $startAnimation ? 'hex-growing-animation' : 'none'};
   animation-duration: 0.5s;
   animation-timing-function: linear;
 
@@ -54,38 +59,88 @@ const HexBorder = styled(HexRectangleStroke)`
   }
 `;
 
+const AutoContainer = styled.div`
+  display: flex;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: auto;
+  height: 84px;
+`;
+
+const AutoHex = styled(Hex)`
+  width: auto;
+  height: 84px;
+  color: white;
+`;
+
+const AutoTex = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+`;
+
 interface HammerButtonProps {
-  onClickBaam: Function;
+  sharedBabylonObject: any;
 }
 
-const HammerButton = ({ onClickBaam }: HammerButtonProps) => {
+const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const dispatch = useDispatch();
   const counter = useSelector(counterSelector);
+  const auto = useSelector(autoSelector);
+  const lastCounter = useSelector(lastCounterSelector);
   const [startAnimation, setStartAnimation] = useState(false);
 
   useEffect(() => {
+    const countDown = setInterval(() => {
+      if (auto && new Date().getTime() - lastCounter >= 1000) {
+        dispatch(incrementAction);
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(countDown);
+    };
+  }, [auto, dispatch, lastCounter]);
+
+  useEffect(() => {
     setStartAnimation(true);
-  }, [counter]);
+
+    if (sharedBabylonObject?.current?.mainAction) {
+      sharedBabylonObject.current.mainAction();
+    }
+  }, [counter, sharedBabylonObject]);
 
   const onClick = () => {
+    dispatch(incrementAction);
+
     if (startAnimation) {
       return;
     }
-
-    onClickBaam();
-    dispatch(incrementAction);
   };
 
   return (
     <Button onClick={onClick}>
       <HexBackground />
       <HexGrowing
-        startAnimation={startAnimation}
+        $startAnimation={startAnimation}
         onAnimationEnd={() => {
           setStartAnimation(false);
         }}
       />
       <HexBorder />
+      {auto && (
+        <AutoContainer>
+          <AutoHex />
+          <AutoTex>Auto</AutoTex>
+        </AutoContainer>
+      )}
     </Button>
   );
 };

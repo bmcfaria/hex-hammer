@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, compose } from 'redux';
 import './App.css';
 import Babylon from './Babylon';
 import { Scene } from '@babylonjs/core';
@@ -9,7 +9,11 @@ import HammerButton from './components/HammerButton';
 import { initialState, reducer } from './state/reducer';
 import StatusBar from './components/StatusBar';
 
-const store = createStore(reducer, initialState);
+const inDev = process.env.NODE_ENV === 'development';
+const composeEnhancers =
+  (inDev && window && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose;
+const store = createStore(reducer, initialState, composeEnhancers());
 
 const onRender = (scene: Scene) => {
   let divFps = document.getElementById('fps');
@@ -25,11 +29,6 @@ interface RefObject {
 function App() {
   const sharedBabylonObject = useRef<RefObject>();
 
-  const onClickBaam = () => {
-    if (sharedBabylonObject?.current?.mainAction) {
-      sharedBabylonObject.current.mainAction();
-    }
-  };
   return (
     <Provider store={store}>
       <div
@@ -46,11 +45,12 @@ function App() {
           antialias
           onSceneReady={createScene(sharedBabylonObject)}
           onRender={onRender}
+          sharedBabylonObject={sharedBabylonObject}
           id="my-canvas"
         />
         <StatusBar />
         <div className="hexagon-button-container">
-          <HammerButton onClickBaam={onClickBaam} />
+          <HammerButton sharedBabylonObject={sharedBabylonObject} />
         </div>
         <div
           id="fps"

@@ -47,6 +47,7 @@
   "devDependencies": {
     "@types/earcut": "^2.1.1",
     "@types/react-redux": "^7.1.15",
-    "@types/styled-components": "^5.1.7"
+    "@types/styled-components": "^5.1.7",
+    "redux-devtools": "^3.7.0"
   }
 }
