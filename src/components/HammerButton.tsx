@@ -9,6 +9,7 @@ import {
 } from '../state/selectors';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
+import { upgrades } from '../helpers/values';
 
 const Button = styled.button`
   position: relative;
@@ -100,7 +101,10 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
 
   useEffect(() => {
     const countDown = setInterval(() => {
-      if (auto && new Date().getTime() - lastCounter >= 1000) {
+      if (
+        auto &&
+        new Date().getTime() - lastCounter >= upgrades.auto.value * 1000
+      ) {
         dispatch(incrementAction);
       }
     }, 100);

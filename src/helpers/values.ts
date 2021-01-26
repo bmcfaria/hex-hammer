@@ -4,13 +4,13 @@ export const upgrades = {
     name: 'Auto',
     description1: 'Auto click',
     description2: '(every 5s)',
-    value: 5,
+    value: 6,
   },
   increment1: {
-    price: 1,
+    price: 100,
     name: '+1',
-    description1: '+1 flip',
-    description2: 'per click',
+    description1: '+1',
+    description2: 'per flip',
     value: 1,
   },
 };

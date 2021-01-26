@@ -33,6 +33,7 @@ const translationAnimation = (property: string) => {
   const keyFrames = [
     { frame: 0, value: 0.5 },
     { frame: 1, value: 4 },
+    { frame: 3, value: 4 },
     { frame: 5, value: 0.5 },
   ];
   animation.setKeys(keyFrames);

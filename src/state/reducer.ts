@@ -16,9 +16,11 @@ export const reducer = (state = initialState, payload: any) => {
         return state;
       }
 
+      const incrementValue = 1 + +('increment1' in state.upgrades);
+
       return {
         ...state,
-        counter: state.counter + 1,
+        counter: state.counter + incrementValue,
         lastCounter: currentTime,
       };
     }
