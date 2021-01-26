@@ -18,11 +18,13 @@ const Container = styled.div`
 const CurrencyContainer = styled.div`
   display: flex;
   align-items: center;
+  font-size: 20px;
+  line-height: 20px;
 `;
 
 const HexCurrency = styled(Hex)`
-  width: 20px;
-  height: auto;
+  width: auto;
+  height: 20px;
   margin: 0 4px 0 8px;
 `;
 

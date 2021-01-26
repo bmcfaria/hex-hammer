@@ -3,12 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { incrementAction } from '../state/actions';
 import {
-  autoSelector,
+  upgradeSelector,
   counterSelector,
   lastCounterSelector,
 } from '../state/selectors';
-import { ReactComponent as HexRectangleFill } from '../assets/HexRectangleFill.svg';
-import { ReactComponent as HexRectangleStroke } from '../assets/HexRectangleStroke.svg';
+import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 
 const Button = styled.button`
@@ -21,11 +20,12 @@ const Button = styled.button`
   outline: none;
 `;
 
-const HexGrowing = styled(HexRectangleFill)<{ $startAnimation: boolean }>`
+const HexGrowing = styled(HexRectangle)<{ $startAnimation: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
-  color: red;
+  fill: red;
+  stroke: none;
   animation-name: ${({ $startAnimation }) =>
     $startAnimation ? 'hex-growing-animation' : 'none'};
   animation-duration: 0.5s;
@@ -41,18 +41,19 @@ const HexGrowing = styled(HexRectangleFill)<{ $startAnimation: boolean }>`
   }
 `;
 
-const HexBackground = styled(HexRectangleFill)`
+const HexBackground = styled(HexRectangle)`
   position: absolute;
   top: 0;
   left: 0;
-  color: white;
+  fill: white;
+  stroke: none;
 `;
 
-const HexBorder = styled(HexRectangleStroke)`
+const HexBorder = styled(HexRectangle)`
   position: absolute;
   top: 0;
   left: 0;
-  color: blue;
+  stroke: blue;
 
   &:hover {
     color: white;
@@ -93,7 +94,7 @@ interface HammerButtonProps {
 const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const dispatch = useDispatch();
   const counter = useSelector(counterSelector);
-  const auto = useSelector(autoSelector);
+  const auto = useSelector(upgradeSelector('auto'));
   const lastCounter = useSelector(lastCounterSelector);
   const [startAnimation, setStartAnimation] = useState(false);
 

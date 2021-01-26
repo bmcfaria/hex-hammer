@@ -1,9 +1,10 @@
-import { BUY_AUTO_TYPE, INCREMENT_TYPE } from './actions';
+import { upgrades, UpgradeTypes } from '../helpers/values';
+import { BUY_UPGRADE_TYPE, INCREMENT_TYPE } from './actions';
 
 export const initialState = {
   counter: 0,
   lastCounter: 0,
-  auto: false,
+  upgrades: {},
 };
 
 export const reducer = (state = initialState, payload: any) => {
@@ -22,15 +23,20 @@ export const reducer = (state = initialState, payload: any) => {
       };
     }
 
-    case BUY_AUTO_TYPE: {
-      if (state.counter < 10) {
+    case BUY_UPGRADE_TYPE: {
+      const { upgradeId }: { upgradeId: UpgradeTypes } = payload;
+      const { price } = upgrades[upgradeId];
+      if (state.counter < price) {
         return state;
       }
 
       return {
         ...state,
-        counter: state.counter - 10,
-        auto: true,
+        counter: state.counter - price,
+        upgrades: {
+          ...state.upgrades,
+          [upgradeId]: true,
+        },
       };
     }
 

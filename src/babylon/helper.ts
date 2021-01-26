@@ -44,7 +44,7 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   // light.groundColor = new BABYLON.Color3(0, 1, 0);
 
   // Default intensity is 1. Let's dim the light a small amount
-  light.intensity = 0.7;
+  light.intensity = 0.5;
 
   const [polygonPivot, polygonsObject] = buildGround(scene);
 

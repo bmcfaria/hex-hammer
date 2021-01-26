@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
-import { buyAutoAction } from '../state/actions';
-import { autoSelector, counterSelector } from '../state/selectors';
+import UpgradeButton from './UpgradeButton';
 
 const Container = styled.div<{ $open: boolean }>`
   position: absolute;
@@ -11,7 +9,7 @@ const Container = styled.div<{ $open: boolean }>`
   right: 0;
   transition: right 1s;
 
-  ${({ $open }) => ($open ? 'right: 100px;' : '')}
+  ${({ $open }) => ($open ? 'right: 180px;' : '')}
 `;
 
 const MenuButton = styled.button`
@@ -38,59 +36,18 @@ const MenuButton = styled.button`
 const SidebarContainer = styled.div`
   position: absolute;
   top: 30px;
-  right: -100px;
-  width: 100px;
-  height: 100px;
+  right: -180px;
+  width: 180px;
+  height: auto;
   background-color: aqua;
-`;
-
-const BuyButtom = styled.button<{ $enoughCurrency: boolean; $bought: boolean }>`
-  position: relative;
-  border: none;
-  padding: 0;
-  background: none;
-  outline: none;
-  height: 50px;
-  display: flex;
-  margin-top: 8px;
-
-  & > svg {
-    height: 100%;
-    color: ${({ $bought }) => ($bought ? 'green' : 'white')};
-  }
-
-  &:hover > svg {
-    ${({ $enoughCurrency, $bought }) =>
-      $bought ? '' : `color: ${$enoughCurrency ? 'yellow' : 'red'};`}
-  }
-`;
-
-const AutoTex = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 60;
+  padding-bottom: 8px;
 `;
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
-  const counter = useSelector(counterSelector);
-  const auto = useSelector(autoSelector);
-  const dispatch = useDispatch();
 
   const onClickOpen = () => {
     setOpen(!open);
-  };
-
-  const buyAuto = () => {
-    if (!auto) {
-      dispatch(buyAutoAction);
-    }
   };
 
   return (
@@ -99,16 +56,8 @@ const Sidebar = () => {
         <Hex />
       </MenuButton>
       <SidebarContainer>
-        <BuyButtom
-          $enoughCurrency={counter >= 10}
-          $bought={auto}
-          onClick={buyAuto}
-        >
-          <Hex />
-          <AutoTex>
-            Auto <br /> (10)
-          </AutoTex>
-        </BuyButtom>
+        <UpgradeButton upgradeId="auto" />
+        <UpgradeButton upgradeId="increment1" />
       </SidebarContainer>
     </Container>
   );
