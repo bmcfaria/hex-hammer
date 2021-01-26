@@ -1,9 +1,9 @@
 export const upgrades = {
   auto: {
-    price: 10,
+    price: 1,
     name: 'Auto',
     description1: 'Auto click',
-    description2: '(every 5s)',
+    description2: '(every 6s)',
     value: 6,
   },
   increment1: {

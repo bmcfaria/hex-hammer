@@ -98,15 +98,15 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const auto = useSelector(upgradeSelector('auto'));
   const lastCounter = useSelector(lastCounterSelector);
   const [startAnimation, setStartAnimation] = useState(false);
+  const [autoTimeLeft, setAutoTimeLeft] = useState(upgrades.auto.value * 1000);
 
   useEffect(() => {
     const countDown = setInterval(() => {
-      if (
-        auto &&
-        new Date().getTime() - lastCounter >= upgrades.auto.value * 1000
-      ) {
+      const tmpTimeLeft = new Date().getTime() - lastCounter;
+      if (auto && tmpTimeLeft >= upgrades.auto.value * 1000) {
         dispatch(incrementAction);
       }
+      setAutoTimeLeft(tmpTimeLeft);
     }, 100);
 
     return () => {
@@ -130,6 +130,8 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
     }
   };
 
+  const diffTimeLeft = upgrades.auto.value * 1000 - autoTimeLeft;
+
   return (
     <Button onClick={onClick}>
       <HexBackground />
@@ -143,7 +145,11 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
       {auto && (
         <AutoContainer>
           <AutoHex />
-          <AutoTex>Auto</AutoTex>
+          <AutoTex>
+            Auto
+            <br />
+            {diffTimeLeft < 0 ? 0 : (diffTimeLeft / 1000).toFixed(1)}s
+          </AutoTex>
         </AutoContainer>
       )}
     </Button>
