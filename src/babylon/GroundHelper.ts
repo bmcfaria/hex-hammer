@@ -43,9 +43,11 @@ export const turnRingAnimation = (
   scene: Scene
 ) => {
   const meshArray = polygonsObject[index];
-  meshArray.forEach(mesh => {
+  meshArray.forEach((mesh, innerIndex) => {
     mesh.getChildMeshes()[0].material = material;
     mesh.getChildMeshes()[0].setEnabled(true);
+
+    scene.getMeshByName(`lathe_${index + 1}_${innerIndex}`)?.setEnabled(true);
     scene.beginAnimation(mesh, 0, 10, true);
   });
 };

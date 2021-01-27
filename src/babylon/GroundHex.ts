@@ -84,7 +84,7 @@ export const createRingPolygon = (polygon: Mesh, ring = 1) => (
   ];
 
   //Create lathe
-  const lathe = BABYLON.MeshBuilder.CreateLathe('lathe', {
+  const lathe = BABYLON.MeshBuilder.CreateLathe(`lathe_${ring}_${index}`, {
     shape: myShape,
     radius: 1,
     tessellation: 6,
@@ -94,6 +94,7 @@ export const createRingPolygon = (polygon: Mesh, ring = 1) => (
   lathe.convertToFlatShadedMesh();
   lathe.position = CoR_At.clone();
   lathe.position.y = 0;
+  lathe.setEnabled(false);
 
   return pivot;
 };
@@ -118,23 +119,6 @@ export const createCenterPolygon = (scene: Scene) => {
   polygon.position.y = 0.5;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
 
-  // let polygonPointyWidth = Math.sqrt(3) * radius;
-  // const test = BABYLON.MeshBuilder.CreateBox('box', {
-  //   height: 1,
-  //   width: 2,
-  //   depth: 0.1,
-  // });
-  // test.position = new BABYLON.Vector3(polygonPointyWidth / 2 + 0.05, 0.6, 0);
-  // test.rotation.y = Math.PI / 2;
-
-  // let tmpPolygon = test.clone();
-  // tmpPolygon.position = new BABYLON.Vector3(
-  //   polygonPointyWidth / 4,
-  //   0.6,
-  //   1 + Math.sin(Math.PI / 6)
-  // );
-  // tmpPolygon.rotation.y = Math.PI / 6;
-
   const myShape = [
     new BABYLON.Vector3(2, 0, 0),
     new BABYLON.Vector3(2.1, 0, 0),
@@ -147,7 +131,7 @@ export const createCenterPolygon = (scene: Scene) => {
     shape: myShape,
     radius: 1,
     tessellation: 6,
-    sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+    sideOrientation: BABYLON.Mesh.DEFAULTSIDE,
   });
   lathe.rotation.y = Math.PI / 2;
   lathe.convertToFlatShadedMesh();
