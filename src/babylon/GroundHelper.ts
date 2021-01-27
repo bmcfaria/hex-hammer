@@ -10,7 +10,7 @@ export const buildGround = (
   let polygon = createCenterPolygon(scene);
 
   // Generate rings of polygons
-  const polygonsObject = [...Array(15)].map((_, index) =>
+  const polygonsObject = [...Array(6)].map((_, index) =>
     [...Array(6 * (index + 1))].map(createRingPolygon(polygon, index + 1))
   );
 
@@ -45,6 +45,7 @@ export const turnRingAnimation = (
   const meshArray = polygonsObject[index];
   meshArray.forEach(mesh => {
     mesh.getChildMeshes()[0].material = material;
+    mesh.getChildMeshes()[0].setEnabled(true);
     scene.beginAnimation(mesh, 0, 10, true);
   });
 };

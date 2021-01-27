@@ -1,6 +1,6 @@
 export const upgrades = {
   auto: {
-    price: 1,
+    price: 10,
     name: 'Auto',
     description1: 'Auto click',
     description2: '(every 6s)',
