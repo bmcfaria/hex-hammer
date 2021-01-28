@@ -4,7 +4,10 @@ import { BUY_UPGRADE_TYPE, INCREMENT_TYPE } from './actions';
 export const initialState = {
   counter: 0,
   lastCounter: 0,
-  upgrades: {},
+  upgrades: {
+    auto: 0,
+    increment: 0,
+  },
 };
 
 export const reducer = (state = initialState, payload: any) => {
@@ -27,8 +30,11 @@ export const reducer = (state = initialState, payload: any) => {
 
     case BUY_UPGRADE_TYPE: {
       const { upgradeId }: { upgradeId: UpgradeTypes } = payload;
-      const { price } = upgrades[upgradeId];
-      if (state.counter < price) {
+      const { price: priceArray } = upgrades[upgradeId];
+
+      const price = priceArray[state.upgrades[upgradeId]];
+
+      if (!price || state.counter < price) {
         return state;
       }
 
@@ -37,7 +43,7 @@ export const reducer = (state = initialState, payload: any) => {
         counter: state.counter - price,
         upgrades: {
           ...state.upgrades,
-          [upgradeId]: true,
+          [upgradeId]: state.upgrades[upgradeId] + 1,
         },
       };
     }

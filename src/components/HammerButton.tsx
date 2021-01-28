@@ -86,6 +86,7 @@ const AutoTex = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 60;
+  font-size: 18px;
 `;
 
 interface HammerButtonProps {
@@ -95,15 +96,20 @@ interface HammerButtonProps {
 const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const dispatch = useDispatch();
   const counter = useSelector(counterSelector);
-  const auto = useSelector(upgradeSelector('auto'));
+  const autoValue = useSelector(upgradeSelector('auto'));
   const lastCounter = useSelector(lastCounterSelector);
   const [startAnimation, setStartAnimation] = useState(false);
-  const [autoTimeLeft, setAutoTimeLeft] = useState(upgrades.auto.value * 1000);
+  const [autoTimeLeft, setAutoTimeLeft] = useState(
+    upgrades.auto.value[autoValue - 1] * 1000
+  );
 
   useEffect(() => {
     const countDown = setInterval(() => {
       const tmpTimeLeft = new Date().getTime() - lastCounter;
-      if (auto && tmpTimeLeft >= upgrades.auto.value * 1000) {
+      if (
+        autoValue > 0 &&
+        tmpTimeLeft >= upgrades.auto.value[autoValue - 1] * 1000
+      ) {
         dispatch(incrementAction);
       }
       setAutoTimeLeft(tmpTimeLeft);
@@ -112,7 +118,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
     return () => {
       clearInterval(countDown);
     };
-  }, [auto, dispatch, lastCounter]);
+  }, [autoValue, dispatch, lastCounter]);
 
   useEffect(() => {
     setStartAnimation(true);
@@ -130,7 +136,10 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
     }
   };
 
-  const diffTimeLeft = upgrades.auto.value * 1000 - autoTimeLeft;
+  let diffTimeLeft = 1;
+  if (autoValue > 0) {
+    diffTimeLeft = upgrades.auto.value[autoValue - 1] * 1000 - autoTimeLeft;
+  }
 
   return (
     <Button onClick={onClick}>
@@ -142,7 +151,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
         }}
       />
       <HexBorder />
-      {auto && (
+      {autoValue > 0 && (
         <AutoContainer>
           <AutoHex />
           <AutoTex>

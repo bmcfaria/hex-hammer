@@ -66,7 +66,7 @@ const Sidebar = () => {
       </MenuButton>
       <SidebarContainer>
         <UpgradeButton upgradeId="auto" />
-        <UpgradeButton upgradeId="increment1" />
+        <UpgradeButton upgradeId="increment" />
       </SidebarContainer>
     </Container>
   );

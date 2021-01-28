@@ -6,9 +6,12 @@ import { buyUpgradeAction } from '../state/actions';
 import { upgradeSelector, counterSelector } from '../state/selectors';
 import { upgrades, UpgradeTypes } from '../helpers/values';
 
+const UpgradeButtonContainer = styled.div`
+  margin-top: 8px;
+`;
+
 const ButtonContainer = styled.button<{
   $enoughCurrency?: boolean;
-  $bought?: boolean;
 }>`
   width: auto;
   height: 50px;
@@ -18,19 +21,12 @@ const ButtonContainer = styled.button<{
   outline: none;
   position: relative;
   vertical-align: top;
-  margin-top: 8px;
 
   & > [data-button-hex-background] {
-    ${({ $bought }) => ($bought ? 'fill: black;' : '')}
-    stroke: ${({ $enoughCurrency, $bought }) =>
-      $enoughCurrency || $bought ? 'black' : 'red'};
+    stroke: ${({ $enoughCurrency }) => ($enoughCurrency ? 'black' : 'red')};
   }
 
-  & > [data-button-description] {
-    ${({ $bought }) => `color: ${$bought ? 'white' : 'black'};`}
-  }
-
-  &:hover ${({ $bought }) => ($bought ? 'disabled' : '')} {
+  &:hover {
     & > [data-button-hex-background] {
       stroke: ${({ $enoughCurrency }) => ($enoughCurrency ? 'green' : 'red')};
     }
@@ -66,7 +62,7 @@ const DescriptionContainer = styled.div`
   align-items: center;
 `;
 
-const PriceContainer = styled.div`
+const PriceLevelContainer = styled.div`
   width: 52px;
   height: 100%;
   position: absolute;
@@ -83,7 +79,59 @@ const PriceContainer = styled.div`
     height: 12px;
     margin-right: 2px;
   }
+
+  & > span {
+    width: 100%;
+  }
 `;
+
+const BoughtUpgradeContainer = styled.div`
+  width: auto;
+  height: 50px;
+  color: white;
+  position: relative;
+  font-size: 14px;
+  vertical-align: top;
+  display: inline-block;
+
+  & > svg {
+    fill: black;
+  }
+`;
+
+const BoughtUpgradeLevel = styled.div`
+  width: 56px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 16px;
+`;
+
+interface BoughtUpgradeProps {
+  upgradeId: UpgradeTypes;
+  index: number;
+}
+
+const BoughtUpgrade = ({ upgradeId, index }: BoughtUpgradeProps) => {
+  const { description1, description2 } = upgrades[upgradeId];
+
+  return (
+    <BoughtUpgradeContainer>
+      <HexRectangleStyled />
+      <DescriptionContainer data-button-description>
+        {description1}
+        <br />
+        {description2[index]}
+      </DescriptionContainer>
+      <BoughtUpgradeLevel>lvl {index}</BoughtUpgradeLevel>
+    </BoughtUpgradeContainer>
+  );
+};
 
 interface UpgradeButtonProps {
   upgradeId: UpgradeTypes;
@@ -91,35 +139,37 @@ interface UpgradeButtonProps {
 
 const UpgradeButton = ({ upgradeId }: UpgradeButtonProps) => {
   const currency = useSelector(counterSelector);
-  const bought = useSelector(upgradeSelector(upgradeId));
+  const upgradeValue = useSelector(upgradeSelector(upgradeId));
   const dispatch = useDispatch();
 
-  const { price, description1, description2 } = upgrades[upgradeId];
+  const { price: priceArray, description1, description2 } = upgrades[upgradeId];
+  const price = priceArray[upgradeValue];
 
   const onClick = () => {
-    if (!bought) {
-      dispatch(buyUpgradeAction(upgradeId));
-    }
+    dispatch(buyUpgradeAction(upgradeId));
   };
 
   return (
-    <ButtonContainer
-      $enoughCurrency={currency >= price}
-      $bought={bought}
-      onClick={onClick}
-    >
-      <HexRectangleStyled data-button-hex-background />
-      <HexStyled data-button-hex-price-container />
-      <DescriptionContainer data-button-description>
-        {description1}
-        <br />
-        {description2}
-      </DescriptionContainer>
-      <PriceContainer>
-        <Hex />
-        {price}
-      </PriceContainer>
-    </ButtonContainer>
+    <UpgradeButtonContainer>
+      {upgradeValue > 0 && (
+        <BoughtUpgrade upgradeId={upgradeId} index={upgradeValue - 1} />
+      )}
+      {price && (
+        <ButtonContainer $enoughCurrency={currency >= price} onClick={onClick}>
+          <HexRectangleStyled data-button-hex-background />
+          <HexStyled data-button-hex-price-container />
+          <DescriptionContainer data-button-description>
+            {description1}
+            <br />
+            {description2[upgradeValue]}
+          </DescriptionContainer>
+          <PriceLevelContainer>
+            <Hex />
+            {price}
+          </PriceLevelContainer>
+        </ButtonContainer>
+      )}
+    </UpgradeButtonContainer>
   );
 };
 
