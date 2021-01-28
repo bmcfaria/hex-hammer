@@ -96,6 +96,15 @@ export const createRingPolygon = (polygon: Mesh, ring = 1) => (
   lathe.position.y = 0;
   lathe.setEnabled(false);
 
+  if (ring === 2) {
+    const material = new BABYLON.StandardMaterial(
+      `material_${index}`,
+      polygon.getScene()
+    );
+    material.ambientColor = new BABYLON.Color3(1, 0, 0);
+    lathe.material = material;
+  }
+
   return pivot;
 };
 
