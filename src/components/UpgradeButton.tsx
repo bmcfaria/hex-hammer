@@ -114,21 +114,21 @@ const BoughtUpgradeLevel = styled.div`
 
 interface BoughtUpgradeProps {
   upgradeId: UpgradeTypes;
-  index: number;
+  level: number;
 }
 
-const BoughtUpgrade = ({ upgradeId, index }: BoughtUpgradeProps) => {
+const BoughtUpgrade = ({ upgradeId, level }: BoughtUpgradeProps) => {
   const { description1, description2 } = upgrades[upgradeId];
 
   return (
     <BoughtUpgradeContainer>
       <HexRectangleStyled />
       <DescriptionContainer data-button-description>
-        {description1}
+        {description1.length > 1 ? description1[level] : description1[0]}
         <br />
-        {description2[index]}
+        {description2.length > 1 ? description2[level] : description2[0]}
       </DescriptionContainer>
-      <BoughtUpgradeLevel>lvl {index}</BoughtUpgradeLevel>
+      <BoughtUpgradeLevel>lvl {level + 1}</BoughtUpgradeLevel>
     </BoughtUpgradeContainer>
   );
 };
@@ -152,16 +152,20 @@ const UpgradeButton = ({ upgradeId }: UpgradeButtonProps) => {
   return (
     <UpgradeButtonContainer>
       {upgradeValue > 0 && (
-        <BoughtUpgrade upgradeId={upgradeId} index={upgradeValue - 1} />
+        <BoughtUpgrade upgradeId={upgradeId} level={upgradeValue - 1} />
       )}
       {price && (
         <ButtonContainer $enoughCurrency={currency >= price} onClick={onClick}>
           <HexRectangleStyled data-button-hex-background />
           <HexStyled data-button-hex-price-container />
           <DescriptionContainer data-button-description>
-            {description1}
+            {description1.length > 1
+              ? description1[upgradeValue]
+              : description1[0]}
             <br />
-            {description2[upgradeValue]}
+            {description2.length > 1
+              ? description2[upgradeValue]
+              : description2[0]}
           </DescriptionContainer>
           <PriceLevelContainer>
             <Hex />

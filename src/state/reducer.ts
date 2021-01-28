@@ -19,7 +19,12 @@ export const reducer = (state = initialState, payload: any) => {
         return state;
       }
 
-      const incrementValue = 1 + +('increment1' in state.upgrades);
+      const upgradeValue = state.upgrades.increment;
+
+      let incrementValue = 1;
+      if (upgradeValue > 0) {
+        incrementValue += upgrades.increment.value[upgradeValue - 1];
+      }
 
       return {
         ...state,

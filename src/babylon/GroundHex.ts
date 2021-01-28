@@ -6,6 +6,9 @@ const margin = 0.1;
 const radius = 2;
 const polygonOrientation = 1; // 0 - flat || 1 - pointy
 
+// Outer rin (red)
+const outterRing = 3;
+
 export const createRingPolygon = (polygon: Mesh, ring = 1) => (
   _: any,
   index: number
@@ -96,7 +99,7 @@ export const createRingPolygon = (polygon: Mesh, ring = 1) => (
   lathe.position.y = 0;
   lathe.setEnabled(false);
 
-  if (ring === 2) {
+  if (ring === outterRing) {
     const material = new BABYLON.StandardMaterial(
       `material_${index}`,
       polygon.getScene()
