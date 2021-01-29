@@ -1,10 +1,10 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import './App.css';
 import Babylon from './Babylon';
 import { Scene } from '@babylonjs/core';
-import createScene from './babylon/helper';
+import createScene, { createSceneMap } from './babylon/helper';
 import HammerButton from './components/HammerButton';
 import { initialState, reducer } from './state/reducer';
 import StatusBar from './components/StatusBar';
@@ -24,10 +24,19 @@ const onRender = (scene: Scene) => {
 
 interface RefObject {
   mainAction: () => void;
+  scene: number;
 }
 
 function App() {
   const sharedBabylonObject = useRef<RefObject>();
+
+  const switchScene = () => {
+    if (sharedBabylonObject.current) {
+      sharedBabylonObject.current.scene = !sharedBabylonObject.current.scene
+        ? 1
+        : 0;
+    }
+  };
 
   return (
     <Provider store={store}>
@@ -45,6 +54,7 @@ function App() {
         <Babylon
           antialias
           onSceneReady={createScene(sharedBabylonObject)}
+          onSceneReady1={createSceneMap(sharedBabylonObject)}
           onRender={onRender}
           sharedBabylonObject={sharedBabylonObject}
           id="my-canvas"
@@ -70,6 +80,16 @@ function App() {
         >
           0
         </div>
+        <button
+          onClick={switchScene}
+          style={{
+            position: 'absolute',
+            bottom: 15,
+            right: 10,
+          }}
+        >
+          Switch scene
+        </button>
       </div>
     </Provider>
   );

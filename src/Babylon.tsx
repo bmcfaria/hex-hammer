@@ -8,6 +8,7 @@ export type BabylonjsProps = {
   renderChildrenWhenReady?: boolean;
   sceneOptions?: SceneOptions;
   onSceneReady: (scene: Scene) => void;
+  onSceneReady1: (scene: Scene) => void;
   onRender?: (scene: Scene) => void;
   id: string;
   sharedBabylonObject: any;
@@ -23,6 +24,7 @@ const Babylon = (props: BabylonjsProps) => {
     sceneOptions,
     onRender,
     onSceneReady,
+    onSceneReady1,
     sharedBabylonObject,
     ...rest
   } = props;
@@ -36,16 +38,39 @@ const Babylon = (props: BabylonjsProps) => {
         adaptToDeviceRatio
       );
       const scene = new Scene(engine, sceneOptions);
+      const scene1 = new Scene(engine, sceneOptions);
+
       if (scene.isReady()) {
         props.onSceneReady(scene);
       } else {
         scene.onReadyObservable.addOnce(scene => props.onSceneReady(scene));
       }
+
+      if (scene1.isReady()) {
+        props.onSceneReady1(scene1);
+      } else {
+        scene1.onReadyObservable.addOnce(scene1 => props.onSceneReady1(scene1));
+      }
+
       engine.runRenderLoop(() => {
         if (typeof onRender === 'function') {
           onRender(scene);
         }
-        scene.render();
+
+        // console.log(sharedBabylonObject.current.scene);
+
+        switch (sharedBabylonObject.current.scene) {
+          case 1:
+            // console.log('rendering scene 1');
+            scene.render();
+            break;
+          default:
+            // console.log('rendering scene 0');
+            scene1.render();
+        }
+
+        // scene.render();
+        // scene1.render();
       });
       const resize = () => {
         scene.getEngine().resize();
@@ -62,6 +87,7 @@ const Babylon = (props: BabylonjsProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reactCanvas]);
+
   return (
     <canvas
       ref={reactCanvas}

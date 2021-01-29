@@ -11,7 +11,7 @@ export const buildGround = (
 
   // Generate rings of polygons
   const polygonsObject = [...Array(6)].map((_, index) =>
-    [...Array(6 * (index + 1))].map(createRingPolygon(polygon, index + 1))
+    [...Array(6 * (index + 1))].map(createRingPolygon(polygon, index + 1, true))
   );
 
   // central polygon pivot

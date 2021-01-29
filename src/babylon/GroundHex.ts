@@ -6,13 +6,7 @@ const margin = 0.1;
 const radius = 2;
 const polygonOrientation = 1; // 0 - flat || 1 - pointy
 
-// Outer rin (red)
-const outterRing = 3;
-
-export const createRingPolygon = (polygon: Mesh, ring = 1) => (
-  _: any,
-  index: number
-) => {
+const hexCoordinates = (ring: number, index: number) => {
   let polygonFlatWidth = 2 * radius;
   let polygonPointyWidth = Math.sqrt(3) * radius;
 
@@ -20,9 +14,6 @@ export const createRingPolygon = (polygon: Mesh, ring = 1) => (
   let polygonHeight = polygonOrientation
     ? polygonFlatWidth
     : polygonPointyWidth;
-
-  let tmpPolygon = polygon.clone();
-  tmpPolygon.isPickable = false;
 
   let row = 9;
   if (index <= ring) {
@@ -48,11 +39,56 @@ export const createRingPolygon = (polygon: Mesh, ring = 1) => (
     vLeft = -5 * ring + index;
   }
 
-  let CoR_At = new BABYLON.Vector3(
+  return new BABYLON.Vector3(
     vLeft * (polygonWidth + margin) + (row * (polygonWidth + margin)) / 2,
     0.5,
     -row * ((polygonHeight * 3) / 4 + margin)
   );
+};
+
+export const createLatheHex = (name: string, scene: Scene) => {
+  // 0.02 or else it will have margin between lathes
+  const myShape = [
+    new BABYLON.Vector3(radius, 0, 0),
+    new BABYLON.Vector3(radius + margin / 2 + 0.02, 0, 0),
+    new BABYLON.Vector3(radius + margin / 2 + 0.02, 1, 0),
+    new BABYLON.Vector3(radius, 1, 0),
+  ];
+
+  //Create lathe
+  const lathe = BABYLON.MeshBuilder.CreateLathe(
+    name,
+    {
+      shape: myShape,
+      radius: 1,
+      tessellation: 6,
+      sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+    },
+    scene
+  );
+  lathe.rotation.y = Math.PI / 2;
+  lathe.convertToFlatShadedMesh();
+
+  return lathe;
+};
+
+export const createRingPolygon = (
+  polygon: Mesh,
+  ring = 1,
+  hide = false,
+  {
+    meshMaterial,
+    latheMaterial,
+  }: {
+    meshMaterial?: BABYLON.StandardMaterial;
+    latheMaterial?: BABYLON.StandardMaterial;
+  } = {}
+) => (_: any, index: number) => {
+  let tmpPolygon = polygon.clone();
+  tmpPolygon.name = `hex_${ring}_${index}`;
+  tmpPolygon.isPickable = false;
+
+  let CoR_At = hexCoordinates(ring, index);
   let pivot = new BABYLON.TransformNode('root');
   pivot.position = CoR_At;
 
@@ -75,38 +111,36 @@ export const createRingPolygon = (polygon: Mesh, ring = 1) => (
   tmpPolygon.position.z = 0;
 
   tmpPolygon.rotation.y = Math.PI / 2 - pivot.rotation.y;
-  tmpPolygon.setEnabled(false);
+  if (hide) {
+    tmpPolygon.setEnabled(false);
+  }
+
+  if (meshMaterial) {
+    tmpPolygon.material = meshMaterial;
+  }
 
   pivot.animations.push(...[xRotation, ySlide]);
 
-  const myShape = [
-    new BABYLON.Vector3(2, 0, 0),
-    new BABYLON.Vector3(2.1, 0, 0),
-    new BABYLON.Vector3(2.1, 1, 0),
-    new BABYLON.Vector3(2, 1, 0),
-  ];
-
-  //Create lathe
-  const lathe = BABYLON.MeshBuilder.CreateLathe(`lathe_${ring}_${index}`, {
-    shape: myShape,
-    radius: 1,
-    tessellation: 6,
-    sideOrientation: BABYLON.Mesh.DOUBLESIDE,
-  });
-  lathe.rotation.y = Math.PI / 2;
-  lathe.convertToFlatShadedMesh();
+  const lathe = createLatheHex(`lathe_${ring}_${index}`, polygon.getScene());
   lathe.position = CoR_At.clone();
   lathe.position.y = 0;
-  lathe.setEnabled(false);
 
-  if (ring === outterRing) {
-    const material = new BABYLON.StandardMaterial(
-      `material_${index}`,
-      polygon.getScene()
-    );
-    material.ambientColor = new BABYLON.Color3(1, 0, 0);
-    lathe.material = material;
+  if (hide) {
+    lathe.setEnabled(false);
   }
+
+  if (latheMaterial) {
+    lathe.material = latheMaterial;
+  }
+
+  // if (ring === outterRing) {
+  //   const material = new BABYLON.StandardMaterial(
+  //     `material_${index}`,
+  //     polygon.getScene()
+  //   );
+  //   material.ambientColor = new BABYLON.Color3(1, 0, 0);
+  //   lathe.material = material;
+  // }
 
   return pivot;
 };
@@ -139,12 +173,16 @@ export const createCenterPolygon = (scene: Scene) => {
   ];
 
   //Create lathe
-  const lathe = BABYLON.MeshBuilder.CreateLathe('lathe', {
-    shape: myShape,
-    radius: 1,
-    tessellation: 6,
-    sideOrientation: BABYLON.Mesh.DEFAULTSIDE,
-  });
+  const lathe = BABYLON.MeshBuilder.CreateLathe(
+    'lathe',
+    {
+      shape: myShape,
+      radius: 1,
+      tessellation: 6,
+      sideOrientation: BABYLON.Mesh.DEFAULTSIDE,
+    },
+    scene
+  );
   lathe.rotation.y = Math.PI / 2;
   lathe.convertToFlatShadedMesh();
 
