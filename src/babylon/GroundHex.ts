@@ -89,7 +89,7 @@ export const createRingPolygon = (
   tmpPolygon.isPickable = false;
 
   let CoR_At = hexCoordinates(ring, index);
-  let pivot = new BABYLON.TransformNode('root');
+  let pivot = new BABYLON.TransformNode(`root_${ring}_${index}`);
   pivot.position = CoR_At;
 
   let pivotRotation = 0;

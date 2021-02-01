@@ -4,7 +4,8 @@ import { createStore, compose } from 'redux';
 import './App.css';
 import Babylon from './Babylon';
 import { Scene } from '@babylonjs/core';
-import createScene, { createSceneMap } from './babylon/helper';
+import createScene from './babylon/helper';
+import { createSceneSecondStage } from './babylon/sceneSecondStage';
 import HammerButton from './components/HammerButton';
 import { initialState, reducer } from './state/reducer';
 import StatusBar from './components/StatusBar';
@@ -54,7 +55,7 @@ function App() {
         <Babylon
           antialias
           onSceneReady={createScene(sharedBabylonObject)}
-          onSceneReady1={createSceneMap(sharedBabylonObject)}
+          onSceneReady1={createSceneSecondStage(sharedBabylonObject)}
           onRender={onRender}
           sharedBabylonObject={sharedBabylonObject}
           id="my-canvas"
