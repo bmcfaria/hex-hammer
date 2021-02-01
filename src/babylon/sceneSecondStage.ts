@@ -126,14 +126,6 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     ).material = materialCentral;
   });
 
-  // console.log(camera.position);
-  // console.log(polygon.position);
-
-  // camera.position.x = polygon.position.x + 100;
-  // camera.position.y = polygon.position.y + 100;
-
-  const vector = new Vector3(0, camera.position.y, camera.position.z);
-
   const lightDiffuseAction = (callback?: (() => void) | undefined) =>
     new BABYLON.InterpolateValueAction(
       BABYLON.ActionManager.NothingTrigger,
@@ -171,6 +163,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
           trigger: BABYLON.ActionManager.NothingTrigger,
         },
         () => {
+          polygon.isPickable = false;
+
           setTimeout(() => {
             if (sharedBabylonObject.current) {
               sharedBabylonObject.current.scene = !sharedBabylonObject.current

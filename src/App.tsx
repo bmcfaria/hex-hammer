@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import './App.css';
