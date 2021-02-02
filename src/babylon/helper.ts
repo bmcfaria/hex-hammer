@@ -28,8 +28,8 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   //camera.setTarget(BABYLON.Vector3.Zero());
 
   // This attaches the camera to the canvas
-  const canvas = scene.getEngine().getRenderingCanvas();
-  camera.attachControl(canvas, true);
+  // const canvas = scene.getEngine().getRenderingCanvas();
+  // camera.attachControl(canvas, true);
 
   // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
   let light = new BABYLON.HemisphericLight(

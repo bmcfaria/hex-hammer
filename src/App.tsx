@@ -9,6 +9,7 @@ import { createSceneSecondStage } from './babylon/sceneSecondStage';
 import HammerButton from './components/HammerButton';
 import { initialState, reducer } from './state/reducer';
 import StatusBar from './components/StatusBar';
+import Modal from './components/Modal';
 
 const inDev = process.env.NODE_ENV === 'development';
 const composeEnhancers =
@@ -29,6 +30,9 @@ interface RefObject {
   inc: {
     main: 0;
     update: () => void;
+  };
+  ui: {
+    modal: true;
   };
 }
 
@@ -95,6 +99,7 @@ function App() {
         >
           Switch scene
         </button>
+        <Modal sharedBabylonObject={sharedBabylonObject} />
       </div>
     </Provider>
   );

@@ -24,8 +24,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   camera.radius = 90;
 
   // This attaches the camera to the canvas
-  const canvas = scene.getEngine().getRenderingCanvas();
-  camera.attachControl(canvas, true);
+  // const canvas = scene.getEngine().getRenderingCanvas();
+  // camera.attachControl(canvas, true);
 
   // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
   let light = new BABYLON.HemisphericLight(
@@ -194,6 +194,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
             },
             () => {
               console.log('same mesh');
+              sharedBabylonObject.current?.ui.openModal();
             }
           ),
         ])
