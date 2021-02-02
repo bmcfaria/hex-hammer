@@ -26,6 +26,10 @@ const onRender = (scene: Scene) => {
 interface RefObject {
   mainAction: () => void;
   scene: number;
+  inc: {
+    main: 0;
+    update: () => void;
+  };
 }
 
 function App() {

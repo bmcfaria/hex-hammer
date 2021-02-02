@@ -97,11 +97,24 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const dispatch = useDispatch();
   const counter = useSelector(counterSelector);
   const autoValue = useSelector(upgradeSelector('auto'));
+  const increment = useSelector(upgradeSelector('increment'));
   const lastCounter = useSelector(lastCounterSelector);
   const [startAnimation, setStartAnimation] = useState(false);
   const [autoTimeLeft, setAutoTimeLeft] = useState(
     upgrades.auto.value[autoValue - 1] * 1000
   );
+
+  useEffect(() => {
+    if (!sharedBabylonObject.current.inc) {
+      sharedBabylonObject.current.inc = { main: 0 };
+    }
+
+    sharedBabylonObject.current.inc.main =
+      (1 + upgrades.increment.value[increment - 1]) /
+      upgrades.auto.value[autoValue - 1];
+
+    sharedBabylonObject.current.inc?.update();
+  }, [autoValue, sharedBabylonObject, increment]);
 
   useEffect(() => {
     const countDown = setInterval(() => {

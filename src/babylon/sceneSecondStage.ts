@@ -1,5 +1,6 @@
 import * as BABYLON from '@babylonjs/core';
 import { Scene, Vector3 } from '@babylonjs/core';
+import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui';
 import { createRingPolygon, createLatheHex } from './GroundHex';
 
 export const createSceneSecondStage = (sharedBabylonObject: any) => (
@@ -178,26 +179,27 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     ])
   );
 
-  const someMesh = scene.getMeshByName(`hex_${2}_${0}`);
-  console.log(someMesh);
-  if (someMesh) {
-    someMesh.isPickable = true;
-    someMesh.actionManager = new BABYLON.ActionManager(scene);
-    someMesh.actionManager.registerAction(
-      new BABYLON.CombineAction(BABYLON.ActionManager.OnPickTrigger, [
-        lightDiffuseAction(),
-        zoomInAction(someMesh),
-        new BABYLON.ExecuteCodeAction(
-          {
-            trigger: BABYLON.ActionManager.NothingTrigger,
-          },
-          () => {
-            console.log('same mesh');
-          }
-        ),
-      ])
-    );
-  }
+  [0, 2, 4, 6, 8, 10].forEach(index => {
+    const tmpMesh = scene.getMeshByName(`hex_${2}_${index}`);
+
+    if (tmpMesh) {
+      tmpMesh.isPickable = true;
+
+      tmpMesh.actionManager = new BABYLON.ActionManager(scene);
+      tmpMesh.actionManager.registerAction(
+        new BABYLON.CombineAction(BABYLON.ActionManager.OnPickTrigger, [
+          new BABYLON.ExecuteCodeAction(
+            {
+              trigger: BABYLON.ActionManager.NothingTrigger,
+            },
+            () => {
+              console.log('same mesh');
+            }
+          ),
+        ])
+      );
+    }
+  });
 
   const particleSystem = BABYLON.ParticleHelper.CreateDefault(
     new BABYLON.Vector3(0, 0, 0)
@@ -205,5 +207,85 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   particleSystem.emitter = polygon;
   particleSystem.start();
 
+  var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
+  var textblock = new TextBlock();
+  console.log(sharedBabylonObject.current.inc?.main);
+  textblock.text = `${~~sharedBabylonObject.current.inc?.main}/s`;
+  textblock.fontSize = 24;
+  textblock.top = -100;
+  textblock.color = 'black';
+  advancedTexture.addControl(textblock);
+  textblock.linkWithMesh(polygon);
+
+  if (sharedBabylonObject.current && !sharedBabylonObject.current.inc) {
+    sharedBabylonObject.current.inc = {
+      ...(sharedBabylonObject.current.inc || {}),
+      update: () => {
+        textblock.text = `${~~(sharedBabylonObject.current.inc?.main || 0)}/s`;
+      },
+    };
+  }
+
   return scene;
 };
+
+// It gave me a little motion sickness 🤮
+// const applyAnimationsForSideHexes = (
+//   scene: Scene,
+//   camera: BABYLON.ArcRotateCamera
+// ) => {
+//   [0, 2, 4, 6, 8, 10].forEach(index => {
+//     const tmpMesh = scene.getMeshByName(`hex_${2}_${index}`);
+
+//     if (tmpMesh) {
+//       tmpMesh.isPickable = true;
+
+//       tmpMesh.actionManager = new BABYLON.ActionManager(scene);
+//       tmpMesh.actionManager.registerAction(
+//         new BABYLON.CombineAction(BABYLON.ActionManager.OnPickTrigger, [
+//           // lightDiffuseAction(),
+//           // zoomInAction(tmpMesh),
+//           new BABYLON.InterpolateValueAction(
+//             BABYLON.ActionManager.NothingTrigger,
+//             camera,
+//             'position',
+//             new Vector3(
+//               (tmpMesh.parent as any).position.x,
+//               camera.position.y,
+//               camera.position.z
+//             ),
+//             10000
+//           ),
+//           new BABYLON.InterpolateValueAction(
+//             BABYLON.ActionManager.NothingTrigger,
+//             camera,
+//             'target',
+//             (tmpMesh.parent as any).position.clone(),
+//             500
+//           ),
+//           // new BABYLON.ExecuteCodeAction(
+//           //   {
+//           //     trigger: BABYLON.ActionManager.NothingTrigger,
+//           //   },
+//           //   () => {
+//           //     console.log('same mesh');
+//           //     if (tmpMesh.parent) {
+//           //       console.log(
+//           //         camera.position.x,
+//           //         (tmpMesh.parent as any).position.x
+//           //       );
+//           //       camera.position = new Vector3(
+//           //         (tmpMesh.parent as any).position.x,
+//           //         camera.position.y,
+//           //         camera.position.z
+//           //       );
+
+//           //       camera.target = (tmpMesh.parent as any).position.clone();
+//           //     }
+//           //   }
+//           // ),
+//         ])
+//       );
+//     }
+//   });
+// };
