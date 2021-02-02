@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import './App.css';
@@ -10,6 +10,8 @@ import HammerButton from './components/HammerButton';
 import { initialState, reducer } from './state/reducer';
 import StatusBar from './components/StatusBar';
 import Modal from './components/Modal';
+import { GameObjectContext } from './helpers/context';
+import { GameObjectRefType, SceneType } from './helpers/types';
 
 const inDev = process.env.NODE_ENV === 'development';
 const composeEnhancers =
@@ -24,83 +26,95 @@ const onRender = (scene: Scene) => {
   }
 };
 
-interface RefObject {
-  mainAction: () => void;
-  scene: number;
-  inc: {
-    main: 0;
-    update: () => void;
-  };
-  ui: {
-    modal: true;
-  };
-}
-
 function App() {
-  const sharedBabylonObject = useRef<RefObject>();
+  const sharedBabylonObject = useRef<GameObjectRefType>();
+  const [scene, setScene] = useState<SceneType>('incremental');
+
+  useEffect(() => {
+    if (sharedBabylonObject.current) {
+      sharedBabylonObject.current.scene = 'incremental';
+      sharedBabylonObject.current.changeScene = (_scene: SceneType) => {
+        if (sharedBabylonObject.current) {
+          sharedBabylonObject.current.scene = _scene;
+        }
+        setScene(_scene);
+      };
+    }
+  }, [sharedBabylonObject]);
 
   const switchScene = () => {
     if (sharedBabylonObject.current) {
-      sharedBabylonObject.current.scene = !sharedBabylonObject.current.scene
-        ? 1
-        : 0;
+      switch (sharedBabylonObject.current.scene) {
+        case 'incremental':
+          sharedBabylonObject.current.changeScene('secondStage');
+          break;
+        case 'secondStage':
+          sharedBabylonObject.current.changeScene('incremental');
+          break;
+        default:
+          sharedBabylonObject.current.changeScene('secondStage');
+      }
     }
   };
 
   return (
     <Provider store={store}>
-      <div
-        className="App"
-        style={{
-          position: 'absolute',
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          height: '100%',
-          overflow: 'hidden',
-        }}
+      <GameObjectContext.Provider
+        value={{ gameObject: sharedBabylonObject, scene: scene }}
       >
-        <Babylon
-          antialias
-          onSceneReady={createScene(sharedBabylonObject)}
-          onSceneReady1={createSceneSecondStage(sharedBabylonObject)}
-          onRender={onRender}
-          sharedBabylonObject={sharedBabylonObject}
-          id="my-canvas"
-        />
-        <StatusBar />
-        <div className="hexagon-button-container">
-          <HammerButton sharedBabylonObject={sharedBabylonObject} />
-        </div>
         <div
-          id="fps"
+          className="App"
           style={{
             position: 'absolute',
-            bottom: 15,
-            left: 10,
-            backgroundColor: 'black',
-            border: '2px solid red',
-            textAlign: 'center',
-            fontSize: 16,
-            color: 'white',
-            width: 60,
-            height: 20,
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
           }}
         >
-          0
+          <Babylon
+            antialias
+            onSceneReady={createScene(sharedBabylonObject)}
+            onSceneReady1={createSceneSecondStage(sharedBabylonObject)}
+            onRender={onRender}
+            sharedBabylonObject={sharedBabylonObject}
+            id="my-canvas"
+          />
+          <StatusBar />
+          <div className="hexagon-button-container">
+            <HammerButton sharedBabylonObject={sharedBabylonObject} />
+          </div>
+          <div
+            id="fps"
+            style={{
+              position: 'absolute',
+              bottom: 15,
+              left: 10,
+              backgroundColor: 'black',
+              border: '2px solid red',
+              textAlign: 'center',
+              fontSize: 16,
+              color: 'white',
+              width: 60,
+              height: 20,
+            }}
+          >
+            0
+          </div>
+          <button
+            onClick={switchScene}
+            style={{
+              position: 'absolute',
+              bottom: 15,
+              right: 10,
+            }}
+          >
+            Switch scene
+          </button>
+          <Modal sharedBabylonObject={sharedBabylonObject} />
         </div>
-        <button
-          onClick={switchScene}
-          style={{
-            position: 'absolute',
-            bottom: 15,
-            right: 10,
-          }}
-        >
-          Switch scene
-        </button>
-        <Modal sharedBabylonObject={sharedBabylonObject} />
-      </div>
+      </GameObjectContext.Provider>
     </Provider>
   );
 }

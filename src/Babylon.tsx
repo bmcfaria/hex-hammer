@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Engine, EngineOptions, Scene, SceneOptions } from '@babylonjs/core';
+import { GameObjectRefType } from './helpers/types';
 
 export type BabylonjsProps = {
   antialias?: boolean;
@@ -11,7 +12,7 @@ export type BabylonjsProps = {
   onSceneReady1: (scene: Scene) => void;
   onRender?: (scene: Scene) => void;
   id: string;
-  sharedBabylonObject: any;
+  sharedBabylonObject: { current?: GameObjectRefType };
   children?: React.ReactNode;
 };
 
@@ -37,49 +38,52 @@ const Babylon = (props: BabylonjsProps) => {
         engineOptions,
         adaptToDeviceRatio
       );
-      const scene = new Scene(engine, sceneOptions);
-      const scene1 = new Scene(engine, sceneOptions);
+      const incrementalScene = new Scene(engine, sceneOptions);
+      const secondStageScene = new Scene(engine, sceneOptions);
 
-      if (scene.isReady()) {
-        props.onSceneReady(scene);
+      if (incrementalScene.isReady()) {
+        props.onSceneReady(incrementalScene);
       } else {
-        scene.onReadyObservable.addOnce(scene => props.onSceneReady(scene));
+        incrementalScene.onReadyObservable.addOnce(scene =>
+          props.onSceneReady(scene)
+        );
       }
 
-      if (scene1.isReady()) {
-        props.onSceneReady1(scene1);
+      if (secondStageScene.isReady()) {
+        props.onSceneReady1(secondStageScene);
       } else {
-        scene1.onReadyObservable.addOnce(scene1 => props.onSceneReady1(scene1));
+        secondStageScene.onReadyObservable.addOnce(secondStageScene =>
+          props.onSceneReady1(secondStageScene)
+        );
       }
 
       engine.runRenderLoop(() => {
         if (typeof onRender === 'function') {
-          onRender(scene);
+          onRender(incrementalScene);
         }
 
         // console.log(sharedBabylonObject.current.scene);
 
-        switch (sharedBabylonObject.current.scene) {
-          case 1:
-            // console.log('rendering scene 1');
-            scene.render();
+        switch (sharedBabylonObject.current?.scene) {
+          case 'incremental':
+            incrementalScene.render();
             break;
           default:
             // console.log('rendering scene 0');
-            scene1.render();
+            secondStageScene.render();
         }
 
         // scene.render();
         // scene1.render();
       });
       const resize = () => {
-        scene.getEngine().resize();
+        incrementalScene.getEngine().resize();
       };
       if (window) {
         window.addEventListener('resize', resize);
       }
       return () => {
-        scene.getEngine().dispose();
+        incrementalScene.getEngine().dispose();
         if (window) {
           window.removeEventListener('resize', resize);
         }

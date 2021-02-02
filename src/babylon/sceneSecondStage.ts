@@ -168,10 +168,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
 
           setTimeout(() => {
             if (sharedBabylonObject.current) {
-              sharedBabylonObject.current.scene = !sharedBabylonObject.current
-                .scene
-                ? 1
-                : 0;
+              sharedBabylonObject.current.changeScene('incremental');
             }
           }, 1500);
         }

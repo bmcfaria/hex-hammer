@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ReactComponent as Hex } from '../assets/Hex.svg';
 
 const Container = styled.div`
   position: fixed;

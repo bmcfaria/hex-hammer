@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { counterSelector } from '../state/selectors';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import Sidebar from './Sidebar';
+import StatusBarExpandButton from './StatusBarExpandButton';
 
 const Container = styled.div`
   position: absolute;
@@ -20,6 +21,7 @@ const CurrencyContainer = styled.div`
   align-items: center;
   font-size: 20px;
   line-height: 20px;
+  margin: 0 auto;
 `;
 
 const HexCurrency = styled(Hex)`
@@ -33,6 +35,7 @@ const StatusBar = () => {
 
   return (
     <Container>
+      <StatusBarExpandButton />
       <CurrencyContainer>
         <HexCurrency />
         {counter}
