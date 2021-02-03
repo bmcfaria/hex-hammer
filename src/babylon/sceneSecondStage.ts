@@ -1,6 +1,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { Scene, Vector3 } from '@babylonjs/core';
 import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui';
+import { modalHex } from '../helpers/values';
 import { createRingPolygon, createLatheHex } from './GroundHex';
 
 export const createSceneSecondStage = (sharedBabylonObject: any) => (
@@ -100,21 +101,28 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     )
   );
 
-  [1, 3, 5, 7, 9, 11].forEach(index => {
-    scene.getMeshByName(`hex_${2}_${index}`)?.setEnabled(false);
-  });
-  [0, 2, 4, 6, 8, 10].forEach(index => {
+  // [1, 3, 5, 7, 9, 11].forEach(index => {
+  //   scene.getMeshByName(`hex_${2}_${index}`)?.setEnabled(false);
+  // });
+  Object.keys(modalHex).forEach(modalKey => {
     (
-      scene.getMeshByName(`hex_${2}_${index}`) || { material: null }
+      scene.getMeshByName(modalKey) || { material: null }
     ).material = blueHexMaterial;
   });
 
-  [...Array(6 * 3)].forEach((_, index) => {
-    scene.getMeshByName(`hex_${3}_${index}`)?.setEnabled(false);
+  [...Array(4)].forEach((_, ring) => {
+    [...Array(6 * (ring + 1))].forEach((_, index) => {
+      scene.getMeshByName(`hex_${ring + 1}_${index}`)?.setEnabled(false);
+    });
   });
-  [...Array(6 * 4)].forEach((_, index) => {
-    scene.getMeshByName(`hex_${4}_${index}`)?.setEnabled(false);
-  });
+
+  // [...Array(6 * 3)].forEach((_, index) => {
+  //   scene.getMeshByName(`hex_${3}_${index}`)?.setEnabled(false);
+  // });
+  // [...Array(6 * 4)].forEach((_, index) => {
+  //   scene.getMeshByName(`hex_${4}_${index}`)?.setEnabled(false);
+  // });
+
   [...Array(6 * 5)].forEach((_, index) => {
     (
       scene.getMeshByName(`hex_${5}_${index}`) || { material: null }
@@ -176,8 +184,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     ])
   );
 
-  [0, 2, 4, 6, 8, 10].forEach(index => {
-    const tmpMesh = scene.getMeshByName(`hex_${2}_${index}`);
+  Object.keys(modalHex).forEach(modalKey => {
+    const tmpMesh = scene.getMeshByName(modalKey);
 
     if (tmpMesh) {
       tmpMesh.isPickable = true;
@@ -190,8 +198,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
               trigger: BABYLON.ActionManager.NothingTrigger,
             },
             () => {
-              console.log('same mesh');
-              sharedBabylonObject.current?.ui.openModal();
+              sharedBabylonObject.current?.ui.openModal(tmpMesh.name);
             }
           ),
         ])
@@ -227,13 +234,22 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   return scene;
 };
 
+export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
+  // console.log(sharedBabylonObject?.current.modalHexValues);
+  Object.keys(sharedBabylonObject?.current.modalHexValues || {}).forEach(
+    hexName => {
+      scene.getMeshByName(hexName)?.setEnabled(true);
+    }
+  );
+};
+
 // It gave me a little motion sickness 🤮
 // const applyAnimationsForSideHexes = (
 //   scene: Scene,
 //   camera: BABYLON.ArcRotateCamera
 // ) => {
-//   [0, 2, 4, 6, 8, 10].forEach(index => {
-//     const tmpMesh = scene.getMeshByName(`hex_${2}_${index}`);
+//   Object.keys(modalHex).forEach(modalKey => {
+//     const tmpMesh = scene.getMeshByName(modalKey);
 
 //     if (tmpMesh) {
 //       tmpMesh.isPickable = true;

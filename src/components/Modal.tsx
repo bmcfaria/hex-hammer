@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { modalHex, ModalHexTypes } from '../helpers/values';
+import { buyModalHexAction } from '../state/actions';
+import { modalHexSelector } from '../state/selectors';
 
 const Container = styled.div`
   position: fixed;
@@ -11,41 +15,62 @@ const Container = styled.div`
   background-color: beige;
 `;
 
+const Name = styled.div``;
+const Description = styled.div``;
+
 interface ModalProps {
   sharedBabylonObject: any;
 }
 
 const Modal = ({ sharedBabylonObject }: ModalProps) => {
-  const [open, setOpen] = useState(false);
+  const [modal, setModal] = useState<ModalHexTypes | undefined>();
+  const dispatch = useDispatch();
+
+  // Temporary
+  const modalHexValues = useSelector(modalHexSelector);
 
   useEffect(() => {
-    console.log('testing');
-    console.log(sharedBabylonObject.current);
+    if (sharedBabylonObject.current) {
+      sharedBabylonObject.current.modalHexValues = modalHexValues;
+    }
+  }, [sharedBabylonObject, modalHexValues]);
 
-    if (!sharedBabylonObject.current?.ui?.modal) {
+  useEffect(() => {
+    if (!sharedBabylonObject.current?.ui?.openModal) {
       sharedBabylonObject.current.ui = {
         ...(sharedBabylonObject.current.ui || {}),
       };
     }
 
-    sharedBabylonObject.current.ui.openModal = () => {
-      setOpen(true);
+    sharedBabylonObject.current.ui.openModal = (modalId: ModalHexTypes) => {
+      setModal(modalId);
     };
   }, [sharedBabylonObject]);
 
-  const close = () => {
-    sharedBabylonObject.current.ui.modal = false;
-    setOpen(false);
+  const buy = () => {
+    if (modal) {
+      dispatch(buyModalHexAction(modal));
+    }
   };
 
-  if (!open) {
+  const close = () => {
+    setModal(undefined);
+  };
+
+  if (!modal) {
     return null;
   }
 
+  const modalInfo = modalHex[modal];
+
   return (
     <Container>
-      Something
-      <button onClick={close}>Close</button>
+      <Name>{modalInfo.name}</Name>
+      <Description>{modalInfo.description}</Description>
+      <div>
+        <button onClick={buy}>{modalInfo.price}</button>
+        <button onClick={close}>Close</button>
+      </div>
     </Container>
   );
 };

@@ -11,6 +11,10 @@ export type BabylonjsProps = {
   onSceneReady: (scene: Scene) => void;
   onSceneReady1: (scene: Scene) => void;
   onRender?: (scene: Scene) => void;
+  onRenderSecondStage?: (
+    scene: Scene,
+    sharedBabylonObject: { current?: GameObjectRefType }
+  ) => void;
   id: string;
   sharedBabylonObject: { current?: GameObjectRefType };
   children?: React.ReactNode;
@@ -24,6 +28,7 @@ const Babylon = (props: BabylonjsProps) => {
     adaptToDeviceRatio,
     sceneOptions,
     onRender,
+    onRenderSecondStage,
     onSceneReady,
     onSceneReady1,
     sharedBabylonObject,
@@ -60,6 +65,9 @@ const Babylon = (props: BabylonjsProps) => {
       engine.runRenderLoop(() => {
         if (typeof onRender === 'function') {
           onRender(incrementalScene);
+        }
+        if (typeof onRenderSecondStage === 'function') {
+          onRenderSecondStage(secondStageScene, sharedBabylonObject);
         }
 
         // console.log(sharedBabylonObject.current.scene);

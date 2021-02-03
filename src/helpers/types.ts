@@ -1,3 +1,5 @@
+import { ModalHexTypes } from './values';
+
 export type SceneType = 'incremental' | 'secondStage';
 
 export interface GameObjectRefType {
@@ -9,7 +11,7 @@ export interface GameObjectRefType {
     update: () => void;
   };
   ui: {
-    modal: true;
+    openModal: (id: ModalHexTypes) => void;
   };
 }
 

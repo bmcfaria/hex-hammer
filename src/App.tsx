@@ -5,7 +5,10 @@ import './App.css';
 import Babylon from './Babylon';
 import { Scene } from '@babylonjs/core';
 import createScene from './babylon/helper';
-import { createSceneSecondStage } from './babylon/sceneSecondStage';
+import {
+  createSceneSecondStage,
+  onRenderSecondStage,
+} from './babylon/sceneSecondStage';
 import HammerButton from './components/HammerButton';
 import { initialState, reducer } from './state/reducer';
 import StatusBar from './components/StatusBar';
@@ -78,6 +81,7 @@ function App() {
             onSceneReady={createScene(sharedBabylonObject)}
             onSceneReady1={createSceneSecondStage(sharedBabylonObject)}
             onRender={onRender}
+            onRenderSecondStage={onRenderSecondStage}
             sharedBabylonObject={sharedBabylonObject}
             id="my-canvas"
           />

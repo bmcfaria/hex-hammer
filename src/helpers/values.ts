@@ -24,3 +24,43 @@ export const upgrades = {
 };
 
 export type UpgradeTypes = keyof typeof upgrades;
+
+export const modalHex = {
+  hex_2_0: {
+    price: 1,
+    name: 'hex_2_0',
+    description: 'Some description',
+    type: 'expand',
+  },
+  hex_2_2: {
+    price: 1,
+    name: 'hex_2_2',
+    description: 'Some description',
+    type: 'expand',
+  },
+  hex_2_4: {
+    price: 1,
+    name: 'hex_2_4',
+    description: 'Some description',
+    type: 'expand',
+  },
+  hex_2_6: {
+    price: 1,
+    name: 'hex_2_6',
+    description: 'Some description',
+    type: 'expand',
+  },
+  hex_2_8: {
+    price: 1,
+    name: 'hex_2_8',
+    description: 'Some description',
+    type: 'expand',
+  },
+  hex_2_10: {
+    price: 1,
+    name: 'hex_2_10',
+    description: 'Some description',
+    type: 'expand',
+  },
+};
+export type ModalHexTypes = keyof typeof modalHex;
