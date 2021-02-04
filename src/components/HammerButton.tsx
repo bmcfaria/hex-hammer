@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { incrementAction } from '../state/actions';
@@ -10,6 +10,7 @@ import {
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { upgrades } from '../helpers/values';
+import { GameObjectContext } from '../helpers/context';
 
 const Button = styled.button`
   position: relative;
@@ -103,6 +104,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const [autoTimeLeft, setAutoTimeLeft] = useState(
     upgrades.auto.value[autoValue - 1] * 1000
   );
+  const { scene } = useContext(GameObjectContext);
 
   useEffect(() => {
     if (!sharedBabylonObject.current.inc) {
@@ -152,6 +154,10 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   let diffTimeLeft = 1;
   if (autoValue > 0) {
     diffTimeLeft = upgrades.auto.value[autoValue - 1] * 1000 - autoTimeLeft;
+  }
+
+  if (scene !== 'incremental') {
+    return null;
   }
 
   return (

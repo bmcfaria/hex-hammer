@@ -14,6 +14,15 @@ const modalMaterialMapping = {
   trade: 'material_trade',
 };
 
+const cornersAndUnlockHex = [
+  ['hex_5_0', 'hex_4_0'],
+  ['hex_5_5', 'hex_4_4'],
+  ['hex_5_10', 'hex_4_8'],
+  ['hex_5_15', 'hex_4_12'],
+  ['hex_5_20', 'hex_4_16'],
+  ['hex_5_25', 'hex_4_20'],
+];
+
 export const createSceneSecondStage = (sharedBabylonObject: any) => (
   scene: Scene
 ) => {
@@ -48,82 +57,64 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   // Default intensity is 1. Let's dim the light a small amount
   light.intensity = 0.5;
 
+  // Generates / color
+  createMaterials(scene);
+
   const polygonOrientation = 1; // 0 - flat || 1 - pointy
-  const radius = 2;
-  let shape = [];
-  for (let i = 0; i < 6; i++) {
-    shape.push(
-      new BABYLON.Vector3(
-        radius * Math.cos((i * Math.PI) / 3),
-        0,
-        radius * Math.sin((i * Math.PI) / 3)
-      )
-    );
-  }
 
   let polygon = createCenterPolygon(scene);
   polygon.position.y = 1;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
 
-  const materialCentral = new BABYLON.StandardMaterial(
-    `material_central`,
-    scene
-  );
-  materialCentral.ambientColor = new BABYLON.Color3(1, 0, 0);
-  polygon.material = materialCentral;
+  polygon.material = scene.getMaterialByName('material_central');
 
   const lathe = createLatheHex('lathe_central', scene);
-  const latheMaterial = new BABYLON.StandardMaterial(`material_lathe`, scene);
-  latheMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
-  lathe.material = latheMaterial;
-
-  const commonHexMaterial = new BABYLON.StandardMaterial(
-    'material_common_hex',
-    scene
-  );
-  commonHexMaterial.ambientColor = new BABYLON.Color3(1, 1, 1);
-
-  const borderHexMaterial = new BABYLON.StandardMaterial(
-    'material_border_hex',
-    scene
-  );
-  borderHexMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
-
-  // Materials
-  const incrementalMaterial = new BABYLON.StandardMaterial(
-    'material_incremental',
-    scene
-  );
-  incrementalMaterial.ambientColor = new BABYLON.Color3(1, 0, 0);
-
-  const tradeMaterial = new BABYLON.StandardMaterial('material_trade', scene);
-  tradeMaterial.ambientColor = new BABYLON.Color3(0, 1, 0);
-
-  const expandMaterial = new BABYLON.StandardMaterial('material_expand', scene);
-  expandMaterial.ambientColor = new BABYLON.Color3(0, 0, 1);
+  lathe.material = scene.getMaterialByName('material_lathe');
 
   [...Array(5)].map((_, index) =>
     [...Array(6 * (index + 1))].map(
       createRingPolygon(polygon, index + 1, {
-        meshMaterial: commonHexMaterial,
-        latheMaterial: borderHexMaterial,
+        meshMaterial: scene.getMaterialByName('material_common_hex'),
+        latheMaterial: scene.getMaterialByName('material_border_hex'),
         hideHexes: true,
       })
     )
   );
 
-  // Initialize colors dor the last ring
+  // Initialize colors for the last ring
   [...Array(6 * 5)].forEach((_, index) => {
     (
       scene.getMeshByName(`hex_${5}_${index}`) || { material: null }
-    ).material = latheMaterial;
+    ).material = scene.getMaterialByName('material_lathe');
     scene.getMeshByName(`hex_${5}_${index}`)?.setEnabled(true);
   });
-  // Lathe colors for the corners
-  [0, 5, 10, 15, 20, 25, 30].forEach(index => {
-    (
-      scene.getMeshByName(`lathe_${5}_${index}`) || { material: null }
-    ).material = materialCentral;
+
+  // Lathe/Hex colors for the corners and trigger
+  [0, 5, 10, 15, 20, 25].forEach(index => {
+    const cornerLathe = scene.getMeshByName(`lathe_${5}_${index}`);
+
+    if (cornerLathe) {
+      cornerLathe.material = scene.getMaterialByName('material_central');
+    }
+
+    const cornerHex = scene.getMeshByName(`hex_${5}_${index}`);
+    if (cornerHex) {
+      cornerHex.isPickable = false;
+
+      cornerHex.actionManager = new BABYLON.ActionManager(scene);
+      cornerHex.actionManager.registerAction(
+        new BABYLON.CombineAction(BABYLON.ActionManager.OnPickTrigger, [
+          new BABYLON.ExecuteCodeAction(
+            {
+              trigger: BABYLON.ActionManager.NothingTrigger,
+            },
+            () => {
+              console.log(cornerHex.name);
+            }
+          ),
+        ])
+      );
+    }
   });
 
   const lightDiffuseAction = (callback?: (() => void) | undefined) =>
@@ -247,6 +238,57 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
       scene.getMeshByName(hexName)?.setEnabled(true);
     }
   );
+
+  // Unlock corners if valid
+  cornersAndUnlockHex.forEach(([corner, unlockHex]) => {
+    if ((sharedBabylonObject?.current.modalHexValues || {})[unlockHex]) {
+      const cornerMesh = scene.getMeshByName(corner);
+      if (cornerMesh) {
+        cornerMesh.material = scene.getMaterialByName(
+          modalMaterialMapping['incremental']
+        );
+        cornerMesh.isPickable = true;
+      }
+    }
+  });
+};
+
+const createMaterials = (scene: Scene) => {
+  new BABYLON.StandardMaterial(
+    'material_central',
+    scene
+  ).ambientColor = new BABYLON.Color3(1, 0, 0);
+
+  new BABYLON.StandardMaterial(
+    'material_lathe',
+    scene
+  ).ambientColor = new BABYLON.Color3(0, 0, 0);
+
+  new BABYLON.StandardMaterial(
+    'material_common_hex',
+    scene
+  ).ambientColor = new BABYLON.Color3(1, 1, 1);
+
+  new BABYLON.StandardMaterial(
+    'material_border_hex',
+    scene
+  ).ambientColor = new BABYLON.Color3(0, 0, 0);
+
+  // Materials
+  new BABYLON.StandardMaterial(
+    'material_incremental',
+    scene
+  ).ambientColor = new BABYLON.Color3(1, 0, 0);
+
+  new BABYLON.StandardMaterial(
+    'material_trade',
+    scene
+  ).ambientColor = new BABYLON.Color3(0, 1, 0);
+
+  new BABYLON.StandardMaterial(
+    'material_expand',
+    scene
+  ).ambientColor = new BABYLON.Color3(0, 0, 1);
 };
 
 // It gave me a little motion sickness 🤮

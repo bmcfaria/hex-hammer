@@ -1,5 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
-import { Mesh, Scene } from '@babylonjs/core';
+import { Mesh, Nullable, Scene } from '@babylonjs/core';
 import { xRotation, ySlide } from './Animation';
 
 const margin = 0.1;
@@ -81,8 +81,8 @@ export const createRingPolygon = (
     hideHexes,
     hideLathes,
   }: {
-    meshMaterial?: BABYLON.StandardMaterial;
-    latheMaterial?: BABYLON.StandardMaterial;
+    meshMaterial?: Nullable<BABYLON.Material>;
+    latheMaterial?: Nullable<BABYLON.Material>;
     hideHexes?: boolean;
     hideLathes?: boolean;
   } = {}
