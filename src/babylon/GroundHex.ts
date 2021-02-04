@@ -50,8 +50,8 @@ export const createLatheHex = (name: string, scene: Scene) => {
   // 0.02 or else it will have margin between lathes
   const myShape = [
     new BABYLON.Vector3(radius, 0, 0),
-    new BABYLON.Vector3(radius + margin / 2 + 0.02, 0, 0),
-    new BABYLON.Vector3(radius + margin / 2 + 0.02, 1, 0),
+    new BABYLON.Vector3(radius + margin / 2 + 0.01, 0, 0),
+    new BABYLON.Vector3(radius + margin / 2 + 0.01, 1, 0),
     new BABYLON.Vector3(radius, 1, 0),
   ];
 
@@ -75,13 +75,16 @@ export const createLatheHex = (name: string, scene: Scene) => {
 export const createRingPolygon = (
   polygon: Mesh,
   ring = 1,
-  hide = false,
   {
     meshMaterial,
     latheMaterial,
+    hideHexes,
+    hideLathes,
   }: {
     meshMaterial?: BABYLON.StandardMaterial;
     latheMaterial?: BABYLON.StandardMaterial;
+    hideHexes?: boolean;
+    hideLathes?: boolean;
   } = {}
 ) => (_: any, index: number) => {
   let tmpPolygon = polygon.clone();
@@ -111,7 +114,7 @@ export const createRingPolygon = (
   tmpPolygon.position.z = 0;
 
   tmpPolygon.rotation.y = Math.PI / 2 - pivot.rotation.y;
-  if (hide) {
+  if (hideHexes) {
     tmpPolygon.setEnabled(false);
   }
 
@@ -125,7 +128,7 @@ export const createRingPolygon = (
   lathe.position = CoR_At.clone();
   lathe.position.y = 0;
 
-  if (hide) {
+  if (hideLathes) {
     lathe.setEnabled(false);
   }
 
@@ -165,26 +168,7 @@ export const createCenterPolygon = (scene: Scene) => {
   polygon.position.y = 0.5;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
 
-  const myShape = [
-    new BABYLON.Vector3(2, 0, 0),
-    new BABYLON.Vector3(2.1, 0, 0),
-    new BABYLON.Vector3(2.1, 1, 0),
-    new BABYLON.Vector3(2, 1, 0),
-  ];
-
-  //Create lathe
-  const lathe = BABYLON.MeshBuilder.CreateLathe(
-    'lathe',
-    {
-      shape: myShape,
-      radius: 1,
-      tessellation: 6,
-      sideOrientation: BABYLON.Mesh.DEFAULTSIDE,
-    },
-    scene
-  );
-  lathe.rotation.y = Math.PI / 2;
-  lathe.convertToFlatShadedMesh();
+  createLatheHex('lathe_central', scene);
 
   return polygon;
 };

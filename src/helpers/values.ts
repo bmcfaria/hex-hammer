@@ -62,5 +62,11 @@ export const modalHex = {
     description: 'Some description',
     type: 'expand',
   },
+  hex_4_17: {
+    price: 1,
+    name: 'hex_4_17',
+    description: 'Some description',
+    type: 'trade',
+  },
 };
 export type ModalHexTypes = keyof typeof modalHex;

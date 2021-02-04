@@ -36,6 +36,7 @@ export const initialState = {
     hex_2_6: 0,
     hex_2_8: 0,
     hex_2_10: 0,
+    hex_4_17: 0,
   },
 };
 
@@ -89,7 +90,8 @@ export const reducer = (state = initialState, payload: any) => {
       if (
         !price ||
         state.counter < price ||
-        state.modalHexUpgrade[modalId] >= 2
+        state.modalHexUpgrade[modalId] >= 2 ||
+        type !== 'expand'
       ) {
         return state;
       }
@@ -102,8 +104,6 @@ export const reducer = (state = initialState, payload: any) => {
         const currentIndex = ~~values[2];
 
         const ringRange = [3, 5][state.modalHexUpgrade[modalId]];
-
-        console.log(ringRange, state.modalHexUpgrade[modalId]);
 
         const baseRing = currentRing - ~~(ringRange / 2);
 
@@ -135,11 +135,8 @@ export const reducer = (state = initialState, payload: any) => {
           return {
             ...results,
             ...indexResults,
-            // [`hex_${tmpRing}_${tmpIndex}`]: true,
           };
         }, {});
-
-        console.log(newValues);
       }
 
       return {

@@ -2,7 +2,17 @@ import * as BABYLON from '@babylonjs/core';
 import { Scene, Vector3 } from '@babylonjs/core';
 import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui';
 import { modalHex } from '../helpers/values';
-import { createRingPolygon, createLatheHex } from './GroundHex';
+import {
+  createRingPolygon,
+  createLatheHex,
+  createCenterPolygon,
+} from './GroundHex';
+
+const modalMaterialMapping = {
+  incremental: 'material_incremental',
+  expand: 'material_expand',
+  trade: 'material_trade',
+};
 
 export const createSceneSecondStage = (sharedBabylonObject: any) => (
   scene: Scene
@@ -25,8 +35,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   camera.radius = 90;
 
   // This attaches the camera to the canvas
-  // const canvas = scene.getEngine().getRenderingCanvas();
-  // camera.attachControl(canvas, true);
+  const canvas = scene.getEngine().getRenderingCanvas();
+  camera.attachControl(canvas, true);
 
   // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
   let light = new BABYLON.HemisphericLight(
@@ -51,84 +61,65 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     );
   }
 
-  let polygon = BABYLON.MeshBuilder.ExtrudePolygon(
-    'polygon',
-    { shape: shape, depth: 1, sideOrientation: BABYLON.Mesh.DOUBLESIDE },
-    scene
-  );
+  let polygon = createCenterPolygon(scene);
   polygon.position.y = 1;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
 
   const materialCentral = new BABYLON.StandardMaterial(
     `material_central`,
-    polygon.getScene()
+    scene
   );
   materialCentral.ambientColor = new BABYLON.Color3(1, 0, 0);
   polygon.material = materialCentral;
 
   const lathe = createLatheHex('lathe_central', scene);
-  const latheMaterial = new BABYLON.StandardMaterial(
-    `material_lathe`,
-    polygon.getScene()
-  );
+  const latheMaterial = new BABYLON.StandardMaterial(`material_lathe`, scene);
   latheMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
   lathe.material = latheMaterial;
 
   const commonHexMaterial = new BABYLON.StandardMaterial(
     'material_common_hex',
-    polygon.getScene()
+    scene
   );
   commonHexMaterial.ambientColor = new BABYLON.Color3(1, 1, 1);
 
   const borderHexMaterial = new BABYLON.StandardMaterial(
     'material_border_hex',
-    polygon.getScene()
+    scene
   );
   borderHexMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 
-  const blueHexMaterial = new BABYLON.StandardMaterial(
-    'material_blue_hex',
-    polygon.getScene()
+  // Materials
+  const incrementalMaterial = new BABYLON.StandardMaterial(
+    'material_incremental',
+    scene
   );
-  blueHexMaterial.ambientColor = new BABYLON.Color3(0, 0, 1);
+  incrementalMaterial.ambientColor = new BABYLON.Color3(1, 0, 0);
+
+  const tradeMaterial = new BABYLON.StandardMaterial('material_trade', scene);
+  tradeMaterial.ambientColor = new BABYLON.Color3(0, 1, 0);
+
+  const expandMaterial = new BABYLON.StandardMaterial('material_expand', scene);
+  expandMaterial.ambientColor = new BABYLON.Color3(0, 0, 1);
 
   [...Array(5)].map((_, index) =>
     [...Array(6 * (index + 1))].map(
-      createRingPolygon(polygon, index + 1, false, {
+      createRingPolygon(polygon, index + 1, {
         meshMaterial: commonHexMaterial,
         latheMaterial: borderHexMaterial,
+        hideHexes: true,
       })
     )
   );
 
-  // [1, 3, 5, 7, 9, 11].forEach(index => {
-  //   scene.getMeshByName(`hex_${2}_${index}`)?.setEnabled(false);
-  // });
-  Object.keys(modalHex).forEach(modalKey => {
-    (
-      scene.getMeshByName(modalKey) || { material: null }
-    ).material = blueHexMaterial;
-  });
-
-  [...Array(4)].forEach((_, ring) => {
-    [...Array(6 * (ring + 1))].forEach((_, index) => {
-      scene.getMeshByName(`hex_${ring + 1}_${index}`)?.setEnabled(false);
-    });
-  });
-
-  // [...Array(6 * 3)].forEach((_, index) => {
-  //   scene.getMeshByName(`hex_${3}_${index}`)?.setEnabled(false);
-  // });
-  // [...Array(6 * 4)].forEach((_, index) => {
-  //   scene.getMeshByName(`hex_${4}_${index}`)?.setEnabled(false);
-  // });
-
+  // Initialize colors dor the last ring
   [...Array(6 * 5)].forEach((_, index) => {
     (
       scene.getMeshByName(`hex_${5}_${index}`) || { material: null }
     ).material = latheMaterial;
+    scene.getMeshByName(`hex_${5}_${index}`)?.setEnabled(true);
   });
-
+  // Lathe colors for the corners
   [0, 5, 10, 15, 20, 25, 30].forEach(index => {
     (
       scene.getMeshByName(`lathe_${5}_${index}`) || { material: null }
@@ -214,7 +205,6 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
 
   var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
   var textblock = new TextBlock();
-  console.log(sharedBabylonObject.current.inc?.main);
   textblock.text = `${~~sharedBabylonObject.current.inc?.main}/s`;
   textblock.fontSize = 24;
   textblock.top = -100;
@@ -231,11 +221,27 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     };
   }
 
+  // Mark special lathes
+  Object.entries(modalHex).forEach(([modalKey, modalValue]) => {
+    const values = modalKey.split('_');
+    const currentRing = ~~values[1];
+    const currentIndex = ~~values[2];
+    const type = modalValue.type as keyof typeof modalMaterialMapping;
+
+    (
+      scene.getMeshByName(modalKey) || { material: null }
+    ).material = scene.getMaterialByName(modalMaterialMapping[type]);
+
+    const latheName = `lathe_${currentRing}_${currentIndex}`;
+    (
+      scene.getMeshByName(latheName) || { material: null }
+    ).material = scene.getMaterialByName(modalMaterialMapping[type]);
+  });
+
   return scene;
 };
 
 export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
-  // console.log(sharedBabylonObject?.current.modalHexValues);
   Object.keys(sharedBabylonObject?.current.modalHexValues || {}).forEach(
     hexName => {
       scene.getMeshByName(hexName)?.setEnabled(true);
