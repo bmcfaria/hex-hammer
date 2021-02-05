@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { buyUpgradeAction } from '../state/actions';
-import { upgradeSelector, counterSelector } from '../state/selectors';
+import { upgradeSelector, currencySelector } from '../state/selectors';
 import { upgrades, UpgradeTypes } from '../helpers/values';
 
 const UpgradeButtonContainer = styled.div`
@@ -138,7 +138,7 @@ interface UpgradeButtonProps {
 }
 
 const UpgradeButton = ({ upgradeId }: UpgradeButtonProps) => {
-  const currency = useSelector(counterSelector);
+  const currency = useSelector(currencySelector);
   const upgradeValue = useSelector(upgradeSelector(upgradeId));
   const dispatch = useDispatch();
 
@@ -155,7 +155,10 @@ const UpgradeButton = ({ upgradeId }: UpgradeButtonProps) => {
         <BoughtUpgrade upgradeId={upgradeId} level={upgradeValue - 1} />
       )}
       {price && (
-        <ButtonContainer $enoughCurrency={currency >= price} onClick={onClick}>
+        <ButtonContainer
+          $enoughCurrency={currency.base >= price}
+          onClick={onClick}
+        >
           <HexRectangleStyled data-button-hex-background />
           <HexStyled data-button-hex-price-container />
           <DescriptionContainer data-button-description>

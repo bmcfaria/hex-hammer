@@ -10,7 +10,10 @@ export type BabylonjsProps = {
   sceneOptions?: SceneOptions;
   onSceneReady: (scene: Scene) => void;
   onSceneReady1: (scene: Scene) => void;
-  onRender?: (scene: Scene) => void;
+  onRender?: (
+    scene: Scene,
+    sharedBabylonObject: { current?: GameObjectRefType }
+  ) => void;
   onRenderSecondStage?: (
     scene: Scene,
     sharedBabylonObject: { current?: GameObjectRefType }
@@ -63,21 +66,17 @@ const Babylon = (props: BabylonjsProps) => {
       }
 
       engine.runRenderLoop(() => {
-        if (typeof onRender === 'function') {
-          onRender(incrementalScene);
-        }
-        if (typeof onRenderSecondStage === 'function') {
-          onRenderSecondStage(secondStageScene, sharedBabylonObject);
-        }
-
-        // console.log(sharedBabylonObject.current.scene);
-
         switch (sharedBabylonObject.current?.scene) {
           case 'incremental':
+            if (typeof onRender === 'function') {
+              onRender(incrementalScene, sharedBabylonObject);
+            }
             incrementalScene.render();
             break;
           default:
-            // console.log('rendering scene 0');
+            if (typeof onRenderSecondStage === 'function') {
+              onRenderSecondStage(secondStageScene, sharedBabylonObject);
+            }
             secondStageScene.render();
         }
 

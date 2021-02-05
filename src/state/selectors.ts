@@ -1,7 +1,8 @@
 import { UpgradeTypes } from '../helpers/values';
 
-export const counterSelector = (state: any) => state.counter;
-export const lastCounterSelector = (state: any) => state.lastCounter;
+export const currencySelector = (state: any) => state.currency;
+
+export const incrementalsSelector = (state: any) => state.incrementals;
 
 export const upgradeSelector = (upgradeId: UpgradeTypes) => (state: any) =>
   state.upgrades[upgradeId];

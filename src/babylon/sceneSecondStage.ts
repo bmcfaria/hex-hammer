@@ -109,7 +109,10 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
               trigger: BABYLON.ActionManager.NothingTrigger,
             },
             () => {
-              console.log(cornerHex.name);
+              sharedBabylonObject.current.changeScene(
+                'incremental',
+                `hex_${5}_${index}`
+              );
             }
           ),
         ])
@@ -196,7 +199,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
 
   var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
   var textblock = new TextBlock();
-  textblock.text = `${~~sharedBabylonObject.current.inc?.main}/s`;
+
+  // textblock.text = `${~~sharedBabylonObject.current.inc?.['hex_0_0']}/s`;
   textblock.fontSize = 24;
   textblock.top = -100;
   textblock.color = 'black';
@@ -206,8 +210,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   if (sharedBabylonObject.current && !sharedBabylonObject.current.inc) {
     sharedBabylonObject.current.inc = {
       ...(sharedBabylonObject.current.inc || {}),
-      update: () => {
-        textblock.text = `${~~(sharedBabylonObject.current.inc?.main || 0)}/s`;
+      update: (text: string) => {
+        textblock.text = text;
       },
     };
   }

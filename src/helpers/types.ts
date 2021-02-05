@@ -4,11 +4,12 @@ export type SceneType = 'incremental' | 'secondStage';
 
 export interface GameObjectRefType {
   mainAction: () => void;
-  changeScene: (scene: SceneType) => void;
+  changeScene: (scene: SceneType, selectedHex?: string) => void;
   scene: SceneType;
+  selectedHex?: string;
   inc: {
-    main: 0;
-    update: () => void;
+    hex_0_0: 0;
+    update: (text: string) => void;
   };
   ui: {
     openModal: (id: ModalHexTypes) => void;

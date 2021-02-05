@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import { counterSelector } from '../state/selectors';
+import { currencySelector } from '../state/selectors';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import Sidebar from './Sidebar';
 import StatusBarExpandButton from './StatusBarExpandButton';
@@ -31,14 +31,14 @@ const HexCurrency = styled(Hex)`
 `;
 
 const StatusBar = () => {
-  const counter = useSelector(counterSelector);
+  const currency = useSelector(currencySelector);
 
   return (
     <Container>
       <StatusBarExpandButton />
       <CurrencyContainer>
         <HexCurrency />
-        {counter}
+        {currency.base}
       </CurrencyContainer>
       <Sidebar />
     </Container>

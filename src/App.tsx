@@ -4,7 +4,7 @@ import { createStore, compose } from 'redux';
 import './App.css';
 import Babylon from './Babylon';
 import { Scene } from '@babylonjs/core';
-import createScene from './babylon/helper';
+import createScene, { updateIncrementalState } from './babylon/helper';
 import {
   createSceneSecondStage,
   onRenderSecondStage,
@@ -22,11 +22,18 @@ const composeEnhancers =
   compose;
 const store = createStore(reducer, initialState, composeEnhancers());
 
-const onRender = (scene: Scene) => {
+const onRender = (scene: Scene, sharedBabylonObject: any) => {
   let divFps = document.getElementById('fps');
   if (divFps) {
     divFps.innerHTML = scene.getEngine().getFps().toFixed() + ' fps';
   }
+
+  const selectedHex = sharedBabylonObject.current.selectedHex;
+  const currentTotal = ~~sharedBabylonObject.current.inc[selectedHex];
+
+  // TODO: move to changeScene, so it only runs on scene change
+  // Update incremental state
+  updateIncrementalState(scene, currentTotal);
 };
 
 function App() {
@@ -36,9 +43,14 @@ function App() {
   useEffect(() => {
     if (sharedBabylonObject.current) {
       sharedBabylonObject.current.scene = 'incremental';
-      sharedBabylonObject.current.changeScene = (_scene: SceneType) => {
+      sharedBabylonObject.current.selectedHex = 'hex_0_0';
+      sharedBabylonObject.current.changeScene = (
+        _scene: SceneType,
+        selectedHex?: string
+      ) => {
         if (sharedBabylonObject.current) {
           sharedBabylonObject.current.scene = _scene;
+          sharedBabylonObject.current.selectedHex = selectedHex;
         }
         setScene(_scene);
       };
@@ -52,7 +64,7 @@ function App() {
           sharedBabylonObject.current.changeScene('secondStage');
           break;
         case 'secondStage':
-          sharedBabylonObject.current.changeScene('incremental');
+          sharedBabylonObject.current.changeScene('incremental', 'hex_0_0');
           break;
         default:
           sharedBabylonObject.current.changeScene('secondStage');

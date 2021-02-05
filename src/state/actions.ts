@@ -1,9 +1,10 @@
 import { ModalHexTypes, UpgradeTypes } from '../helpers/values';
 
 export const INCREMENT_TYPE = 'INCREMENT';
-export const incrementAction = {
+export const incrementAction = (selectedHex: string) => ({
   type: INCREMENT_TYPE,
-};
+  selectedHex,
+});
 
 export const BUY_UPGRADE_TYPE = 'BUY_UPGRADE';
 export const buyUpgradeAction = (upgradeId: UpgradeTypes) => ({

@@ -83,4 +83,39 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   return scene;
 };
 
+export const updateIncrementalState = (scene: Scene, total: number) => {
+  (scene.getMeshByName(
+    'polygon'
+  ) as BABYLON.AbstractMesh).material = scene.getMaterialByName(
+    `material_${total % 5}`
+  );
+
+  // Generate rings of polygons
+  [...Array(6)].forEach((_, ring) => {
+    //(counter % 5 ** (index + 1) === 0)
+    const numberOfTurns = ~~(total / 5 ** (ring + 1));
+    [...Array(6 * (ring + 1))].forEach((_, index) => {
+      const mesh = scene.getMeshByName(`hex_${ring + 1}_${index}`);
+      const lathe = scene.getMeshByName(`lathe_${ring + 1}_${index}`);
+
+      if (mesh && lathe) {
+        mesh.setEnabled(numberOfTurns !== 0);
+        lathe.setEnabled(numberOfTurns !== 0);
+
+        mesh.material = scene.getMaterialByName(
+          `material_${numberOfTurns % 5}`
+        );
+      }
+    });
+  });
+
+  // Update camera distance
+  if (total > 0) {
+    (scene.getCameraByName('camera') as BABYLON.ArcRotateCamera).radius =
+      15 + ~~(Math.log(total) / Math.log(5)) * 15;
+  } else {
+    (scene.getCameraByName('camera') as BABYLON.ArcRotateCamera).radius = 15;
+  }
+};
+
 export default createScene;
