@@ -7,9 +7,13 @@ export const incrementAction = (selectedHex: string) => ({
 });
 
 export const BUY_UPGRADE_TYPE = 'BUY_UPGRADE';
-export const buyUpgradeAction = (upgradeId: UpgradeTypes) => ({
+export const buyUpgradeAction = (
+  selectedHex: string,
+  upgradeId: UpgradeTypes
+) => ({
   type: BUY_UPGRADE_TYPE,
   upgradeId,
+  selectedHex,
 });
 
 export const BUY_MODAL_HEX_TYPE = 'BUY_MODAL_HEX';

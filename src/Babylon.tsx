@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Engine, EngineOptions, Scene, SceneOptions } from '@babylonjs/core';
 import { GameObjectRefType } from './helpers/types';
+import { updateIncrementalState } from './babylon/helper';
 
 export type BabylonjsProps = {
   antialias?: boolean;
@@ -10,10 +11,7 @@ export type BabylonjsProps = {
   sceneOptions?: SceneOptions;
   onSceneReady: (scene: Scene) => void;
   onSceneReady1: (scene: Scene) => void;
-  onRender?: (
-    scene: Scene,
-    sharedBabylonObject: { current?: GameObjectRefType }
-  ) => void;
+  onRender?: (scene: Scene) => void;
   onRenderSecondStage?: (
     scene: Scene,
     sharedBabylonObject: { current?: GameObjectRefType }
@@ -57,6 +55,12 @@ const Babylon = (props: BabylonjsProps) => {
         );
       }
 
+      if (sharedBabylonObject.current) {
+        sharedBabylonObject.current.updateIncrementalState = total => {
+          updateIncrementalState(incrementalScene, total);
+        };
+      }
+
       if (secondStageScene.isReady()) {
         props.onSceneReady1(secondStageScene);
       } else {
@@ -69,7 +73,7 @@ const Babylon = (props: BabylonjsProps) => {
         switch (sharedBabylonObject.current?.scene) {
           case 'incremental':
             if (typeof onRender === 'function') {
-              onRender(incrementalScene, sharedBabylonObject);
+              onRender(incrementalScene);
             }
             incrementalScene.render();
             break;
@@ -79,9 +83,6 @@ const Babylon = (props: BabylonjsProps) => {
             }
             secondStageScene.render();
         }
-
-        // scene.render();
-        // scene1.render();
       });
       const resize = () => {
         incrementalScene.getEngine().resize();

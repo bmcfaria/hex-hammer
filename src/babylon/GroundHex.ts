@@ -148,7 +148,7 @@ export const createRingPolygon = (
   return pivot;
 };
 
-export const createCenterPolygon = (scene: Scene) => {
+export const createCenterPolygon = (scene: Scene, name: string = 'polygon') => {
   let shape = [];
   for (let i = 0; i < 6; i++) {
     shape.push(
@@ -161,14 +161,12 @@ export const createCenterPolygon = (scene: Scene) => {
   }
 
   let polygon = BABYLON.MeshBuilder.ExtrudePolygon(
-    'polygon',
+    name,
     { shape: shape, depth: 1, sideOrientation: BABYLON.Mesh.DOUBLESIDE },
     scene
   );
   polygon.position.y = 0.5;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
-
-  createLatheHex('lathe_central', scene);
 
   return polygon;
 };

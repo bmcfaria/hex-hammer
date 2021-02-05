@@ -84,11 +84,12 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
 };
 
 export const updateIncrementalState = (scene: Scene, total: number) => {
-  (scene.getMeshByName(
-    'polygon'
-  ) as BABYLON.AbstractMesh).material = scene.getMaterialByName(
-    `material_${total % 5}`
-  );
+  const centralMesh = scene.getMeshByName('polygon');
+
+  if (!centralMesh) {
+    return;
+  }
+  centralMesh.material = scene.getMaterialByName(`material_${total % 5}`);
 
   // Generate rings of polygons
   [...Array(6)].forEach((_, ring) => {

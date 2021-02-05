@@ -14,15 +14,15 @@ const incrementals: { [index: string]: any } = {
   hex_0_0: {
     total: 0,
     lastCounter: 0,
+    upgrades: {
+      auto: 0,
+      increment: 0,
+    },
   },
 };
 export const initialState = {
   currency: {
     base: 0,
-  },
-  upgrades: {
-    auto: 0,
-    increment: 0,
   },
   incrementals,
   modalHex: {
@@ -55,12 +55,14 @@ export const reducer = (state = initialState, payload: any) => {
 
       const { selectedHex } = payload;
 
-      const currentSelectedHex = state.incrementals[selectedHex] || {};
-      if (currentTime - currentSelectedHex.lastCounter < 500) {
+      const currentSelectedHex = state.incrementals[selectedHex] || {
+        upgrades: {},
+      };
+      if (currentTime - currentSelectedHex.lastCounter < 500 || !selectedHex) {
         return state;
       }
 
-      const upgradeValue = state.upgrades.increment;
+      const upgradeValue = ~~currentSelectedHex.upgrades.increment;
 
       let incrementValue = 1;
       if (upgradeValue > 0) {
@@ -85,12 +87,18 @@ export const reducer = (state = initialState, payload: any) => {
     }
 
     case BUY_UPGRADE_TYPE: {
-      const { upgradeId }: { upgradeId: UpgradeTypes } = payload;
+      const {
+        upgradeId,
+        selectedHex,
+      }: { upgradeId: UpgradeTypes; selectedHex: string } = payload;
       const { price: priceArray } = upgrades[upgradeId];
 
-      const price = priceArray[state.upgrades[upgradeId]];
+      const currentSelectedHex = state.incrementals[selectedHex] || {
+        upgrades: {},
+      };
+      const price = priceArray[~~currentSelectedHex.upgrades[upgradeId]];
 
-      if (!price || state.currency.base < price) {
+      if (!price || state.currency.base < price || !selectedHex) {
         return state;
       }
 
@@ -100,9 +108,15 @@ export const reducer = (state = initialState, payload: any) => {
           ...state.currency,
           base: state.currency.base - price,
         },
-        upgrades: {
-          ...state.upgrades,
-          [upgradeId]: state.upgrades[upgradeId] + 1,
+        incrementals: {
+          ...state.incrementals,
+          [selectedHex]: {
+            ...currentSelectedHex,
+            upgrades: {
+              ...currentSelectedHex.upgrades,
+              [upgradeId]: ~~currentSelectedHex.upgrades[upgradeId] + 1,
+            },
+          },
         },
       };
     }

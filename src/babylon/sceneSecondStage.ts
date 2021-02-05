@@ -14,6 +14,14 @@ const modalMaterialMapping = {
   trade: 'material_trade',
 };
 
+const cornerNames = [
+  'hex_5_0',
+  'hex_5_5',
+  'hex_5_10',
+  'hex_5_15',
+  'hex_5_20',
+  'hex_5_25',
+];
 const cornersAndUnlockHex = [
   ['hex_5_0', 'hex_4_0'],
   ['hex_5_5', 'hex_4_4'],
@@ -62,13 +70,13 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
 
   const polygonOrientation = 1; // 0 - flat || 1 - pointy
 
-  let polygon = createCenterPolygon(scene);
+  let polygon = createCenterPolygon(scene, 'hex_0_0');
   polygon.position.y = 1;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
 
   polygon.material = scene.getMaterialByName('material_central');
 
-  const lathe = createLatheHex('lathe_central', scene);
+  const lathe = createLatheHex('lathe_0_0', scene);
   lathe.material = scene.getMaterialByName('material_lathe');
 
   [...Array(5)].map((_, index) =>
@@ -197,25 +205,6 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   particleSystem.emitter = polygon;
   particleSystem.start();
 
-  var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
-  var textblock = new TextBlock();
-
-  // textblock.text = `${~~sharedBabylonObject.current.inc?.['hex_0_0']}/s`;
-  textblock.fontSize = 24;
-  textblock.top = -100;
-  textblock.color = 'black';
-  advancedTexture.addControl(textblock);
-  textblock.linkWithMesh(polygon);
-
-  if (sharedBabylonObject.current && !sharedBabylonObject.current.inc) {
-    sharedBabylonObject.current.inc = {
-      ...(sharedBabylonObject.current.inc || {}),
-      update: (text: string) => {
-        textblock.text = text;
-      },
-    };
-  }
-
   // Mark special lathes
   Object.entries(modalHex).forEach(([modalKey, modalValue]) => {
     const values = modalKey.split('_');
@@ -232,6 +221,26 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
       scene.getMeshByName(latheName) || { material: null }
     ).material = scene.getMaterialByName(modalMaterialMapping[type]);
   });
+
+  var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
+  const textBlocksObject = ['hex_0_0', ...cornerNames].reduce(
+    (results, name: string) => ({
+      ...results,
+      [name]: createValuePerSecondText(
+        name,
+        advancedTexture,
+        scene.getMeshByName(name)
+      ),
+    }),
+    {}
+  );
+
+  if (sharedBabylonObject.current && !sharedBabylonObject.current.inc) {
+    sharedBabylonObject.current.inc = {
+      ...(sharedBabylonObject.current.inc || {}),
+      update: updateValuePerSecondTexts(textBlocksObject),
+    };
+  }
 
   return scene;
 };
@@ -293,6 +302,31 @@ const createMaterials = (scene: Scene) => {
     'material_expand',
     scene
   ).ambientColor = new BABYLON.Color3(0, 0, 1);
+};
+
+const createValuePerSecondText = (
+  name: string,
+  advancedTexture: AdvancedDynamicTexture,
+  mesh: BABYLON.Nullable<BABYLON.AbstractMesh>
+) => {
+  var textBlock = new TextBlock(name);
+  textBlock.fontSize = 24;
+  textBlock.top = -100;
+  textBlock.color = 'black';
+  advancedTexture.addControl(textBlock);
+  textBlock.linkWithMesh(mesh);
+
+  return textBlock;
+};
+
+const updateValuePerSecondTexts = (textBlocksObject: any) => (
+  name: string,
+  value: number
+) => {
+  const textBlock = textBlocksObject[name];
+  if (textBlock) {
+    textBlock.text = `${~~value}/s`;
+  }
 };
 
 // It gave me a little motion sickness 🤮

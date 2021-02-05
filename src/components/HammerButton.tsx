@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { incrementAction } from '../state/actions';
-import { upgradeSelector, incrementalsSelector } from '../state/selectors';
+import { incrementalsSelector } from '../state/selectors';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { upgrades } from '../helpers/values';
@@ -92,47 +92,22 @@ interface HammerButtonProps {
 
 const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const dispatch = useDispatch();
-  const autoValue = useSelector(upgradeSelector('auto'));
-  const increment = useSelector(upgradeSelector('increment'));
   const incrementals = useSelector(incrementalsSelector);
+
+  const incrementalUpgrades =
+    incrementals[sharedBabylonObject?.current?.selectedHex]?.upgrades;
+  const autoValue = ~~incrementalUpgrades?.auto;
+
   const [startAnimation, setStartAnimation] = useState(false);
-  const [autoTimeLeft, setAutoTimeLeft] = useState(
-    upgrades.auto.value[autoValue - 1] * 1000
-  );
+  const [autoTimeLeft, setAutoTimeLeft] = useState(0);
   const { scene } = useContext(GameObjectContext);
 
-  const total = incrementals[sharedBabylonObject.current?.selectedHex]?.total;
   const lastCounter =
     incrementals[sharedBabylonObject.current?.selectedHex]?.lastCounter;
 
   useEffect(() => {
-    const { selectedHex } = sharedBabylonObject.current;
-    if (!sharedBabylonObject.current.inc) {
-      sharedBabylonObject.current.inc = {};
-    }
-
-    if (!selectedHex) {
-      return;
-    }
-
-    const valuePerSecond =
-      (1 + upgrades.increment.value[increment - 1]) /
-      upgrades.auto.value[autoValue - 1];
-
-    sharedBabylonObject.current.inc[selectedHex] = total;
-
-    sharedBabylonObject.current.inc?.update(`${~~valuePerSecond}/s`);
-  }, [autoValue, sharedBabylonObject, increment, total]);
-
-  useEffect(() => {
     const countDown = setInterval(() => {
       const tmpTimeLeft = new Date().getTime() - lastCounter;
-      if (
-        autoValue > 0 &&
-        tmpTimeLeft >= upgrades.auto.value[autoValue - 1] * 1000
-      ) {
-        dispatch(incrementAction(sharedBabylonObject.current.selectedHex));
-      }
       setAutoTimeLeft(tmpTimeLeft);
     }, 100);
 
@@ -141,16 +116,16 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
     };
   }, [autoValue, dispatch, lastCounter, sharedBabylonObject]);
 
-  useEffect(() => {
-    setStartAnimation(true);
-
-    if (sharedBabylonObject?.current?.mainAction) {
-      sharedBabylonObject.current.mainAction();
-    }
-  }, [lastCounter, sharedBabylonObject]);
-
   const onClick = () => {
-    dispatch(incrementAction(sharedBabylonObject.current.selectedHex));
+    const currentTime = new Date().getTime();
+    if (currentTime - (lastCounter || 0) >= 500) {
+      dispatch(incrementAction(sharedBabylonObject.current.selectedHex));
+      if (sharedBabylonObject?.current?.mainAction) {
+        sharedBabylonObject.current.mainAction();
+      }
+
+      setStartAnimation(true);
+    }
 
     if (startAnimation) {
       return;

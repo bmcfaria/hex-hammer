@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { buyUpgradeAction } from '../state/actions';
-import { upgradeSelector, currencySelector } from '../state/selectors';
+import { currencySelector, incrementalsSelector } from '../state/selectors';
 import { upgrades, UpgradeTypes } from '../helpers/values';
+import { GameObjectContext } from '../helpers/context';
+import { useContext } from 'react';
 
 const UpgradeButtonContainer = styled.div`
   margin-top: 8px;
@@ -139,14 +141,23 @@ interface UpgradeButtonProps {
 
 const UpgradeButton = ({ upgradeId }: UpgradeButtonProps) => {
   const currency = useSelector(currencySelector);
-  const upgradeValue = useSelector(upgradeSelector(upgradeId));
+  const incrementals = useSelector(incrementalsSelector);
+  // const upgradeValue = useSelector(upgradeSelector(upgradeId));
   const dispatch = useDispatch();
+  const { gameObject } = useContext(GameObjectContext);
+
+  const incrementalUpgrades =
+    incrementals[gameObject?.current?.selectedHex || '']?.upgrades;
+
+  const upgradeValue = ~~incrementalUpgrades?.[upgradeId];
 
   const { price: priceArray, description1, description2 } = upgrades[upgradeId];
   const price = priceArray[upgradeValue];
 
   const onClick = () => {
-    dispatch(buyUpgradeAction(upgradeId));
+    if (gameObject?.current?.selectedHex) {
+      dispatch(buyUpgradeAction(gameObject.current.selectedHex, upgradeId));
+    }
   };
 
   return (

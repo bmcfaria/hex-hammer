@@ -1,5 +1,9 @@
 import { Scene } from '@babylonjs/core';
-import { createCenterPolygon, createRingPolygon } from './GroundHex';
+import {
+  createCenterPolygon,
+  createLatheHex,
+  createRingPolygon,
+} from './GroundHex';
 import * as BABYLON from '@babylonjs/core';
 import { xRotation, ySlide } from './Animation';
 
@@ -8,6 +12,7 @@ export const buildGround = (
 ): [BABYLON.TransformNode, BABYLON.TransformNode[][]] => {
   // Create central polygon
   let polygon = createCenterPolygon(scene);
+  createLatheHex('lathe_central', scene);
 
   // Generate rings of polygons
   const polygonsObject = [...Array(6)].map((_, index) =>
