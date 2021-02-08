@@ -105,9 +105,6 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const lastCounter =
     incrementals[sharedBabylonObject.current?.selectedHex]?.lastCounter;
 
-  const currentTotal =
-    incrementals[sharedBabylonObject.current?.selectedHex]?.total;
-
   useEffect(() => {
     const countDown = setInterval(() => {
       const tmpTimeLeft = new Date().getTime() - lastCounter;
@@ -122,9 +119,6 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const onClick = () => {
     const currentTime = new Date().getTime();
     if (currentTime - (lastCounter || 0) >= 500) {
-      if (sharedBabylonObject?.current?.mainAction) {
-        sharedBabylonObject.current.mainAction(currentTotal + 1);
-      }
       dispatch(incrementAction(sharedBabylonObject.current.selectedHex));
 
       setStartAnimation(true);

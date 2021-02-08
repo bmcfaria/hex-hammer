@@ -15,6 +15,7 @@ import StatusBar from './components/StatusBar';
 import Modal from './components/Modal';
 import { GameObjectContext } from './helpers/context';
 import { GameObjectRefType, SceneType } from './helpers/types';
+import GameAnimationHandler from './components/GameAnimationHandler';
 
 const inDev = process.env.NODE_ENV === 'development';
 const composeEnhancers =
@@ -71,6 +72,7 @@ function App() {
       <GameObjectContext.Provider
         value={{ gameObject: sharedBabylonObject, scene: scene }}
       >
+        <GameAnimationHandler />
         <div
           className="App"
           style={{

@@ -3,7 +3,7 @@ import { ModalHexTypes } from './values';
 export type SceneType = 'incremental' | 'secondStage';
 
 export interface GameObjectRefType {
-  mainAction: () => void;
+  mainAction: (total: number) => void;
   changeScene: (scene: SceneType, selectedHex?: string) => void;
   updateIncrementalState: (total: number) => void;
   scene: SceneType;
