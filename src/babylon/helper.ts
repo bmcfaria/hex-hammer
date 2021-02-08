@@ -47,7 +47,7 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
 
   const [polygonPivot, polygonsObject] = buildGround(scene);
 
-  const materials = [...Array(5)].map((_, index) => {
+  [...Array(5)].map((_, index) => {
     const material = new BABYLON.StandardMaterial(`material_${index}`, scene);
     material.ambientColor = new BABYLON.Color3(
       Math.random(),
@@ -57,26 +57,18 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
     return material;
   });
 
-  let activeRow = 0;
-  let rowCounters = Array(polygonsObject.length + 1).fill(0);
-
-  let counter = 0;
-
   sharedBabylonObject.current = {};
-  sharedBabylonObject.current.mainAction = () => {
+  sharedBabylonObject.current.mainAction = (total: number) => {
     turnCentralAnimation(
       polygonPivot,
-      materials[rowCounters[activeRow] % materials.length],
+      scene.getMaterialByName(`material_${total % 5}`),
       scene
     );
-    rowCounters[activeRow]++;
 
-    counter++;
+    turnRingsAnimations(total, polygonsObject, scene);
 
-    turnRingsAnimations(counter, polygonsObject, materials, scene);
-
-    if (counter >= 1) {
-      camera.radius = 15 + ~~(Math.log(counter) / Math.log(5)) * 15;
+    if (total >= 1) {
+      camera.radius = 15 + ~~(Math.log(total) / Math.log(5)) * 15;
     }
   };
 
@@ -93,7 +85,6 @@ export const updateIncrementalState = (scene: Scene, total: number) => {
 
   // Generate rings of polygons
   [...Array(6)].forEach((_, ring) => {
-    //(counter % 5 ** (index + 1) === 0)
     const numberOfTurns = ~~(total / 5 ** (ring + 1));
     [...Array(6 * (ring + 1))].forEach((_, index) => {
       const mesh = scene.getMeshByName(`hex_${ring + 1}_${index}`);
@@ -104,7 +95,7 @@ export const updateIncrementalState = (scene: Scene, total: number) => {
         lathe.setEnabled(numberOfTurns !== 0);
 
         mesh.material = scene.getMaterialByName(
-          `material_${numberOfTurns % 5}`
+          `material_${(numberOfTurns - 1) % 5}`
         );
       }
     });

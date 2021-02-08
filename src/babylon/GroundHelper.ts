@@ -39,7 +39,7 @@ export const buildGround = (
 
 export const turnCentralAnimation = (
   polygonPivot: BABYLON.TransformNode,
-  material: BABYLON.StandardMaterial,
+  material: BABYLON.Nullable<BABYLON.Material>,
   scene: Scene
 ) => {
   scene.beginAnimation(polygonPivot, 0, 10, true);
@@ -49,7 +49,7 @@ export const turnCentralAnimation = (
 export const turnRingAnimation = (
   polygonsObject: BABYLON.TransformNode[][],
   index: number,
-  material: BABYLON.StandardMaterial,
+  material: BABYLON.Nullable<BABYLON.Material>,
   scene: Scene
 ) => {
   const meshArray = polygonsObject[index];
@@ -63,17 +63,17 @@ export const turnRingAnimation = (
 };
 
 export const turnRingsAnimations = (
-  counter: number,
+  total: number,
   polygonsObject: BABYLON.TransformNode[][],
-  materials: BABYLON.StandardMaterial[],
   scene: Scene
 ) => {
-  polygonsObject.forEach((_, index) => {
-    if (counter % 5 ** (index + 1) === 0) {
+  polygonsObject.forEach((_, ring) => {
+    if (total > 0 && total % 5 ** (ring + 1) === 0) {
+      const numberOfTurns = ~~(total / 5 ** (ring + 1));
       turnRingAnimation(
         polygonsObject,
-        index,
-        materials[~~(counter / 5 ** (index + 1)) % materials.length],
+        ring,
+        scene.getMaterialByName(`material_${(numberOfTurns - 1) % 5}`),
         scene
       );
     }
