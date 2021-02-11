@@ -98,6 +98,8 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
     incrementals[sharedBabylonObject?.current?.selectedHex]?.upgrades;
   const autoValue = ~~incrementalUpgrades?.auto;
 
+  const [longPressing, setLongPressing] = useState(false);
+
   const [startAnimation, setStartAnimation] = useState(false);
   const [autoTimeLeft, setAutoTimeLeft] = useState(0);
   const { scene } = useContext(GameObjectContext);
@@ -116,7 +118,36 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
     };
   }, [autoValue, dispatch, lastCounter, sharedBabylonObject]);
 
-  const onClick = () => {
+  useEffect(() => {
+    let countDown: NodeJS.Timeout;
+    if (longPressing) {
+      countDown = setInterval(() => {
+        const currentTime = new Date().getTime();
+        if (currentTime - (lastCounter || 0) >= 500) {
+          dispatch(incrementAction(sharedBabylonObject.current.selectedHex));
+
+          setStartAnimation(true);
+        }
+      }, 100);
+    }
+
+    return () => {
+      if (countDown) {
+        clearInterval(countDown);
+      }
+    };
+  }, [dispatch, lastCounter, longPressing, sharedBabylonObject]);
+
+  if (scene !== 'incremental') {
+    return null;
+  }
+
+  let diffTimeLeft = 1;
+  if (autoValue > 0) {
+    diffTimeLeft = upgrades.auto.value[autoValue - 1] * 1000 - autoTimeLeft;
+  }
+
+  const onMouseDown = () => {
     const currentTime = new Date().getTime();
     if (currentTime - (lastCounter || 0) >= 500) {
       dispatch(incrementAction(sharedBabylonObject.current.selectedHex));
@@ -124,22 +155,20 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
       setStartAnimation(true);
     }
 
-    if (startAnimation) {
-      return;
-    }
+    setLongPressing(true);
   };
 
-  let diffTimeLeft = 1;
-  if (autoValue > 0) {
-    diffTimeLeft = upgrades.auto.value[autoValue - 1] * 1000 - autoTimeLeft;
-  }
-
-  if (scene !== 'incremental') {
-    return null;
-  }
+  const onMouseUp = () => {
+    setLongPressing(false);
+  };
 
   return (
-    <Button onClick={onClick}>
+    <Button
+      onMouseDown={onMouseDown}
+      onTouchStart={onMouseDown}
+      onMouseUp={onMouseUp}
+      onTouchEnd={onMouseUp}
+    >
       <HexBackground />
       <HexGrowing
         $startAnimation={startAnimation}
