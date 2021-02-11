@@ -20,6 +20,7 @@ const incrementals: { [index: string]: any } = {
     },
   },
 };
+const modalHexUpgrade: { [index: string]: any } = {};
 export const initialState = {
   currency: {
     base: 0,
@@ -37,15 +38,7 @@ export const initialState = {
     hex_2_8: true,
     // hex_2_10: true,
   },
-  modalHexUpgrade: {
-    hex_2_0: 0,
-    hex_2_2: 0,
-    hex_2_4: 0,
-    hex_2_6: 0,
-    hex_2_8: 0,
-    hex_2_10: 0,
-    hex_4_17: 0,
-  },
+  modalHexUpgrade,
 };
 
 export const reducer = (state = initialState, payload: any) => {
@@ -122,17 +115,35 @@ export const reducer = (state = initialState, payload: any) => {
     }
 
     case BUY_MODAL_HEX_TYPE: {
-      const { modalId }: { modalId: ModalHexTypes } = payload;
-      const { price, type } = modalHex[modalId];
+      const {
+        modalId,
+        index,
+        convertTo,
+      }: {
+        modalId: ModalHexTypes;
+        index: number;
+        convertTo?: string;
+      } = payload;
+      const {
+        prices,
+        type,
+        multiplier,
+      }: { prices: number[]; type: string; multiplier?: number[] } = modalHex[
+        modalId
+      ];
+
+      let price = prices[~~state.modalHexUpgrade[modalId]];
 
       if (
         !price ||
         state.currency.base < price ||
         state.modalHexUpgrade[modalId] >= 2 ||
-        type !== 'expand'
+        (type !== 'expand' && type !== 'trade')
       ) {
         return state;
       }
+
+      let currencies = {};
 
       let newValues = {};
       if (type === 'expand') {
@@ -141,7 +152,7 @@ export const reducer = (state = initialState, payload: any) => {
         const currentRing = ~~values[1];
         const currentIndex = ~~values[2];
 
-        const ringRange = [3, 5][state.modalHexUpgrade[modalId]];
+        const ringRange = [3, 5][~~state.modalHexUpgrade[modalId]];
 
         const baseRing = currentRing - ~~(ringRange / 2);
 
@@ -175,6 +186,16 @@ export const reducer = (state = initialState, payload: any) => {
             ...indexResults,
           };
         }, {});
+      } else if (type === 'trade' && convertTo) {
+        price = prices[index];
+        if (!price || state.currency.base < price) {
+          return state;
+        }
+
+        const multiplierValue = multiplier?.[index] || 1;
+        currencies = {
+          [convertTo]: ~~(state.currency as any)[convertTo] + multiplierValue,
+        };
       }
 
       return {
@@ -182,6 +203,7 @@ export const reducer = (state = initialState, payload: any) => {
         currency: {
           ...state.currency,
           base: state.currency.base - price,
+          ...currencies,
         },
         modalHex: {
           ...state.modalHex,

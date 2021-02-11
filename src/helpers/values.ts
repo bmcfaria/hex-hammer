@@ -1,3 +1,5 @@
+import stringsObject from '../helpers/strings.json';
+
 export const upgrades = {
   auto: {
     price: [1, 2, 3, 4, 5, 6, 7],
@@ -27,46 +29,62 @@ export type UpgradeTypes = keyof typeof upgrades;
 
 export const modalHex = {
   hex_2_0: {
-    price: 1,
     name: 'hex_2_0',
-    description: 'Some description',
+    title: stringsObject.modal.expand.title,
+    description: stringsObject.modal.expand.description,
     type: 'expand',
+    currency: 'base',
+    prices: [1, 1],
   },
   hex_2_2: {
-    price: 1,
     name: 'hex_2_2',
-    description: 'Some description',
+    title: stringsObject.modal.expand.title,
+    description: stringsObject.modal.expand.description,
     type: 'expand',
+    currency: 'base',
+    prices: [1, 1],
   },
   hex_2_4: {
-    price: 1,
     name: 'hex_2_4',
-    description: 'Some description',
+    title: stringsObject.modal.expand.title,
+    description: stringsObject.modal.expand.description,
     type: 'expand',
+    currency: 'base',
+    prices: [1, 1],
   },
   hex_2_6: {
-    price: 1,
     name: 'hex_2_6',
-    description: 'Some description',
+    title: stringsObject.modal.expand.title,
+    description: stringsObject.modal.expand.description,
     type: 'expand',
+    currency: 'base',
+    prices: [1, 1],
   },
   hex_2_8: {
-    price: 1,
     name: 'hex_2_8',
-    description: 'Some description',
+    title: stringsObject.modal.expand.title,
+    description: stringsObject.modal.expand.description,
     type: 'expand',
+    currency: 'base',
+    prices: [1, 1],
   },
   hex_2_10: {
-    price: 1,
     name: 'hex_2_10',
-    description: 'Some description',
+    title: stringsObject.modal.expand.title,
+    description: stringsObject.modal.expand.description,
     type: 'expand',
+    currency: 'base',
+    prices: [1, 1],
   },
-  hex_4_17: {
-    price: 1,
-    name: 'hex_4_17',
-    description: 'Some description',
+  hex_2_9: {
+    name: 'hex_2_9',
+    title: stringsObject.modal.trade.title,
+    description: stringsObject.modal.trade.description,
     type: 'trade',
+    currency: 'base',
+    convertTo: 'red',
+    multiplier: [1, 10, 99],
+    prices: [1, 10, 80],
   },
 };
 export type ModalHexTypes = keyof typeof modalHex;

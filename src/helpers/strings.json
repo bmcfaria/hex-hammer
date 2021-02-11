@@ -1,0 +1,12 @@
+{
+  "modal": {
+    "expand": {
+      "title": "Expand",
+      "description": "Description of expand"
+    },
+    "trade": {
+      "title": "Trade",
+      "description": "Description of trade"
+    }
+  }
+}

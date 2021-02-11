@@ -8,6 +8,8 @@ import { useContext, useEffect } from 'react';
 import { GameObjectContext } from '../helpers/context';
 import { incrementAction } from '../state/actions';
 import { upgrades } from '../helpers/values';
+import theme from '../helpers/theme';
+import { CurrenciesTypes } from '../helpers/types';
 
 const Container = styled.div`
   position: absolute;
@@ -18,20 +20,30 @@ const Container = styled.div`
   background-color: black;
   color: white;
   display: flex;
+  z-index: ${theme.zIndex.statusBar};
+`;
+
+const CurrenciesContainer = styled.div`
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const CurrencyContainer = styled.div`
   display: flex;
+  height: 30px;
   align-items: center;
   font-size: 20px;
   line-height: 20px;
-  margin: 0 auto;
 `;
 
-const HexCurrency = styled(Hex)`
+const HexCurrency = styled(Hex)<{ $currency: CurrenciesTypes }>`
   width: auto;
   height: 20px;
   margin: 0 4px 0 8px;
+  ${({ $currency }) => `color: ${theme.currencyColors[$currency]};`}
 `;
 
 const CurrencyPerSecond = styled.span`
@@ -101,13 +113,17 @@ const StatusBar = () => {
   return (
     <Container>
       <StatusBarExpandButton />
-      <CurrencyContainer>
-        <HexCurrency />
-        {currency.base}
-        {~~totalValuePerSecond > 0 && (
-          <CurrencyPerSecond>({~~totalValuePerSecond}/s)</CurrencyPerSecond>
-        )}
-      </CurrencyContainer>
+      <CurrenciesContainer>
+        {Object.keys(currency).map(currencyKey => (
+          <CurrencyContainer key={currencyKey}>
+            <HexCurrency $currency={currencyKey as CurrenciesTypes} />
+            {currency[currencyKey]}
+            {~~totalValuePerSecond > 0 && (
+              <CurrencyPerSecond>({~~totalValuePerSecond}/s)</CurrencyPerSecond>
+            )}
+          </CurrencyContainer>
+        ))}
+      </CurrenciesContainer>
       <Sidebar />
     </Container>
   );

@@ -1,3 +1,4 @@
+import theme from './theme';
 import { ModalHexTypes } from './values';
 
 export type SceneType = 'incremental' | 'secondStage';
@@ -21,3 +22,5 @@ export interface GameObjectType {
   gameObject?: { current?: GameObjectRefType };
   scene?: SceneType;
 }
+
+export type CurrenciesTypes = keyof typeof theme.currencyColors;

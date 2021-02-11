@@ -1,18 +1,27 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { modalHex, ModalHexTypes } from '../helpers/values';
-import { buyModalHexAction } from '../state/actions';
 import { modalHexSelector } from '../state/selectors';
+import ModalExpand from './ModalExpand';
+import ModalTrade from './ModalTrade';
+
+const BackgroundShadow = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-color: #0000007d;
+`;
 
 const Container = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
   width: 300px;
   height: 400px;
-  transform: translate(-50%, -50%);
   background-color: beige;
+  margin: auto;
 `;
 
 const Name = styled.div``;
@@ -24,9 +33,7 @@ interface ModalProps {
 
 const Modal = ({ sharedBabylonObject }: ModalProps) => {
   const [modal, setModal] = useState<ModalHexTypes | undefined>();
-  const dispatch = useDispatch();
 
-  // Temporary
   const modalHexValues = useSelector(modalHexSelector);
 
   useEffect(() => {
@@ -47,12 +54,6 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
     };
   }, [sharedBabylonObject]);
 
-  const buy = () => {
-    if (modal) {
-      dispatch(buyModalHexAction(modal));
-    }
-  };
-
   const close = () => {
     setModal(undefined);
   };
@@ -64,14 +65,14 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
   const modalInfo = modalHex[modal];
 
   return (
-    <Container>
-      <Name>{modalInfo.name}</Name>
-      <Description>{modalInfo.description}</Description>
-      <div>
-        <button onClick={buy}>{modalInfo.price}</button>
-        <button onClick={close}>Close</button>
-      </div>
-    </Container>
+    <BackgroundShadow onClick={close}>
+      <Container onClick={(e: MouseEvent) => e.stopPropagation()}>
+        <Name>{modalInfo.title}</Name>
+        <Description>{modalInfo.description}</Description>
+        {modalInfo.type === 'expand' && <ModalExpand modal={modal} />}
+        {modalInfo.type === 'trade' && <ModalTrade modal={modal} />}
+      </Container>
+    </BackgroundShadow>
   );
 };
 

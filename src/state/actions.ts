@@ -17,7 +17,13 @@ export const buyUpgradeAction = (
 });
 
 export const BUY_MODAL_HEX_TYPE = 'BUY_MODAL_HEX';
-export const buyModalHexAction = (modalId: ModalHexTypes) => ({
+export const buyModalHexAction = (
+  modalId: ModalHexTypes,
+  index: number,
+  convertTo?: string
+) => ({
   type: BUY_MODAL_HEX_TYPE,
   modalId,
+  index,
+  convertTo,
 });
