@@ -4,9 +4,17 @@ import styled from 'styled-components';
 import { incrementAction } from '../state/actions';
 import { incrementalsSelector } from '../state/selectors';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
+import { ReactComponent as HexRectangleWithShadow } from '../assets/HexRectangleWithShadow.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { upgrades } from '../helpers/values';
 import { GameObjectContext } from '../helpers/context';
+import theme from '../helpers/theme';
+
+const Container = styled.div`
+  position: absolute;
+  width: 100%;
+  bottom: 10%;
+`;
 
 const Button = styled.button`
   position: relative;
@@ -16,13 +24,17 @@ const Button = styled.button`
   padding: 0;
   background: none;
   outline: none;
+
+  &:hover [data-button-shadow] {
+    visibility: hidden;
+  }
 `;
 
 const HexGrowing = styled(HexRectangle)<{ $startAnimation: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
-  fill: red;
+  fill: ${theme.colors.hammerButton.backgroundFill};
   stroke: none;
   animation-name: ${({ $startAnimation }) =>
     $startAnimation ? 'hex-growing-animation' : 'none'};
@@ -39,11 +51,18 @@ const HexGrowing = styled(HexRectangle)<{ $startAnimation: boolean }>`
   }
 `;
 
+const HexBackgroundShadow = styled(HexRectangleWithShadow)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+`;
+
 const HexBackground = styled(HexRectangle)`
   position: absolute;
   top: 0;
   left: 0;
-  fill: white;
+  fill: ${theme.colors.hammerButton.background};
   stroke: none;
 `;
 
@@ -51,11 +70,7 @@ const HexBorder = styled(HexRectangle)`
   position: absolute;
   top: 0;
   left: 0;
-  stroke: blue;
-
-  &:hover {
-    color: white;
-  }
+  stroke: ${theme.colors.hammerButton.border};
 `;
 
 const AutoContainer = styled.div`
@@ -70,7 +85,7 @@ const AutoContainer = styled.div`
 const AutoHex = styled(Hex)`
   width: auto;
   height: 84px;
-  color: white;
+  color: ${theme.colors.hammerButton.backgroundAuto};
 `;
 
 const AutoTex = styled.div`
@@ -163,31 +178,34 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   };
 
   return (
-    <Button
-      onMouseDown={onMouseDown}
-      onTouchStart={onMouseDown}
-      onMouseUp={onMouseUp}
-      onTouchEnd={onMouseUp}
-    >
-      <HexBackground />
-      <HexGrowing
-        $startAnimation={startAnimation}
-        onAnimationEnd={() => {
-          setStartAnimation(false);
-        }}
-      />
-      <HexBorder />
-      {autoValue > 0 && (
-        <AutoContainer>
-          <AutoHex />
-          <AutoTex>
-            Auto
-            <br />
-            {diffTimeLeft < 0 ? 0 : (diffTimeLeft / 1000).toFixed(1)}s
-          </AutoTex>
-        </AutoContainer>
-      )}
-    </Button>
+    <Container>
+      <Button
+        onMouseDown={onMouseDown}
+        onTouchStart={onMouseDown}
+        onMouseUp={onMouseUp}
+        onTouchEnd={onMouseUp}
+      >
+        <HexBackgroundShadow data-button-shadow />
+        <HexBackground />
+        <HexGrowing
+          $startAnimation={startAnimation}
+          onAnimationEnd={() => {
+            setStartAnimation(false);
+          }}
+        />
+        <HexBorder />
+        {autoValue > 0 && (
+          <AutoContainer>
+            <AutoHex />
+            <AutoTex>
+              Auto
+              <br />
+              {diffTimeLeft < 0 ? 0 : (diffTimeLeft / 1000).toFixed(1)}s
+            </AutoTex>
+          </AutoContainer>
+        )}
+      </Button>
+    </Container>
   );
 };
 

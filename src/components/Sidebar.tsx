@@ -3,13 +3,15 @@ import styled from 'styled-components';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import UpgradeButton from './UpgradeButton';
 
+const SIDEBAR_WIDTH = 300;
+
 const Container = styled.div<{ $open: boolean }>`
   position: absolute;
   top: 0px;
   right: -2px;
   transition: right 1s;
 
-  ${({ $open }) => ($open ? 'right: 180px;' : '')}
+  ${({ $open }) => ($open ? `right: ${SIDEBAR_WIDTH}px;` : '')}
 `;
 
 const MenuButton = styled.button`
@@ -42,13 +44,13 @@ const SidebarContainer = styled.div`
   position: absolute;
   top: 30px;
   left: 0;
-  right: -180px;
-  width: 177px;
+  right: -${SIDEBAR_WIDTH}px;
+  width: ${SIDEBAR_WIDTH - 4}px;
   height: auto;
   background-color: aqua;
-  padding-bottom: 8px;
-  border-left: 3px solid black;
-  border-bottom: 3px solid black;
+  border-left: 4px solid black;
+  border-bottom: 4px solid black;
+  padding-top: 30px;
   padding-bottom: 100px;
 `;
 

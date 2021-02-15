@@ -78,8 +78,9 @@ const PriceContainer = styled.div<{ $currency: CurrenciesTypes }>`
   }
 `;
 
-interface ModalItemProps {
+interface BuyableItemProps {
   text?: string;
+  secondaryText?: string;
   price: number;
   onClick: any;
   bought?: boolean;
@@ -88,20 +89,24 @@ interface ModalItemProps {
   convertTo?: CurrenciesTypes;
 }
 
-const ModalItem = ({
+const BuyableItem = ({
   text,
+  secondaryText,
   price,
   onClick,
   bought,
   disabled,
   currency,
   convertTo,
-}: ModalItemProps) => {
+}: BuyableItemProps) => {
   return (
     <ItemContainer $disabled={disabled} $bought={!!bought}>
       <LabelContainer>
         {convertTo && <HexStyled $currency={convertTo} />}
-        <ItemText>{text}</ItemText>
+        <div>
+          <ItemText>{text}</ItemText>
+          {secondaryText && <ItemText>{secondaryText}</ItemText>}
+        </div>
       </LabelContainer>
       {!bought && (
         <ButtonContainer onClick={onClick} disabled={disabled || bought}>
@@ -116,4 +121,4 @@ const ModalItem = ({
   );
 };
 
-export default ModalItem;
+export default BuyableItem;

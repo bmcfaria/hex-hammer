@@ -94,9 +94,7 @@ function App() {
             id="my-canvas"
           />
           <StatusBar />
-          <div className="hexagon-button-container">
-            <HammerButton sharedBabylonObject={sharedBabylonObject} />
-          </div>
+          <HammerButton sharedBabylonObject={sharedBabylonObject} />
           <div
             id="fps"
             style={{

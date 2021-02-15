@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { currencySelector, incrementalsSelector } from '../state/selectors';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import Sidebar from './Sidebar';
-import StatusBarExpandButton from './StatusBarExpandButton';
 import { useContext, useEffect } from 'react';
 import { GameObjectContext } from '../helpers/context';
 import { incrementAction } from '../state/actions';
 import { upgrades } from '../helpers/values';
 import theme from '../helpers/theme';
 import { CurrenciesTypes } from '../helpers/types';
+import StatusBarScreenControls from './StatusBarScreenControls';
+import PauseButton from './PauseButton';
 
 const Container = styled.div`
   position: absolute;
@@ -17,10 +18,11 @@ const Container = styled.div`
   left: 0;
   right: 0;
   height: 60px;
-  background-color: black;
+  background-color: ${theme.colors.statusBar.background};
   color: white;
   display: flex;
   z-index: ${theme.zIndex.statusBar};
+  ${theme.boxShadow}
 `;
 
 const CurrenciesContainer = styled.div`
@@ -112,7 +114,6 @@ const StatusBar = () => {
 
   return (
     <Container>
-      <StatusBarExpandButton />
       <CurrenciesContainer>
         {Object.keys(currency).map(currencyKey => (
           <CurrencyContainer key={currencyKey}>
@@ -124,7 +125,9 @@ const StatusBar = () => {
           </CurrencyContainer>
         ))}
       </CurrenciesContainer>
+      <PauseButton />
       <Sidebar />
+      <StatusBarScreenControls />
     </Container>
   );
 };
