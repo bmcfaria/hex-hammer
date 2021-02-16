@@ -2,7 +2,10 @@ import styled from 'styled-components';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import theme from '../helpers/theme';
 
-const Button = styled.button<{ $side: 'left' | 'right' }>`
+const Button = styled.button<{
+  $side: 'left' | 'right';
+  $customZIndex?: number;
+}>`
   position: absolute;
   top: 0;
   ${({ $side }) => ($side === 'left' ? 'left: -20px' : '')};
@@ -13,7 +16,7 @@ const Button = styled.button<{ $side: 'left' | 'right' }>`
   padding: 0;
   background: none;
   outline: none;
-  z-index: 1;
+  z-index: ${({ $customZIndex }) => $customZIndex || 1};
 
   &:hover > [data-background] {
     color: ${theme.colors.statusBar.buttons.backgroundHover};
@@ -61,6 +64,7 @@ type StatusBarButtonProps = {
   side: 'left' | 'right';
   onClick?: any;
   active?: boolean;
+  customZIndex?: number;
   children?: React.ReactNode;
 };
 
@@ -69,8 +73,9 @@ const StatusBarButton = ({
   side,
   active = false,
   onClick,
+  customZIndex,
 }: StatusBarButtonProps) => (
-  <Button $side={side} onClick={onClick}>
+  <Button $side={side} $customZIndex={customZIndex} onClick={onClick}>
     <HexStyled $active={active} data-background />
     <IconContainer $active={active} data-icon>
       {children}

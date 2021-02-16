@@ -7,7 +7,7 @@ const baseColors = {
 };
 
 const theme = {
-  zIndex: { statusBar: 10 },
+  zIndex: { statusBar: 10, pauseModal: 100 },
   currencyColors: {
     base: 'white',
     red: 'red',
