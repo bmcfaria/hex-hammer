@@ -50,6 +50,15 @@ const Button = styled.button<{ $hide?: boolean }>`
   margin: 0 8px;
   /* To maintain spacing */
   ${({ $hide }) => ($hide ? 'visibility: hidden;' : '')}
+
+  &:hover > [data-background] {
+    color: ${theme.colors.statusBar.buttons.backgroundHover};
+    stroke: ${theme.colors.statusBar.buttons.borderHover};
+  }
+
+  &:hover > [data-icon] > svg {
+    color: ${theme.colors.statusBar.buttons.iconHover};
+  }
 `;
 
 const HexStyled = styled(Hex)`
@@ -103,16 +112,16 @@ const StatusBarScreenControls = () => {
     <Container>
       {scene === 'incremental' && (
         <Button onClick={up}>
-          <HexStyled />
-          <IconContainer>
+          <HexStyled data-background />
+          <IconContainer data-icon>
             <Up />
           </IconContainer>
         </Button>
       )}
       {scene === 'secondStage' && (
         <Button onClick={minus}>
-          <HexStyled />
-          <IconContainer>
+          <HexStyled data-background />
+          <IconContainer data-icon>
             <Minus />
           </IconContainer>
         </Button>
@@ -122,9 +131,9 @@ const StatusBarScreenControls = () => {
         <HexLabel>{text}</HexLabel>
       </HexLabelContainer>
       {/* Visibility prop to maintain spacing */}
-      <Button $hide={scene !== 'secondStage'} onClick={plus}>
+      <Button data-background $hide={scene !== 'secondStage'} onClick={plus}>
         <HexStyled />
-        <IconContainer>
+        <IconContainer data-icon>
           <Plus />
         </IconContainer>
       </Button>

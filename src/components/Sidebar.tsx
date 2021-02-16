@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { ReactComponent as Hex } from '../assets/Hex.svg';
 import UpgradeButton from './UpgradeButton';
+import SidebarButton from './SidebarButton';
 
 const SIDEBAR_WIDTH = 300;
 
@@ -9,35 +9,9 @@ const Container = styled.div<{ $open: boolean }>`
   position: absolute;
   top: 0px;
   right: -2px;
-  transition: right 1s;
+  transition: right 0.5s;
 
   ${({ $open }) => ($open ? `right: ${SIDEBAR_WIDTH}px;` : '')}
-`;
-
-const MenuButton = styled.button`
-  position: absolute;
-  top: 0;
-  left: -50px;
-  width: 50px;
-  height: 60px;
-  border: none;
-  padding: 0;
-  background: none;
-  outline: none;
-  z-index: 1;
-
-  & > svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: auto;
-    height: 100%;
-    color: white;
-  }
-
-  &:hover > svg {
-    color: blue;
-  }
 `;
 
 const SidebarContainer = styled.div`
@@ -62,15 +36,15 @@ const Sidebar = () => {
   };
 
   return (
-    <Container $open={open}>
-      <MenuButton onClick={onClickOpen}>
-        <Hex />
-      </MenuButton>
-      <SidebarContainer>
-        <UpgradeButton upgradeId="auto" />
-        <UpgradeButton upgradeId="increment" />
-      </SidebarContainer>
-    </Container>
+    <>
+      <SidebarButton active={open} onClick={onClickOpen} />
+      <Container $open={open}>
+        <SidebarContainer>
+          <UpgradeButton upgradeId="auto" />
+          <UpgradeButton upgradeId="increment" />
+        </SidebarContainer>
+      </Container>
+    </>
   );
 };
 

@@ -21,6 +21,17 @@ const theme = {
     },
     statusBar: {
       background: baseColors.darkBlue,
+      buttons: {
+        background: 'white',
+        backgroundHover: 'white',
+        backgroundActive: baseColors.blue,
+        border: 'black',
+        borderHover: baseColors.orange,
+        borderActive: baseColors.whiteBlue,
+        icon: 'black',
+        iconHover: baseColors.orange,
+        iconActive: 'white',
+      },
     },
     statusBarScreenControls: {
       background: 'white',
