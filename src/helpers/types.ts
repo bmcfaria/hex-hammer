@@ -15,6 +15,8 @@ export interface GameObjectRefType {
   };
   ui: {
     openModal: (id: ModalHexTypes) => void;
+    zoomIn: () => void;
+    zoomOut: () => void;
   };
 }
 

@@ -12,5 +12,7 @@ export const initializeGameObject = (gameObject: any) => {
 
     gameObject.current.ui = {};
     gameObject.current.ui.openModal = undefined;
+    gameObject.current.ui.zoomIn = undefined;
+    gameObject.current.ui.zoomOut = undefined;
   }
 };

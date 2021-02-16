@@ -95,12 +95,16 @@ const StatusBarScreenControls = () => {
     if (scene !== 'secondStage') {
       return;
     }
+
+    gameObject?.current?.ui?.zoomOut?.();
   };
 
   const plus = () => {
     if (scene !== 'secondStage') {
       return;
     }
+
+    gameObject?.current?.ui?.zoomIn?.();
   };
 
   let text = 'Zoom';

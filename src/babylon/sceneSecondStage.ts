@@ -237,6 +237,14 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     textBlocksObject
   );
 
+  sharedBabylonObject.current.ui.zoomIn = () => {
+    camera.radius -= 15;
+  };
+
+  sharedBabylonObject.current.ui.zoomOut = () => {
+    camera.radius += 15;
+  };
+
   return scene;
 };
 
