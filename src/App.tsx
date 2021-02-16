@@ -16,6 +16,7 @@ import Modal from './components/Modal';
 import { GameObjectContext } from './helpers/context';
 import { GameObjectRefType, SceneType } from './helpers/types';
 import GameAnimationHandler from './components/GameAnimationHandler';
+import { initializeGameObject } from './helpers/gameObject';
 
 const inDev = process.env.NODE_ENV === 'development';
 const composeEnhancers =
@@ -32,12 +33,12 @@ const onRender = (scene: Scene) => {
 
 function App() {
   const sharedBabylonObject = useRef<GameObjectRefType>();
+  initializeGameObject(sharedBabylonObject);
+
   const [scene, setScene] = useState<SceneType>('incremental');
 
   useEffect(() => {
     if (sharedBabylonObject.current) {
-      sharedBabylonObject.current.scene = 'incremental';
-      sharedBabylonObject.current.selectedHex = 'hex_0_0';
       sharedBabylonObject.current.changeScene = (
         tmpScene: SceneType,
         selectedHex?: string

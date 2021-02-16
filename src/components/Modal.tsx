@@ -44,14 +44,10 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
 
   useEffect(() => {
     if (!sharedBabylonObject.current?.ui?.openModal) {
-      sharedBabylonObject.current.ui = {
-        ...(sharedBabylonObject.current.ui || {}),
+      sharedBabylonObject.current.ui.openModal = (modalId: ModalHexTypes) => {
+        setModal(modalId);
       };
     }
-
-    sharedBabylonObject.current.ui.openModal = (modalId: ModalHexTypes) => {
-      setModal(modalId);
-    };
   }, [sharedBabylonObject]);
 
   const close = () => {

@@ -21,9 +21,7 @@ const IncrementalHandler = ({ incrementalId }: IncrementalHandlerProps) => {
     ) {
       const currentTotal = incremental?.total || 0;
 
-      if (gameObject?.current?.mainAction) {
-        gameObject.current.mainAction(currentTotal + 1);
-      }
+      gameObject.current?.mainAction?.(currentTotal + 1);
     }
   }, [gameObject, incrementalId, incremental, scene]);
 

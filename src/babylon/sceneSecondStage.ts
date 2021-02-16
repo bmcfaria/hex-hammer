@@ -168,9 +168,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
           polygon.isPickable = false;
 
           setTimeout(() => {
-            if (sharedBabylonObject.current) {
-              sharedBabylonObject.current.changeScene('incremental');
-            }
+            sharedBabylonObject.current?.changeScene('incremental');
           }, 1500);
         }
       ),
@@ -235,12 +233,9 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     {}
   );
 
-  if (sharedBabylonObject.current && !sharedBabylonObject.current.inc) {
-    sharedBabylonObject.current.inc = {
-      ...(sharedBabylonObject.current.inc || {}),
-      update: updateValuePerSecondTexts(textBlocksObject),
-    };
-  }
+  sharedBabylonObject.current.inc.update = updateValuePerSecondTexts(
+    textBlocksObject
+  );
 
   return scene;
 };
