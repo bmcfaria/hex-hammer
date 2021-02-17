@@ -37,8 +37,26 @@ const theme = {
       background: 'white',
       border: baseColors.darkBlue,
     },
+    sidebar: {
+      background: baseColors.whiteBlue,
+      border: baseColors.darkBlue,
+    },
+    upgradeButtons: {
+      border: baseColors.darkBlue,
+      borderHover: baseColors.orange,
+      icon: 'black',
+      iconHover: baseColors.orange,
+    },
   },
   boxShadow: 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);',
 };
+
+export const resetButtonStyles = `
+  border: none;
+  padding: 0;
+  background: none;
+  outline: none;
+  font: unset;
+`;
 
 export default theme;

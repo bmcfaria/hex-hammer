@@ -25,6 +25,7 @@ export const upgrades = {
   },
 };
 
+export type UpgradeCategoryTypes = 'incrementals' | 'trade';
 export type UpgradeTypes = keyof typeof upgrades;
 
 export const modalHex = {

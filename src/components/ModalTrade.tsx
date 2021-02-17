@@ -1,10 +1,15 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
 import { CurrenciesTypes } from '../helpers/types';
 import { modalHex, ModalHexTypes } from '../helpers/values';
 import { buyModalHexAction } from '../state/actions';
 import { currencySelector } from '../state/selectors';
 import ModalItem from './ModalItem';
+
+const Container = styled.div`
+  color: black;
+`;
 
 interface ModalTradeProps {
   modal: ModalHexTypes;
@@ -26,7 +31,7 @@ const ModalTrade = ({ modal }: ModalTradeProps) => {
   }
 
   return (
-    <>
+    <Container>
       {(modalInfo.prices as []).map((_, index) => (
         <React.Fragment key={index}>
           <ModalItem
@@ -40,7 +45,7 @@ const ModalTrade = ({ modal }: ModalTradeProps) => {
           <br />
         </React.Fragment>
       ))}
-    </>
+    </Container>
   );
 };
 

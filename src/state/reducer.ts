@@ -21,6 +21,7 @@ const incrementals: { [index: string]: any } = {
   },
 };
 const modalHexUpgrade: { [index: string]: any } = {};
+const trades: { [index: string]: any } = {};
 export const initialState = {
   currency: {
     base: 0,
@@ -39,6 +40,7 @@ export const initialState = {
     // hex_2_10: true,
   },
   modalHexUpgrade,
+  trades,
 };
 
 export const reducer = (state = initialState, payload: any) => {
@@ -215,6 +217,12 @@ export const reducer = (state = initialState, payload: any) => {
             ~~state.modalHexUpgrade[modalId] +
             ~~(Object.keys(newValues).length > 0),
         },
+        ...(type === 'trade' && {
+          trades: {
+            ...state.trades,
+            [modalId]: true,
+          },
+        }),
       };
     }
 
