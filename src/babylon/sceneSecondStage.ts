@@ -81,13 +81,17 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   const lathe = createLatheHex('lathe_0_0', scene);
   lathe.material = scene.getMaterialByName('material_lathe');
 
-  [...Array(5)].map((_, index) =>
-    [...Array(6 * (index + 1))].map(
-      createRingPolygon(polygon, index + 1, {
+  [...Array(5)].map((_, ring) =>
+    [...Array(6 * (ring + 1))].map((_, index) =>
+      createRingPolygon(polygon, ring + 1, {
         meshMaterial: scene.getMaterialByName('material_common_hex'),
         latheMaterial: scene.getMaterialByName('material_border_hex'),
         hideHexes: true,
-      })
+        drawBottom:
+          Object.keys(modalHex).includes(`hex_${ring + 1}_${index}`) ||
+          cornerNames.includes(`hex_${ring + 1}_${index}`),
+        bottomMaterial: scene.getMaterialByName('material_bottom'),
+      })(_, index)
     )
   );
 
@@ -320,6 +324,11 @@ const createMaterials = (scene: Scene) => {
     'material_expand',
     scene
   ).ambientColor = new BABYLON.Color3(0, 0, 1);
+
+  new BABYLON.StandardMaterial(
+    'material_bottom',
+    scene
+  ).ambientColor = BABYLON.Color3.FromHexString('#fca311');
 };
 
 const createValuePerSecondText = (

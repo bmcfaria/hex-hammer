@@ -46,14 +46,23 @@ const hexCoordinates = (ring: number, index: number) => {
   );
 };
 
-export const createLatheHex = (name: string, scene: Scene) => {
+export const createLatheHex = (
+  name: string,
+  scene: Scene,
+  bottom?: boolean
+) => {
   // 0.02 or else it will have margin between lathes
-  const myShape = [
-    new BABYLON.Vector3(radius, 0, 0),
-    new BABYLON.Vector3(radius + margin / 2 + 0.01, 0, 0),
-    new BABYLON.Vector3(radius + margin / 2 + 0.01, 1, 0),
-    new BABYLON.Vector3(radius, 1, 0),
-  ];
+  let myShape;
+  if (bottom) {
+    myShape = [new BABYLON.Vector3(radius, 0, 0), new BABYLON.Vector3(0, 0, 0)];
+  } else {
+    myShape = [
+      new BABYLON.Vector3(radius, 0, 0),
+      new BABYLON.Vector3(radius + margin / 2 + 0.01, 0, 0),
+      new BABYLON.Vector3(radius + margin / 2 + 0.01, 1, 0),
+      new BABYLON.Vector3(radius, 1, 0),
+    ];
+  }
 
   //Create lathe
   const lathe = BABYLON.MeshBuilder.CreateLathe(
@@ -80,11 +89,15 @@ export const createRingPolygon = (
     latheMaterial,
     hideHexes,
     hideLathes,
+    drawBottom,
+    bottomMaterial,
   }: {
     meshMaterial?: Nullable<BABYLON.Material>;
     latheMaterial?: Nullable<BABYLON.Material>;
     hideHexes?: boolean;
     hideLathes?: boolean;
+    drawBottom?: boolean;
+    bottomMaterial?: Nullable<BABYLON.Material>;
   } = {}
 ) => (_: any, index: number) => {
   let tmpPolygon = polygon.clone();
@@ -134,6 +147,19 @@ export const createRingPolygon = (
 
   if (latheMaterial) {
     lathe.material = latheMaterial;
+  }
+
+  if (drawBottom) {
+    const latheBottom = createLatheHex(
+      `lathe_${ring}_${index}_bottom`,
+      polygon.getScene(),
+      true
+    );
+    latheBottom.position = CoR_At.clone();
+    latheBottom.position.y = 0;
+    if (bottomMaterial) {
+      latheBottom.material = bottomMaterial;
+    }
   }
 
   // if (ring === outterRing) {
