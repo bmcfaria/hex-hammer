@@ -9,7 +9,7 @@ import {
 const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   // This creates a basic Babylon Scene object (non-mesh)
   //   let scene = new BABYLON.Scene(engine);
-  scene.clearColor = new BABYLON.Color4(85 / 255, 113 / 255, 116 / 255, 1.0);
+  scene.clearColor = BABYLON.Color4.FromHexString('#57606fff');
   scene.ambientColor = new BABYLON.Color3(1, 1, 1);
 
   // This creates and positions a free camera (non-mesh)

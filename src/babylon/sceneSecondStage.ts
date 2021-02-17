@@ -34,6 +34,7 @@ const cornersAndUnlockHex = [
 export const createSceneSecondStage = (sharedBabylonObject: any) => (
   scene: Scene
 ) => {
+  scene.clearColor = BABYLON.Color4.FromHexString('#3a5a40ff');
   scene.ambientColor = new BABYLON.Color3(1, 1, 1);
 
   // This creates and positions a free camera (non-mesh)
@@ -64,6 +65,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
 
   // Default intensity is 1. Let's dim the light a small amount
   light.intensity = 0.5;
+  // light.groundColor = new BABYLON.Color3(0, 1, 0);
 
   // Generates / color
   createMaterials(scene);
@@ -108,6 +110,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     const cornerHex = scene.getMeshByName(`hex_${5}_${index}`);
     if (cornerHex) {
       cornerHex.isPickable = false;
+      cornerHex.setEnabled(false);
 
       cornerHex.actionManager = new BABYLON.ActionManager(scene);
       cornerHex.actionManager.registerAction(
@@ -245,6 +248,17 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     camera.radius += 15;
   };
 
+  // var ground = BABYLON.MeshBuilder.CreateGround(
+  //   'ground',
+  //   { width: 40, height: 40 },
+  //   scene
+  // );
+  // new BABYLON.StandardMaterial(
+  //   'material_ground',
+  //   scene
+  // ).ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
+  // ground.material = scene.getMaterialByName('material_ground');
+
   return scene;
 };
 
@@ -264,6 +278,7 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
           modalMaterialMapping['incremental']
         );
         cornerMesh.isPickable = true;
+        cornerMesh.setEnabled(true);
       }
     }
   });

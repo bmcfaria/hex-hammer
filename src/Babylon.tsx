@@ -81,6 +81,10 @@ const Babylon = (props: BabylonjsProps) => {
             if (typeof onRenderSecondStage === 'function') {
               onRenderSecondStage(secondStageScene, sharedBabylonObject);
             }
+            // Update FPS
+            if (typeof onRender === 'function') {
+              onRender(secondStageScene);
+            }
             secondStageScene.render();
         }
       });
