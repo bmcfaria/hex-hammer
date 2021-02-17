@@ -151,7 +151,7 @@ export const createRingPolygon = (
 
   if (drawBottom) {
     const latheBottom = createLatheHex(
-      `lathe_${ring}_${index}_bottom`,
+      `hex_${ring}_${index}_bottom`,
       polygon.getScene(),
       true
     );

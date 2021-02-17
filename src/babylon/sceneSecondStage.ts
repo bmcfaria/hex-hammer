@@ -270,6 +270,8 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
   Object.keys(sharedBabylonObject?.current.modalHexValues || {}).forEach(
     hexName => {
       scene.getMeshByName(hexName)?.setEnabled(true);
+      // Hide bottom if exists
+      scene.getMeshByName(`${hexName}_bottom`)?.setEnabled(false);
     }
   );
 
