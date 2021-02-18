@@ -1,6 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
 import { Scene, Vector3 } from '@babylonjs/core';
-import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui';
 import { modalHex } from '../helpers/values';
 import {
   createRingPolygon,
@@ -22,6 +21,8 @@ const cornerNames = [
   'hex_5_20',
   'hex_5_25',
 ];
+const incrementalHexes = ['hex_0_0', ...cornerNames];
+
 const cornersAndUnlockHex = [
   ['hex_5_0', 'hex_4_0'],
   ['hex_5_5', 'hex_4_4'],
@@ -30,6 +31,8 @@ const cornersAndUnlockHex = [
   ['hex_5_20', 'hex_4_16'],
   ['hex_5_25', 'hex_4_20'],
 ];
+
+const font = 'bold 32px verdana';
 
 export const createSceneSecondStage = (sharedBabylonObject: any) => (
   scene: Scene
@@ -76,8 +79,6 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   polygon.position.y = 1;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
 
-  polygon.material = scene.getMaterialByName('material_central');
-
   const lathe = createLatheHex('lathe_0_0', scene);
   lathe.material = scene.getMaterialByName('material_lathe');
 
@@ -101,6 +102,25 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
       scene.getMeshByName(`hex_${5}_${index}`) || { material: null }
     ).material = scene.getMaterialByName('material_lathe');
     scene.getMeshByName(`hex_${5}_${index}`)?.setEnabled(true);
+  });
+
+  incrementalHexes.forEach(hexName => {
+    let tmpMaterial = scene.getMaterialByName(`material_${hexName}`);
+    let tmpMesh = scene.getMeshByName(hexName);
+    if (tmpMaterial && tmpMesh) {
+      tmpMesh.material = tmpMaterial;
+
+      let textTexture = new BABYLON.DynamicTexture(
+        `text_${hexName}`,
+        { width: 100, height: 100 },
+        scene,
+        false
+      );
+      (tmpMaterial as any).diffuseTexture = textTexture;
+      (tmpMaterial as any).diffuseTexture.wAng = -Math.PI / 2;
+
+      textTexture.drawText('', null, null, font, 'green', 'white', true, true);
+    }
   });
 
   // Lathe/Hex colors for the corners and trigger
@@ -227,22 +247,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     ).material = scene.getMaterialByName(modalMaterialMapping[type]);
   });
 
-  var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
-  const textBlocksObject = ['hex_0_0', ...cornerNames].reduce(
-    (results, name: string) => ({
-      ...results,
-      [name]: createValuePerSecondText(
-        name,
-        advancedTexture,
-        scene.getMeshByName(name)
-      ),
-    }),
-    {}
-  );
-
-  sharedBabylonObject.current.inc.update = updateValuePerSecondTexts(
-    textBlocksObject
-  );
+  sharedBabylonObject.current.inc.update = updateValuePerSecondTexts(scene);
 
   sharedBabylonObject.current.ui.zoomIn = () => {
     camera.radius -= 15;
@@ -280,9 +285,9 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
     if ((sharedBabylonObject?.current.modalHexValues || {})[unlockHex]) {
       const cornerMesh = scene.getMeshByName(corner);
       if (cornerMesh) {
-        cornerMesh.material = scene.getMaterialByName(
-          modalMaterialMapping['incremental']
-        );
+        // cornerMesh.material = scene.getMaterialByName(
+        //   modalMaterialMapping['incremental']
+        // );
         cornerMesh.isPickable = true;
         cornerMesh.setEnabled(true);
       }
@@ -331,30 +336,32 @@ const createMaterials = (scene: Scene) => {
     'material_bottom',
     scene
   ).ambientColor = BABYLON.Color3.FromHexString('#fca311');
+
+  incrementalHexes.forEach(hexName => {
+    new BABYLON.StandardMaterial(
+      `material_${hexName}`,
+      scene
+    ).ambientColor = new BABYLON.Color3(1, 0, 0);
+  });
 };
 
-const createValuePerSecondText = (
-  name: string,
-  advancedTexture: AdvancedDynamicTexture,
-  mesh: BABYLON.Nullable<BABYLON.AbstractMesh>
-) => {
-  var textBlock = new TextBlock(name);
-  textBlock.fontSize = 24;
-  textBlock.top = -100;
-  textBlock.color = 'black';
-  advancedTexture.addControl(textBlock);
-  textBlock.linkWithMesh(mesh);
-
-  return textBlock;
-};
-
-const updateValuePerSecondTexts = (textBlocksObject: any) => (
+const updateValuePerSecondTexts = (scene: any) => (
   name: string,
   value: number
 ) => {
-  const textBlock = textBlocksObject[name];
-  if (textBlock) {
-    textBlock.text = `${~~value}/s`;
+  let tmpMaterial = scene.getMaterialByName(`material_${name}`);
+  if (tmpMaterial) {
+    const textTexture = tmpMaterial.diffuseTexture;
+    textTexture.drawText(
+      `${~~value}/s`,
+      null,
+      null,
+      font,
+      'green',
+      'white',
+      true,
+      true
+    );
   }
 };
 
