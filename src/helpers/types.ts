@@ -19,6 +19,14 @@ export interface GameObjectRefType {
     zoomIn: () => void;
     zoomOut: () => void;
   };
+  sceneInitialization: {
+    incrementalScene: () => void;
+    secondStageScene: () => void;
+  };
+  sceneDisable: {
+    incrementalScene: () => void;
+    secondStageScene: () => void;
+  };
 }
 
 export interface GameObjectType {

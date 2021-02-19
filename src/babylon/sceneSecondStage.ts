@@ -78,12 +78,23 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
 
   const polygonOrientation = 1; // 0 - flat || 1 - pointy
 
+  // Create a parent node for all meshes
+  const parentNode = new BABYLON.TransformNode('secondStageParent', scene);
+
   let polygon = createCenterPolygon(scene, 'hex_0_0');
   polygon.position.y = 1;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
+  polygon.setParent(parentNode);
 
   const lathe = createLatheHex('lathe_0_0', scene);
+  lathe.setParent(parentNode);
   lathe.material = scene.getMaterialByName('material_lathe');
+
+  // Disable parent
+  parentNode.setEnabled(false);
+  sharedBabylonObject.current.sceneDisable.secondStageScene = () => {
+    parentNode.setEnabled(false);
+  };
 
   [...Array(5)].map((_, ring) =>
     [...Array(6 * (ring + 1))].map((_, index) =>
@@ -146,6 +157,20 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   //   scene
   // ).ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
   // ground.material = scene.getMaterialByName('material_ground');
+
+  // Set the node parent in all meshes (except central that already has it)
+  [...Array(5)].forEach((_, ring) =>
+    [...Array(6 * (ring + 1))].forEach((_, index) => {
+      const tmpMesh = scene.getMeshByName(`hex_${ring + 1}_${index}`);
+      if (tmpMesh) {
+        tmpMesh.setParent(parentNode);
+      }
+      const tmpLathe = scene.getMeshByName(`lathe_${ring + 1}_${index}`);
+      if (tmpLathe) {
+        tmpLathe.setParent(parentNode);
+      }
+    })
+  );
 
   return scene;
 };
@@ -269,6 +294,9 @@ const initialize = (scene: Scene, sharedBabylonObject: any) => {
 };
 
 export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
+  // Enable parent node
+  scene.getNodeByName('secondStageParent')?.setEnabled(true);
+
   Object.keys(sharedBabylonObject?.current.modalHexValues || {}).forEach(
     hexName => {
       scene.getMeshByName(hexName)?.setEnabled(true);

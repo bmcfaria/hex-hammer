@@ -30,5 +30,8 @@ export const initializeGameObject = (gameObject: any) => {
         update: gameObject.current.inc.update,
       };
     };
+    gameObject.current.sceneDisable = {
+      secondStageScene: undefined,
+    };
   }
 };

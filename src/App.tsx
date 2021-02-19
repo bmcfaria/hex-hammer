@@ -55,6 +55,7 @@ function App() {
 
   const switchScene = () => {
     if (sharedBabylonObject.current) {
+      sharedBabylonObject.current.sceneDisable.secondStageScene();
       switch (sharedBabylonObject.current.scene) {
         case 'incremental':
           sharedBabylonObject.current.changeScene('secondStage');
