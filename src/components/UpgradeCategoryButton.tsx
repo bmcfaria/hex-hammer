@@ -1,10 +1,11 @@
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { incrementalsSelector, tradesSelector } from '../state/selectors';
-import { ModalHexTypes, UpgradeCategoryTypes } from '../helpers/values';
+import { ModalHexTypes } from '../helpers/values';
 import ExpandUpgradeButton from './ExpandUpgradeButton';
 import SidebarIncrementalUpgrades from './SidebarIncrementalUpgrades';
 import ModalTrade from './ModalTrade';
+import { UpgradeCategoryTypes } from '../helpers/types';
 
 const Container = styled.div`
   width: 100%;

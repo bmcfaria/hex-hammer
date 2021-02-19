@@ -1,5 +1,6 @@
 import * as BABYLON from '@babylonjs/core';
 import { Scene } from '@babylonjs/core';
+import { babylonTheme } from '../helpers/theme';
 import {
   buildGround,
   turnCentralAnimation,
@@ -9,8 +10,12 @@ import {
 const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   // This creates a basic Babylon Scene object (non-mesh)
   //   let scene = new BABYLON.Scene(engine);
-  scene.clearColor = BABYLON.Color4.FromHexString('#57606fff');
-  scene.ambientColor = new BABYLON.Color3(1, 1, 1);
+  scene.clearColor = BABYLON.Color4.FromHexString(
+    babylonTheme.colors.clearColor.incremental
+  );
+  scene.ambientColor = BABYLON.Color3.FromHexString(
+    babylonTheme.colors.ambientColor.incremental
+  );
 
   // This creates and positions a free camera (non-mesh)
   //let camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 50, 0), scene);
@@ -40,10 +45,8 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
 
   [...Array(5)].map((_, index) => {
     const material = new BABYLON.StandardMaterial(`material_${index}`, scene);
-    material.ambientColor = new BABYLON.Color3(
-      Math.random(),
-      Math.random(),
-      Math.random()
+    material.ambientColor = BABYLON.Color3.FromHexString(
+      babylonTheme.colors.flip[index]
     );
     return material;
   });

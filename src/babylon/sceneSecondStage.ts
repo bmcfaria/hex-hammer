@@ -1,5 +1,6 @@
 import * as BABYLON from '@babylonjs/core';
 import { Scene, Vector3 } from '@babylonjs/core';
+import { babylonTheme } from '../helpers/theme';
 import { modalHex } from '../helpers/values';
 import {
   createRingPolygon,
@@ -37,8 +38,12 @@ const font = 'bold 32px verdana';
 export const createSceneSecondStage = (sharedBabylonObject: any) => (
   scene: Scene
 ) => {
-  scene.clearColor = BABYLON.Color4.FromHexString('#3a5a40ff');
-  scene.ambientColor = new BABYLON.Color3(1, 1, 1);
+  scene.clearColor = BABYLON.Color4.FromHexString(
+    babylonTheme.colors.clearColor.secondStage
+  );
+  scene.ambientColor = BABYLON.Color3.FromHexString(
+    babylonTheme.colors.ambientColor.secondStage
+  );
 
   // This creates and positions a free camera (non-mesh)
   const camera = new BABYLON.ArcRotateCamera(
@@ -322,49 +327,56 @@ const createMaterials = (scene: Scene) => {
   new BABYLON.StandardMaterial(
     'material_central',
     scene
-  ).ambientColor = new BABYLON.Color3(1, 0, 0);
+  ).ambientColor = BABYLON.Color3.FromHexString(
+    babylonTheme.colors.map.central
+  );
 
   new BABYLON.StandardMaterial(
     'material_lathe',
     scene
-  ).ambientColor = new BABYLON.Color3(0, 0, 0);
+  ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.border);
 
   new BABYLON.StandardMaterial(
     'material_common_hex',
     scene
-  ).ambientColor = new BABYLON.Color3(1, 1, 1);
+  ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.common);
 
   new BABYLON.StandardMaterial(
     'material_border_hex',
     scene
-  ).ambientColor = new BABYLON.Color3(0, 0, 0);
+  ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.border);
 
   // Materials
   new BABYLON.StandardMaterial(
     'material_incremental',
     scene
-  ).ambientColor = new BABYLON.Color3(1, 0, 0);
+  ).ambientColor = BABYLON.Color3.FromHexString(
+    babylonTheme.colors.map.incremental
+  );
 
   new BABYLON.StandardMaterial(
     'material_trade',
     scene
-  ).ambientColor = new BABYLON.Color3(0, 1, 0);
+  ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.trade);
 
   new BABYLON.StandardMaterial(
     'material_expand',
     scene
-  ).ambientColor = new BABYLON.Color3(0, 0, 1);
+  ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.expand);
 
   new BABYLON.StandardMaterial(
     'material_bottom',
     scene
-  ).ambientColor = BABYLON.Color3.FromHexString('#fca311');
+  ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.bottom);
 
+  // Create unique material for each incremental (for dynamic texture)
   incrementalHexes.forEach(hexName => {
     new BABYLON.StandardMaterial(
       `material_${hexName}`,
       scene
-    ).ambientColor = new BABYLON.Color3(1, 0, 0);
+    ).ambientColor = BABYLON.Color3.FromHexString(
+      babylonTheme.colors.map.incremental
+    );
   });
 };
 

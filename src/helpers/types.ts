@@ -27,3 +27,5 @@ export interface GameObjectType {
 }
 
 export type CurrenciesTypes = keyof typeof theme.currencyColors;
+
+export type UpgradeCategoryTypes = 'incrementals' | 'trade';

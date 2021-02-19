@@ -51,6 +51,29 @@ const theme = {
   boxShadow: 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);',
 };
 
+export const babylonTheme = {
+  colors: {
+    clearColor: {
+      incremental: '#57606fff',
+      secondStage: '#3a5a40ff',
+    },
+    ambientColor: {
+      incremental: '#ffffff',
+      secondStage: '#ffffff',
+    },
+    flip: ['#eae2b7', '#fcbf49', '#f77f00', '#d62828', '#003049'],
+    map: {
+      central: '#ff0000',
+      border: '#000000',
+      common: '#ffffff',
+      incremental: '#ff0000',
+      trade: '#00ff00',
+      expand: '#0000ff',
+      bottom: '#293241',
+    },
+  },
+};
+
 export const resetButtonStyles = `
   border: none;
   padding: 0;

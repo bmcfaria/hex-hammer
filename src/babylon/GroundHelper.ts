@@ -6,6 +6,7 @@ import {
 } from './GroundHex';
 import * as BABYLON from '@babylonjs/core';
 import { xRotation, ySlide } from './Animation';
+import { babylonTheme } from '../helpers/theme';
 
 export const buildGround = (
   scene: Scene
@@ -31,7 +32,9 @@ export const buildGround = (
   polygonPivot.animations.push(...[xRotation, ySlide]);
 
   let centralHexColor = new BABYLON.StandardMaterial('centralHex', scene);
-  centralHexColor.ambientColor = new BABYLON.Color3(1, 0, 0);
+  centralHexColor.ambientColor = BABYLON.Color3.FromHexString(
+    babylonTheme.colors.map.central
+  );
   polygon.material = centralHexColor;
 
   return [polygonPivot, polygonsObject];
