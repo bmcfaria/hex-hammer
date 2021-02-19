@@ -23,15 +23,6 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
     scene
   );
 
-  //const camera = new BABYLON.ArcRotateCamera("camera", 0, Math.PI / 2.5, 20, new BABYLON.Vector3(0, 0, 0), scene);
-
-  // This targets the camera to scene origin
-  //camera.setTarget(BABYLON.Vector3.Zero());
-
-  // This attaches the camera to the canvas
-  // const canvas = scene.getEngine().getRenderingCanvas();
-  // camera.attachControl(canvas, true);
-
   // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
   let light = new BABYLON.HemisphericLight(
     'light',
@@ -71,6 +62,11 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
     }
   };
 
+  initialize(scene);
+  sharedBabylonObject.current.sceneInitialization.incrementalScene = () => {
+    initialize(scene);
+  };
+
   return scene;
 };
 
@@ -106,6 +102,28 @@ export const updateIncrementalState = (scene: Scene, total: number) => {
       15 + ~~(Math.log(total) / Math.log(5)) * 15;
   } else {
     (scene.getCameraByName('camera') as BABYLON.ArcRotateCamera).radius = 15;
+  }
+};
+
+const initialize = (scene: Scene) => {
+  // Hide every hex
+  [...Array(6)].forEach((_, ring) =>
+    [...Array(6 * (ring + 1))].forEach((_, index) => {
+      const tmpMesh = scene.getMeshByName(`hex_${ring + 1}_${index}`);
+      if (tmpMesh) {
+        tmpMesh.setEnabled(false);
+      }
+      const tmpLathe = scene.getMeshByName(`lathe_${ring + 1}_${index}`);
+      if (tmpLathe) {
+        tmpLathe.setEnabled(false);
+      }
+    })
+  );
+
+  // Reset camera
+  const camera = scene.getCameraByName('camera') as BABYLON.ArcRotateCamera;
+  if (camera) {
+    camera.radius = 15;
   }
 };
 

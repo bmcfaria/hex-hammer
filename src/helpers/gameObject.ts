@@ -14,5 +14,21 @@ export const initializeGameObject = (gameObject: any) => {
     gameObject.current.ui.openModal = undefined;
     gameObject.current.ui.zoomIn = undefined;
     gameObject.current.ui.zoomOut = undefined;
+
+    gameObject.current.modalHexValues = {};
+
+    gameObject.current.sceneInitialization = {};
+    gameObject.current.sceneInitialization.incrementalScene = undefined;
+    gameObject.current.sceneInitialization.secondStageScene = undefined;
+    gameObject.current.reset = () => {
+      gameObject.current.sceneInitialization.incrementalScene?.();
+      gameObject.current.sceneInitialization.secondStageScene?.();
+
+      gameObject.current.scene = 'incremental';
+      gameObject.current.selectedHex = 'hex_0_0';
+      gameObject.current.inc = {
+        update: gameObject.current.inc.update,
+      };
+    };
   }
 };

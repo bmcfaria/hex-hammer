@@ -8,6 +8,7 @@ import {
   BUY_MODAL_HEX_TYPE,
   BUY_UPGRADE_TYPE,
   INCREMENT_TYPE,
+  RESET_TYPE,
 } from './actions';
 
 const incrementals: { [index: string]: any } = {
@@ -45,6 +46,12 @@ export const initialState = {
 
 export const reducer = (state = initialState, payload: any) => {
   switch (payload.type) {
+    case RESET_TYPE: {
+      return {
+        ...initialState,
+      };
+    }
+
     case INCREMENT_TYPE: {
       const currentTime = new Date().getTime();
 

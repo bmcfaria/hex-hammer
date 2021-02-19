@@ -7,6 +7,7 @@ export interface GameObjectRefType {
   mainAction: (total: number) => void;
   changeScene: (scene: SceneType, selectedHex?: string) => void;
   updateIncrementalState: (total: number) => void;
+  reset: () => void;
   scene: SceneType;
   selectedHex?: string;
   inc: {

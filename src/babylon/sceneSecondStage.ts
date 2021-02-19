@@ -45,15 +45,13 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     'camera_map',
     -Math.PI / 2,
     Math.PI / 4,
-    15,
+    90,
     new BABYLON.Vector3(0, 0, 0),
     scene
   );
 
   // This targets the camera to scene origin
   camera.setTarget(BABYLON.Vector3.Zero());
-
-  camera.radius = 90;
 
   // This attaches the camera to the canvas
   const canvas = scene.getEngine().getRenderingCanvas();
@@ -94,6 +92,99 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
         bottomMaterial: scene.getMaterialByName('material_bottom'),
       })(_, index)
     )
+  );
+
+  initialize(scene, sharedBabylonObject);
+  sharedBabylonObject.current.sceneInitialization.secondStageScene = () => {
+    initialize(scene, sharedBabylonObject);
+  };
+
+  const lightDiffuseAction = (callback?: (() => void) | undefined) =>
+    new BABYLON.InterpolateValueAction(
+      BABYLON.ActionManager.NothingTrigger,
+      light,
+      'diffuse',
+      BABYLON.Color3.Black(),
+      1000,
+      undefined,
+      undefined,
+      callback
+    );
+
+  const zoomInAction = (
+    mesh: BABYLON.AbstractMesh,
+    callback?: (() => void) | undefined
+  ) =>
+    new BABYLON.InterpolateValueAction(
+      BABYLON.ActionManager.NothingTrigger,
+      camera,
+      'position',
+      new Vector3(mesh.position.x, camera.position.y, mesh.position.z),
+      10000,
+      undefined,
+      undefined,
+      callback
+    );
+
+  polygon.actionManager = new BABYLON.ActionManager(scene);
+  polygon.actionManager.registerAction(
+    new BABYLON.CombineAction(BABYLON.ActionManager.OnPickTrigger, [
+      lightDiffuseAction(),
+      zoomInAction(polygon),
+      new BABYLON.ExecuteCodeAction(
+        {
+          trigger: BABYLON.ActionManager.NothingTrigger,
+        },
+        () => {
+          polygon.isPickable = false;
+
+          setTimeout(() => {
+            sharedBabylonObject.current?.changeScene('incremental');
+          }, 1500);
+        }
+      ),
+    ])
+  );
+
+  const particleSystem = BABYLON.ParticleHelper.CreateDefault(
+    new BABYLON.Vector3(0, 0, 0)
+  );
+  particleSystem.emitter = polygon;
+  particleSystem.start();
+
+  sharedBabylonObject.current.inc.update = updateValuePerSecondTexts(scene);
+
+  sharedBabylonObject.current.ui.zoomIn = () => {
+    camera.radius -= 15;
+  };
+
+  sharedBabylonObject.current.ui.zoomOut = () => {
+    camera.radius += 15;
+  };
+
+  // var ground = BABYLON.MeshBuilder.CreateGround(
+  //   'ground',
+  //   { width: 40, height: 40 },
+  //   scene
+  // );
+  // new BABYLON.StandardMaterial(
+  //   'material_ground',
+  //   scene
+  // ).ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
+  // ground.material = scene.getMaterialByName('material_ground');
+
+  return scene;
+};
+
+const initialize = (scene: Scene, sharedBabylonObject: any) => {
+  // Hide every hex
+  [...Array(5)].forEach((_, ring) =>
+    [...Array(6 * (ring + 1))].forEach((_, index) => {
+      const tmpMesh = scene.getMeshByName(`hex_${ring + 1}_${index}`);
+      if (tmpMesh) {
+        tmpMesh.setEnabled(false);
+      }
+    })
   );
 
   // Initialize colors for the last ring
@@ -155,53 +246,6 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     }
   });
 
-  const lightDiffuseAction = (callback?: (() => void) | undefined) =>
-    new BABYLON.InterpolateValueAction(
-      BABYLON.ActionManager.NothingTrigger,
-      light,
-      'diffuse',
-      BABYLON.Color3.Black(),
-      1000,
-      undefined,
-      undefined,
-      callback
-    );
-
-  const zoomInAction = (
-    mesh: BABYLON.AbstractMesh,
-    callback?: (() => void) | undefined
-  ) =>
-    new BABYLON.InterpolateValueAction(
-      BABYLON.ActionManager.NothingTrigger,
-      camera,
-      'position',
-      new Vector3(mesh.position.x, camera.position.y, mesh.position.z),
-      10000,
-      undefined,
-      undefined,
-      callback
-    );
-
-  polygon.actionManager = new BABYLON.ActionManager(scene);
-  polygon.actionManager.registerAction(
-    new BABYLON.CombineAction(BABYLON.ActionManager.OnPickTrigger, [
-      lightDiffuseAction(),
-      zoomInAction(polygon),
-      new BABYLON.ExecuteCodeAction(
-        {
-          trigger: BABYLON.ActionManager.NothingTrigger,
-        },
-        () => {
-          polygon.isPickable = false;
-
-          setTimeout(() => {
-            sharedBabylonObject.current?.changeScene('incremental');
-          }, 1500);
-        }
-      ),
-    ])
-  );
-
   Object.keys(modalHex).forEach(modalKey => {
     const tmpMesh = scene.getMeshByName(modalKey);
 
@@ -224,12 +268,6 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     }
   });
 
-  const particleSystem = BABYLON.ParticleHelper.CreateDefault(
-    new BABYLON.Vector3(0, 0, 0)
-  );
-  particleSystem.emitter = polygon;
-  particleSystem.start();
-
   // Mark special lathes
   Object.entries(modalHex).forEach(([modalKey, modalValue]) => {
     const values = modalKey.split('_');
@@ -247,28 +285,13 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     ).material = scene.getMaterialByName(modalMaterialMapping[type]);
   });
 
-  sharedBabylonObject.current.inc.update = updateValuePerSecondTexts(scene);
-
-  sharedBabylonObject.current.ui.zoomIn = () => {
-    camera.radius -= 15;
-  };
-
-  sharedBabylonObject.current.ui.zoomOut = () => {
-    camera.radius += 15;
-  };
-
-  // var ground = BABYLON.MeshBuilder.CreateGround(
-  //   'ground',
-  //   { width: 40, height: 40 },
-  //   scene
-  // );
-  // new BABYLON.StandardMaterial(
-  //   'material_ground',
-  //   scene
-  // ).ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
-  // ground.material = scene.getMaterialByName('material_ground');
-
-  return scene;
+  // Reset camera
+  const camera = scene.getCameraByName('camera_map') as BABYLON.ArcRotateCamera;
+  if (camera) {
+    // This targets the camera to scene origin
+    camera.setTarget(BABYLON.Vector3.Zero());
+    camera.radius = 90;
+  }
 };
 
 export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {

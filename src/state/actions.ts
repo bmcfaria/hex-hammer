@@ -1,5 +1,10 @@
 import { ModalHexTypes, UpgradeTypes } from '../helpers/values';
 
+export const RESET_TYPE = 'RESET';
+export const resetAction = {
+  type: RESET_TYPE,
+};
+
 export const INCREMENT_TYPE = 'INCREMENT';
 export const incrementAction = (selectedHex: string) => ({
   type: INCREMENT_TYPE,
