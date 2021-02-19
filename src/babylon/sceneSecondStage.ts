@@ -1,5 +1,5 @@
 import * as BABYLON from '@babylonjs/core';
-import { Scene, Vector3 } from '@babylonjs/core';
+import { Scene } from '@babylonjs/core';
 import { babylonTheme } from '../helpers/theme';
 import { modalHex } from '../helpers/values';
 import {
@@ -59,8 +59,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   camera.setTarget(BABYLON.Vector3.Zero());
 
   // This attaches the camera to the canvas
-  const canvas = scene.getEngine().getRenderingCanvas();
-  camera.attachControl(canvas, true);
+  // const canvas = scene.getEngine().getRenderingCanvas();
+  // camera.attachControl(canvas, true);
 
   // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
   let light = new BABYLON.HemisphericLight(
@@ -104,38 +104,9 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     initialize(scene, sharedBabylonObject);
   };
 
-  const lightDiffuseAction = (callback?: (() => void) | undefined) =>
-    new BABYLON.InterpolateValueAction(
-      BABYLON.ActionManager.NothingTrigger,
-      light,
-      'diffuse',
-      BABYLON.Color3.Black(),
-      1000,
-      undefined,
-      undefined,
-      callback
-    );
-
-  const zoomInAction = (
-    mesh: BABYLON.AbstractMesh,
-    callback?: (() => void) | undefined
-  ) =>
-    new BABYLON.InterpolateValueAction(
-      BABYLON.ActionManager.NothingTrigger,
-      camera,
-      'position',
-      new Vector3(mesh.position.x, camera.position.y, mesh.position.z),
-      10000,
-      undefined,
-      undefined,
-      callback
-    );
-
   polygon.actionManager = new BABYLON.ActionManager(scene);
   polygon.actionManager.registerAction(
     new BABYLON.CombineAction(BABYLON.ActionManager.OnPickTrigger, [
-      lightDiffuseAction(),
-      zoomInAction(polygon),
       new BABYLON.ExecuteCodeAction(
         {
           trigger: BABYLON.ActionManager.NothingTrigger,
@@ -143,9 +114,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
         () => {
           polygon.isPickable = false;
 
-          setTimeout(() => {
-            sharedBabylonObject.current?.changeScene('incremental');
-          }, 1500);
+          sharedBabylonObject.current?.changeScene('incremental', 'hex_0_0');
         }
       ),
     ])
@@ -399,64 +368,3 @@ const updateValuePerSecondTexts = (scene: any) => (
     );
   }
 };
-
-// It gave me a little motion sickness 🤮
-// const applyAnimationsForSideHexes = (
-//   scene: Scene,
-//   camera: BABYLON.ArcRotateCamera
-// ) => {
-//   Object.keys(modalHex).forEach(modalKey => {
-//     const tmpMesh = scene.getMeshByName(modalKey);
-
-//     if (tmpMesh) {
-//       tmpMesh.isPickable = true;
-
-//       tmpMesh.actionManager = new BABYLON.ActionManager(scene);
-//       tmpMesh.actionManager.registerAction(
-//         new BABYLON.CombineAction(BABYLON.ActionManager.OnPickTrigger, [
-//           // lightDiffuseAction(),
-//           // zoomInAction(tmpMesh),
-//           new BABYLON.InterpolateValueAction(
-//             BABYLON.ActionManager.NothingTrigger,
-//             camera,
-//             'position',
-//             new Vector3(
-//               (tmpMesh.parent as any).position.x,
-//               camera.position.y,
-//               camera.position.z
-//             ),
-//             10000
-//           ),
-//           new BABYLON.InterpolateValueAction(
-//             BABYLON.ActionManager.NothingTrigger,
-//             camera,
-//             'target',
-//             (tmpMesh.parent as any).position.clone(),
-//             500
-//           ),
-//           // new BABYLON.ExecuteCodeAction(
-//           //   {
-//           //     trigger: BABYLON.ActionManager.NothingTrigger,
-//           //   },
-//           //   () => {
-//           //     console.log('same mesh');
-//           //     if (tmpMesh.parent) {
-//           //       console.log(
-//           //         camera.position.x,
-//           //         (tmpMesh.parent as any).position.x
-//           //       );
-//           //       camera.position = new Vector3(
-//           //         (tmpMesh.parent as any).position.x,
-//           //         camera.position.y,
-//           //         camera.position.z
-//           //       );
-
-//           //       camera.target = (tmpMesh.parent as any).position.clone();
-//           //     }
-//           //   }
-//           // ),
-//         ])
-//       );
-//     }
-//   });
-// };
