@@ -1,5 +1,6 @@
 import * as BABYLON from '@babylonjs/core';
 import { Scene } from '@babylonjs/core';
+import { incrementals } from '../helpers/incrementals';
 import { babylonTheme } from '../helpers/theme';
 import {
   buildGround,
@@ -41,6 +42,8 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   // Default intensity is 1. Let's dim the light a small amount
   light.intensity = 0.5;
 
+  createMaterials(scene);
+
   const [polygonPivot, polygonsObject] = buildGround(scene);
 
   [...Array(5)].map((_, index) => {
@@ -61,8 +64,11 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
     turnRingsAnimations(total, polygonsObject, scene);
 
     if (total >= 1) {
-      camera.radius = 15 + ~~(Math.log(total) / Math.log(5)) * 15;
+      camera.radius = cameraRadiusValue(total);
     }
+
+    // Update bonux hexes
+    // updateBonusHexes(scene, total);
   };
 
   initialize(scene);
@@ -99,14 +105,51 @@ export const updateIncrementalState = (scene: Scene, total: number) => {
     });
   });
 
+  // Update bonux hexes
+  updateBonusHexes(scene, total);
+
   // Update camera distance
   if (total > 0) {
-    (scene.getCameraByName('camera') as BABYLON.ArcRotateCamera).radius =
-      15 + ~~(Math.log(total) / Math.log(5)) * 15;
+    (scene.getCameraByName(
+      'camera'
+    ) as BABYLON.ArcRotateCamera).radius = cameraRadiusValue(total);
   } else {
     (scene.getCameraByName('camera') as BABYLON.ArcRotateCamera).radius = 15;
   }
 };
+
+const updateBonusHexes = (scene: Scene, total: number) => {
+  // const maxActiveRing = ~~(Math.log(total) / Math.log(5));
+
+  // Update bonus
+  (incrementals['hex_0_0'].bonus || []).forEach(
+    ([ring, index, type]: [number, number, string]) => {
+      const lathe = scene.getMeshByName(`lathe_${ring}_${index}`);
+      if (lathe) {
+        lathe.material = scene.getMaterialByName(`material_${type}`);
+        // if (ring - 1 <= maxActiveRing) {
+        //   lathe.setEnabled(true);
+        // }
+      }
+    }
+  );
+
+  const breakFreeRing = incrementals['hex_0_0'].breakFree;
+  if (breakFreeRing) {
+    [...Array(breakFreeRing * 6)].forEach((_, index) => {
+      const lathe = scene.getMeshByName(`lathe_${breakFreeRing}_${index}`);
+      if (lathe) {
+        lathe.material = scene.getMaterialByName(`material_break_free`);
+        // if (breakFreeRing - 1 <= maxActiveRing) {
+        //   lathe.setEnabled(true);
+        // }
+      }
+    });
+  }
+};
+
+const cameraRadiusValue = (total: number) =>
+  15 + ~~(Math.log(total) / Math.log(5)) * 15;
 
 const initialize = (scene: Scene) => {
   // Hide every hex
@@ -128,6 +171,18 @@ const initialize = (scene: Scene) => {
   if (camera) {
     camera.radius = 15;
   }
+};
+
+const createMaterials = (scene: Scene) => {
+  new BABYLON.StandardMaterial(
+    'material_expand',
+    scene
+  ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.expand);
+
+  new BABYLON.StandardMaterial(
+    'material_break_free',
+    scene
+  ).ambientColor = BABYLON.Color3.FromHexString('#ff0000');
 };
 
 export default createScene;

@@ -4,7 +4,7 @@ import { createStore, compose } from 'redux';
 import './App.css';
 import Babylon from './Babylon';
 import { Scene } from '@babylonjs/core';
-import createScene from './babylon/helper';
+import createScene from './babylon/incrementalStage';
 import {
   createSceneSecondStage,
   onRenderSecondStage,

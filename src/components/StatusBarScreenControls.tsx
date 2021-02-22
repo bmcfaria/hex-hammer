@@ -7,6 +7,7 @@ import { ReactComponent as Up } from '../assets/Up.svg';
 import theme from '../helpers/theme';
 import { useContext } from 'react';
 import { GameObjectContext } from '../helpers/context';
+import { incrementals } from '../helpers/incrementals';
 
 const Container = styled.div`
   position: absolute;
@@ -109,7 +110,9 @@ const StatusBarScreenControls = () => {
 
   let text = 'Zoom';
   if (scene === 'incremental') {
-    text = `${gameObject?.current?.selectedHex}`;
+    text =
+      incrementals[gameObject?.current?.selectedHex || '']?.name ||
+      `${gameObject?.current?.selectedHex}`;
   }
 
   return (

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Engine, EngineOptions, Scene, SceneOptions } from '@babylonjs/core';
 import { GameObjectRefType } from './helpers/types';
-import { updateIncrementalState } from './babylon/helper';
+import { updateIncrementalState } from './babylon/incrementalStage';
 
 export type BabylonjsProps = {
   antialias?: boolean;
