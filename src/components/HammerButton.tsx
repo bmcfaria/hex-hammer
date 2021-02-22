@@ -97,7 +97,7 @@ const AutoTex = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 60;
+  z-index: ${theme.zIndex.mainButton};
   font-size: 18px;
 `;
 

@@ -27,6 +27,7 @@ const SidebarContainer = styled.div`
   border-left: 4px solid ${theme.colors.sidebar.border};
   border-bottom: 4px solid ${theme.colors.sidebar.border};
   padding-bottom: 8px;
+  z-index: ${theme.zIndex.sidebar};
 `;
 
 const Sidebar = () => {
