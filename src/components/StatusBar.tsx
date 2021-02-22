@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { currencySelector, incrementalsSelector } from '../state/selectors';
@@ -8,7 +9,7 @@ import { GameObjectContext } from '../helpers/context';
 import { incrementAction } from '../state/actions';
 import { upgrades } from '../helpers/values';
 import theme from '../helpers/theme';
-import { CurrenciesTypes } from '../helpers/types';
+import { CurrencyType } from '../helpers/types';
 import StatusBarScreenControls from './StatusBarScreenControls';
 import PauseButton from './PauseButton';
 
@@ -41,7 +42,7 @@ const CurrencyContainer = styled.div`
   line-height: 20px;
 `;
 
-const HexCurrency = styled(Hex)<{ $currency: CurrenciesTypes }>`
+const HexCurrency = styled(Hex)<{ $currency: CurrencyType }>`
   width: auto;
   height: 20px;
   margin: 0 4px 0 8px;
@@ -99,6 +100,8 @@ const StatusBar = () => {
       auto: 0,
     };
 
+    const { unlocked } = incrementalValue as any;
+
     if (auto) {
       const valuePerSecond =
         (1 + ~~upgrades.increment.value[increment - 1]) /
@@ -107,8 +110,13 @@ const StatusBar = () => {
       totalValuePerSecond += valuePerSecond;
 
       if (~~valuePerSecond > 0) {
+        // TODO: this type of visual updates could be in a different component/hook
         gameObject?.current?.inc?.update(incrementalKey, valuePerSecond);
       }
+    } else if (unlocked) {
+      // Clear text
+      // TODO: this type of visual updates could be in a different component/hook
+      gameObject?.current?.inc?.clearText?.(incrementalKey);
     }
   });
 
@@ -116,13 +124,19 @@ const StatusBar = () => {
     <Container>
       <CurrenciesContainer>
         {Object.keys(currency).map(currencyKey => (
-          <CurrencyContainer key={currencyKey}>
-            <HexCurrency $currency={currencyKey as CurrenciesTypes} />
-            {currency[currencyKey]}
-            {~~totalValuePerSecond > 0 && (
-              <CurrencyPerSecond>({~~totalValuePerSecond}/s)</CurrencyPerSecond>
+          <React.Fragment key={currencyKey}>
+            {currency[currencyKey] > 0 && (
+              <CurrencyContainer>
+                <HexCurrency $currency={currencyKey as CurrencyType} />
+                {currency[currencyKey]}
+                {~~totalValuePerSecond > 0 && (
+                  <CurrencyPerSecond>
+                    ({~~totalValuePerSecond}/s)
+                  </CurrencyPerSecond>
+                )}
+              </CurrencyContainer>
             )}
-          </CurrencyContainer>
+          </React.Fragment>
         ))}
       </CurrenciesContainer>
       <PauseButton />

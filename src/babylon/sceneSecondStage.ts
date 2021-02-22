@@ -137,7 +137,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   particleSystem.emitter = polygon;
   particleSystem.start();
 
-  sharedBabylonObject.current.inc.update = updateValuePerSecondTexts(scene);
+  sharedBabylonObject.current.inc.update = updateValuePerSecondText(scene);
+  sharedBabylonObject.current.inc.clearText = clearHexText(scene);
 
   sharedBabylonObject.current.ui.zoomIn = () => {
     camera.radius -= 15;
@@ -186,6 +187,31 @@ const initialize = (scene: Scene, sharedBabylonObject: any) => {
     })
   );
 
+  // Mark special lathes
+  Object.entries(modalHex).forEach(([modalKey, modalValue]) => {
+    const values = modalKey.split('_');
+    const currentRing = ~~values[1];
+    const currentIndex = ~~values[2];
+    const type = modalValue.type as keyof typeof modalMaterialMapping;
+
+    (
+      scene.getMeshByName(modalKey) || { material: null }
+    ).material = scene.getMaterialByName(modalMaterialMapping[type]);
+
+    const latheName = `lathe_${currentRing}_${currentIndex}`;
+    (
+      scene.getMeshByName(latheName) || { material: null }
+    ).material = scene.getMaterialByName(modalMaterialMapping[type]);
+  });
+
+  // Reset camera
+  const camera = scene.getCameraByName('camera_map') as BABYLON.ArcRotateCamera;
+  if (camera) {
+    // This targets the camera to scene origin
+    camera.setTarget(BABYLON.Vector3.Zero());
+    camera.radius = 90;
+  }
+
   // Initialize colors for the last ring
   [...Array(6 * 5)].forEach((_, index) => {
     (
@@ -206,42 +232,10 @@ const initialize = (scene: Scene, sharedBabylonObject: any) => {
         scene,
         false
       );
-      (tmpMaterial as any).diffuseTexture = textTexture;
-      (tmpMaterial as any).diffuseTexture.wAng = -Math.PI / 2;
+      textTexture.wAng = -Math.PI / 2;
+      (tmpMaterial as BABYLON.StandardMaterial).diffuseTexture = textTexture;
 
       textTexture.drawText('', null, null, font, 'green', 'white', true, true);
-    }
-  });
-
-  // Lathe/Hex colors for the corners and trigger
-  [0, 5, 10, 15, 20, 25].forEach(index => {
-    const cornerLathe = scene.getMeshByName(`lathe_${5}_${index}`);
-
-    if (cornerLathe) {
-      cornerLathe.material = scene.getMaterialByName('material_central');
-    }
-
-    const cornerHex = scene.getMeshByName(`hex_${5}_${index}`);
-    if (cornerHex) {
-      cornerHex.isPickable = false;
-      cornerHex.setEnabled(false);
-
-      cornerHex.actionManager = new BABYLON.ActionManager(scene);
-      cornerHex.actionManager.registerAction(
-        new BABYLON.CombineAction(BABYLON.ActionManager.OnPickTrigger, [
-          new BABYLON.ExecuteCodeAction(
-            {
-              trigger: BABYLON.ActionManager.NothingTrigger,
-            },
-            () => {
-              sharedBabylonObject.current.changeScene(
-                'incremental',
-                `hex_${5}_${index}`
-              );
-            }
-          ),
-        ])
-      );
     }
   });
 
@@ -267,30 +261,36 @@ const initialize = (scene: Scene, sharedBabylonObject: any) => {
     }
   });
 
-  // Mark special lathes
-  Object.entries(modalHex).forEach(([modalKey, modalValue]) => {
-    const values = modalKey.split('_');
-    const currentRing = ~~values[1];
-    const currentIndex = ~~values[2];
-    const type = modalValue.type as keyof typeof modalMaterialMapping;
+  // Lathe/Hex colors for the corners and trigger
+  [0, 5, 10, 15, 20, 25].forEach(index => {
+    const cornerLathe = scene.getMeshByName(`lathe_${5}_${index}`);
 
-    (
-      scene.getMeshByName(modalKey) || { material: null }
-    ).material = scene.getMaterialByName(modalMaterialMapping[type]);
+    if (cornerLathe) {
+      cornerLathe.material = scene.getMaterialByName('material_central');
+    }
 
-    const latheName = `lathe_${currentRing}_${currentIndex}`;
-    (
-      scene.getMeshByName(latheName) || { material: null }
-    ).material = scene.getMaterialByName(modalMaterialMapping[type]);
+    const cornerHex = scene.getMeshByName(`hex_${5}_${index}`);
+    if (cornerHex) {
+      cornerHex.isPickable = false;
+      cornerHex.setEnabled(false);
+
+      cornerHex.actionManager = new BABYLON.ActionManager(scene);
+      cornerHex.actionManager.registerAction(
+        new BABYLON.CombineAction(BABYLON.ActionManager.OnPickTrigger, [
+          new BABYLON.ExecuteCodeAction(
+            {
+              trigger: BABYLON.ActionManager.NothingTrigger,
+            },
+            () => {
+              sharedBabylonObject.current.ui.openIncremental(
+                `hex_${5}_${index}`
+              );
+            }
+          ),
+        ])
+      );
+    }
   });
-
-  // Reset camera
-  const camera = scene.getCameraByName('camera_map') as BABYLON.ArcRotateCamera;
-  if (camera) {
-    // This targets the camera to scene origin
-    camera.setTarget(BABYLON.Vector3.Zero());
-    camera.radius = 90;
-  }
 };
 
 export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
@@ -309,12 +309,13 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
   cornersAndUnlockHex.forEach(([corner, unlockHex]) => {
     if ((sharedBabylonObject?.current.modalHexValues || {})[unlockHex]) {
       const cornerMesh = scene.getMeshByName(corner);
-      if (cornerMesh) {
-        // cornerMesh.material = scene.getMaterialByName(
-        //   modalMaterialMapping['incremental']
-        // );
+
+      // if enabling for the firt time
+      if (cornerMesh && !cornerMesh.isEnabled()) {
         cornerMesh.isPickable = true;
         cornerMesh.setEnabled(true);
+
+        updateHexText(cornerMesh.material?.name || '', scene, '?');
       }
     }
   });
@@ -377,22 +378,23 @@ const createMaterials = (scene: Scene) => {
   });
 };
 
-const updateValuePerSecondTexts = (scene: any) => (
+const updateHexText = (hexName: string, scene: Scene, text: string) => {
+  let tmpMaterial = scene.getMaterialByName(
+    hexName
+  ) as BABYLON.StandardMaterial;
+  const textTexture = tmpMaterial?.diffuseTexture as BABYLON.DynamicTexture;
+  if (textTexture) {
+    textTexture.drawText(text, null, null, font, 'black', 'white', true, true);
+  }
+};
+
+const updateValuePerSecondText = (scene: any) => (
   name: string,
   value: number
 ) => {
-  let tmpMaterial = scene.getMaterialByName(`material_${name}`);
-  if (tmpMaterial) {
-    const textTexture = tmpMaterial.diffuseTexture;
-    textTexture.drawText(
-      `${~~value}/s`,
-      null,
-      null,
-      font,
-      'green',
-      'white',
-      true,
-      true
-    );
-  }
+  updateHexText(`material_${name}`, scene, `${~~value}/s`);
+};
+
+const clearHexText = (scene: any) => (name: string) => {
+  updateHexText(`material_${name}`, scene, '');
 };

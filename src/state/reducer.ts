@@ -1,3 +1,4 @@
+import { CurrencyType } from '../helpers/types';
 import {
   modalHex,
   ModalHexTypes,
@@ -13,6 +14,7 @@ import {
 
 const incrementals: { [index: string]: any } = {
   hex_0_0: {
+    unlocked: true,
     total: 0,
     lastCounter: 0,
     upgrades: {
@@ -25,7 +27,8 @@ const modalHexUpgrade: { [index: string]: any } = {};
 const trades: { [index: string]: any } = {};
 export const initialState = {
   currency: {
-    base: 0,
+    base: 1000, //Dev
+    red: 1000,
   },
   incrementals,
   modalHex: {
@@ -64,11 +67,11 @@ export const reducer = (state = initialState, payload: any) => {
         return state;
       }
 
-      const upgradeValue = ~~currentSelectedHex.upgrades.increment;
+      const upgradeValue = ~~currentSelectedHex.upgrades?.increment;
 
       let incrementValue = 1;
       if (upgradeValue > 0) {
-        incrementValue += upgrades.increment.value[upgradeValue - 1];
+        incrementValue += ~~upgrades.increment.value[upgradeValue - 1];
       }
 
       return {
@@ -98,7 +101,7 @@ export const reducer = (state = initialState, payload: any) => {
       const currentSelectedHex = state.incrementals[selectedHex] || {
         upgrades: {},
       };
-      const price = priceArray[~~currentSelectedHex.upgrades[upgradeId]];
+      const price = priceArray[~~currentSelectedHex.upgrades?.[upgradeId]];
 
       if (!price || state.currency.base < price || !selectedHex) {
         return state;
@@ -115,8 +118,8 @@ export const reducer = (state = initialState, payload: any) => {
           [selectedHex]: {
             ...currentSelectedHex,
             upgrades: {
-              ...currentSelectedHex.upgrades,
-              [upgradeId]: ~~currentSelectedHex.upgrades[upgradeId] + 1,
+              ...(currentSelectedHex.upgrades || {}),
+              [upgradeId]: ~~currentSelectedHex.upgrades?.[upgradeId] + 1,
             },
           },
         },
@@ -126,11 +129,13 @@ export const reducer = (state = initialState, payload: any) => {
     case BUY_MODAL_HEX_TYPE: {
       const {
         modalId,
-        index,
+        priceIndex,
+        currency,
         convertTo,
       }: {
         modalId: ModalHexTypes;
-        index: number;
+        priceIndex: number;
+        currency?: CurrencyType;
         convertTo?: string;
       } = payload;
       const {
@@ -141,13 +146,15 @@ export const reducer = (state = initialState, payload: any) => {
         modalId
       ];
 
+      const selectedCurrency = currency || 'base';
+
       let price = prices[~~state.modalHexUpgrade[modalId]];
 
       if (
         !price ||
-        state.currency.base < price ||
+        state.currency[selectedCurrency] < price ||
         state.modalHexUpgrade[modalId] >= 2 ||
-        (type !== 'expand' && type !== 'trade')
+        (type !== 'expand' && type !== 'trade' && type !== 'unlock')
       ) {
         return state;
       }
@@ -196,12 +203,12 @@ export const reducer = (state = initialState, payload: any) => {
           };
         }, {});
       } else if (type === 'trade' && convertTo) {
-        price = prices[index];
-        if (!price || state.currency.base < price) {
+        price = prices[priceIndex];
+        if (!price || state.currency[selectedCurrency] < price) {
           return state;
         }
 
-        const multiplierValue = multiplier?.[index] || 1;
+        const multiplierValue = multiplier?.[priceIndex] || 1;
         currencies = {
           [convertTo]: ~~(state.currency as any)[convertTo] + multiplierValue,
         };
@@ -211,7 +218,7 @@ export const reducer = (state = initialState, payload: any) => {
         ...state,
         currency: {
           ...state.currency,
-          base: state.currency.base - price,
+          [selectedCurrency]: state.currency[selectedCurrency] - price,
           ...currencies,
         },
         modalHex: {
@@ -228,6 +235,15 @@ export const reducer = (state = initialState, payload: any) => {
           trades: {
             ...state.trades,
             [modalId]: true,
+          },
+        }),
+        ...(type === 'unlock' && {
+          incrementals: {
+            ...state.incrementals,
+            [modalId]: {
+              ...(state.incrementals[modalId] || {}),
+              unlocked: true,
+            },
           },
         }),
       };

@@ -9,9 +9,11 @@ export const initializeGameObject = (gameObject: any) => {
 
     gameObject.current.inc = {};
     gameObject.current.inc.update = undefined;
+    gameObject.current.inc.clearText = undefined;
 
     gameObject.current.ui = {};
     gameObject.current.ui.openModal = undefined;
+    gameObject.current.ui.openIncremental = undefined;
     gameObject.current.ui.zoomIn = undefined;
     gameObject.current.ui.zoomOut = undefined;
 

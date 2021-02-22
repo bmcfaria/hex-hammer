@@ -13,9 +13,11 @@ export interface GameObjectRefType {
   inc: {
     hex_0_0: 0;
     update: (name: string, value: number) => void;
+    clearText: (name: string) => void;
   };
   ui: {
     openModal: (id: ModalHexTypes) => void;
+    openIncremental: (id: string) => void;
     zoomIn: () => void;
     zoomOut: () => void;
   };
@@ -27,6 +29,7 @@ export interface GameObjectRefType {
     incrementalScene: () => void;
     secondStageScene: () => void;
   };
+  modalHexValues: { [index: string]: boolean };
 }
 
 export interface GameObjectType {
@@ -34,6 +37,6 @@ export interface GameObjectType {
   scene?: SceneType;
 }
 
-export type CurrenciesTypes = keyof typeof theme.currencyColors;
+export type CurrencyType = keyof typeof theme.currencyColors;
 
-export type UpgradeCategoryTypes = 'incrementals' | 'trade';
+export type UpgradeCategoryType = 'incrementals' | 'trade';

@@ -2,10 +2,12 @@ import React from 'react';
 import { MouseEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { GameObjectRefType } from '../helpers/types';
 import { modalHex, ModalHexTypes } from '../helpers/values';
-import { modalHexSelector } from '../state/selectors';
+import { incrementalsSelector, modalHexSelector } from '../state/selectors';
 import ModalExpand from './ModalExpand';
 import ModalTrade from './ModalTrade';
+import ModalUnlock from './ModalUnlock';
 
 const BackgroundShadow = styled.div`
   position: fixed;
@@ -28,11 +30,12 @@ const Name = styled.div``;
 const Description = styled.div``;
 
 interface ModalProps {
-  sharedBabylonObject: any;
+  sharedBabylonObject: { current?: GameObjectRefType };
 }
 
 const Modal = ({ sharedBabylonObject }: ModalProps) => {
   const [modal, setModal] = useState<ModalHexTypes | undefined>();
+  const incrementals = useSelector(incrementalsSelector);
 
   const modalHexValues = useSelector(modalHexSelector);
 
@@ -43,12 +46,27 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
   }, [sharedBabylonObject, modalHexValues]);
 
   useEffect(() => {
-    if (!sharedBabylonObject.current?.ui?.openModal) {
-      sharedBabylonObject.current.ui.openModal = (modalId: ModalHexTypes) => {
-        setModal(modalId);
+    if (sharedBabylonObject.current) {
+      if (!sharedBabylonObject.current?.ui?.openModal) {
+        sharedBabylonObject.current.ui.openModal = (modalId: ModalHexTypes) => {
+          setModal(modalId);
+        };
+      }
+
+      sharedBabylonObject.current.ui.openIncremental = selectedHex => {
+        if (incrementals[selectedHex]?.unlocked) {
+          sharedBabylonObject?.current?.changeScene?.(
+            'incremental',
+            selectedHex
+          );
+        } else {
+          sharedBabylonObject.current?.ui.openModal(
+            selectedHex as ModalHexTypes
+          );
+        }
       };
     }
-  }, [sharedBabylonObject]);
+  }, [incrementals, sharedBabylonObject]);
 
   const close = () => {
     setModal(undefined);
@@ -67,6 +85,7 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
         <Description>{modalInfo.description}</Description>
         {modalInfo.type === 'expand' && <ModalExpand modal={modal} />}
         {modalInfo.type === 'trade' && <ModalTrade modal={modal} />}
+        {modalInfo.type === 'unlock' && <ModalUnlock modal={modal} />}
       </Container>
     </BackgroundShadow>
   );

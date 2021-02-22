@@ -5,7 +5,7 @@ import { ModalHexTypes } from '../helpers/values';
 import ExpandUpgradeButton from './ExpandUpgradeButton';
 import SidebarIncrementalUpgrades from './SidebarIncrementalUpgrades';
 import ModalTrade from './ModalTrade';
-import { UpgradeCategoryTypes } from '../helpers/types';
+import { UpgradeCategoryType } from '../helpers/types';
 
 const Container = styled.div`
   width: 100%;
@@ -13,7 +13,7 @@ const Container = styled.div`
 `;
 
 interface UpgradeCategoryButtonProps {
-  upgradeCategoryId: UpgradeCategoryTypes;
+  upgradeCategoryId: UpgradeCategoryType;
 }
 
 const UpgradeCategoryButton = ({

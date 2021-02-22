@@ -39,10 +39,7 @@ function App() {
 
   useEffect(() => {
     if (sharedBabylonObject.current) {
-      sharedBabylonObject.current.changeScene = (
-        tmpScene: SceneType,
-        selectedHex?: string
-      ) => {
+      sharedBabylonObject.current.changeScene = (tmpScene, selectedHex) => {
         if (sharedBabylonObject.current) {
           sharedBabylonObject.current.scene = tmpScene;
           sharedBabylonObject.current.selectedHex = selectedHex;

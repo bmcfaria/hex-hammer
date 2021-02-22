@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
-import { CurrenciesTypes } from '../helpers/types';
+import { CurrencyType } from '../helpers/types';
 import theme from '../helpers/theme';
 
 const ButtonContainer = styled.button`
@@ -21,7 +21,7 @@ const HexRectangleStyled = styled(HexRectangle)`
   fill: white;
 `;
 
-const HexStyled = styled(Hex)<{ $currency: CurrenciesTypes }>`
+const HexStyled = styled(Hex)<{ $currency: CurrencyType }>`
   width: auto;
   height: 20px;
   margin-right: 2px;
@@ -51,7 +51,7 @@ const LabelContainer = styled.div`
 
 const ItemText = styled.div``;
 
-const PriceContainer = styled.div<{ $currency: CurrenciesTypes }>`
+const PriceContainer = styled.div<{ $currency: CurrencyType }>`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -84,8 +84,8 @@ interface ModalItemProps {
   onClick: any;
   bought?: boolean;
   disabled: boolean;
-  currency: CurrenciesTypes;
-  convertTo?: CurrenciesTypes;
+  currency: CurrencyType;
+  convertTo?: CurrencyType;
 }
 
 const ModalItem = ({

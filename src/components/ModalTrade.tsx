@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { CurrenciesTypes } from '../helpers/types';
+import { CurrencyType } from '../helpers/types';
 import { modalHex, ModalHexTypes } from '../helpers/values';
 import { buyModalHexAction } from '../state/actions';
 import { currencySelector } from '../state/selectors';
@@ -21,7 +21,12 @@ const ModalTrade = ({ modal }: ModalTradeProps) => {
 
   const buy = (index: number) => () => {
     if (modal) {
-      dispatch(buyModalHexAction(modal, index, (modalInfo as any).convertTo));
+      dispatch(
+        buyModalHexAction({
+          modalId: modal,
+          priceIndex: (modalInfo as any).convertTo,
+        })
+      );
     }
   };
 
@@ -39,7 +44,7 @@ const ModalTrade = ({ modal }: ModalTradeProps) => {
             price={modalInfo.prices[index]}
             onClick={buy(index)}
             disabled={currency[modalInfo.currency] < modalInfo.prices[index]}
-            currency={modalInfo.currency as CurrenciesTypes}
+            currency={modalInfo.currency as CurrencyType}
             convertTo={(modalInfo as any).convertTo}
           />
           <br />

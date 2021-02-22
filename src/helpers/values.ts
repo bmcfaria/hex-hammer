@@ -86,5 +86,13 @@ export const modalHex = {
     multiplier: [1, 10, 99],
     prices: [1, 10, 80],
   },
+  hex_5_0: {
+    name: 'hex_5_0',
+    title: 'hex_5_0 incremental',
+    description: 'Unlock hex_5_0 incremental',
+    type: 'unlock',
+    currency: 'red',
+    prices: [100],
+  },
 };
 export type ModalHexTypes = keyof typeof modalHex;
