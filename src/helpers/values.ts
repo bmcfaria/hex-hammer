@@ -23,9 +23,16 @@ export const upgrades = {
     description2: ['per flip'],
     value: [1, 2, 3, 4, 5, 6, 7],
   },
+  interval: {
+    price: [5, 10],
+    name: 'Button refresh',
+    description1: ['-> 1s', '-> 0.5'],
+    description2: ['between clicks'],
+    value: [2, 1, 0.5],
+  },
 };
 
-export type UpgradeTypes = keyof typeof upgrades;
+export type UpgradeType = keyof typeof upgrades;
 
 export const modalHex = {
   hex_2_0: {
@@ -95,4 +102,4 @@ export const modalHex = {
     prices: [100],
   },
 };
-export type ModalHexTypes = keyof typeof modalHex;
+export type ModalHexType = keyof typeof modalHex;

@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { CurrencyType } from '../helpers/types';
-import { modalHex, ModalHexTypes } from '../helpers/values';
+import { modalHex, ModalHexType } from '../helpers/values';
 import { buyModalHexAction } from '../state/actions';
 import { currencySelector } from '../state/selectors';
 import ModalItem from './ModalItem';
@@ -12,7 +12,7 @@ const Container = styled.div`
 `;
 
 interface ModalUnlockProps {
-  modal: ModalHexTypes;
+  modal: ModalHexType;
 }
 
 const ModalUnlock = ({ modal }: ModalUnlockProps) => {

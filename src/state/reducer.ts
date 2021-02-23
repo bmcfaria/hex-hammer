@@ -1,9 +1,9 @@
 import { CurrencyType } from '../helpers/types';
 import {
   modalHex,
-  ModalHexTypes,
+  ModalHexType,
   upgrades,
-  UpgradeTypes,
+  UpgradeType,
 } from '../helpers/values';
 import {
   BUY_MODAL_HEX_TYPE,
@@ -20,6 +20,7 @@ const incrementals: { [index: string]: any } = {
     upgrades: {
       auto: 0,
       increment: 0,
+      interval: 0,
     },
   },
 };
@@ -63,7 +64,15 @@ export const reducer = (state = initialState, payload: any) => {
       const currentSelectedHex = state.incrementals[selectedHex] || {
         upgrades: {},
       };
-      if (currentTime - currentSelectedHex.lastCounter < 500 || !selectedHex) {
+
+      const interval =
+        (upgrades.interval.value[~~currentSelectedHex.upgrades?.interval] ||
+          1) * 1000;
+
+      if (
+        currentTime - currentSelectedHex.lastCounter < interval ||
+        !selectedHex
+      ) {
         return state;
       }
 
@@ -95,7 +104,15 @@ export const reducer = (state = initialState, payload: any) => {
       const {
         upgradeId,
         selectedHex,
-      }: { upgradeId: UpgradeTypes; selectedHex: string } = payload;
+        currency,
+      }: {
+        upgradeId: UpgradeType;
+        selectedHex: string;
+        currency?: CurrencyType;
+      } = payload;
+
+      const selectedCurrency = currency || 'base';
+
       const { price: priceArray } = upgrades[upgradeId];
 
       const currentSelectedHex = state.incrementals[selectedHex] || {
@@ -103,7 +120,7 @@ export const reducer = (state = initialState, payload: any) => {
       };
       const price = priceArray[~~currentSelectedHex.upgrades?.[upgradeId]];
 
-      if (!price || state.currency.base < price || !selectedHex) {
+      if (!price || state.currency[selectedCurrency] < price || !selectedHex) {
         return state;
       }
 
@@ -111,7 +128,7 @@ export const reducer = (state = initialState, payload: any) => {
         ...state,
         currency: {
           ...state.currency,
-          base: state.currency.base - price,
+          [selectedCurrency]: state.currency[selectedCurrency] - price,
         },
         incrementals: {
           ...state.incrementals,
@@ -133,7 +150,7 @@ export const reducer = (state = initialState, payload: any) => {
         currency,
         convertTo,
       }: {
-        modalId: ModalHexTypes;
+        modalId: ModalHexType;
         priceIndex: number;
         currency?: CurrencyType;
         convertTo?: string;

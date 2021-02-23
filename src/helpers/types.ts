@@ -1,5 +1,5 @@
 import theme from './theme';
-import { ModalHexTypes } from './values';
+import { ModalHexType } from './values';
 
 export type SceneType = 'incremental' | 'secondStage';
 
@@ -16,7 +16,7 @@ export interface GameObjectRefType {
     clearText: (name: string) => void;
   };
   ui: {
-    openModal: (id: ModalHexTypes) => void;
+    openModal: (id: ModalHexType) => void;
     openIncremental: (id: string) => void;
     zoomIn: () => void;
     zoomOut: () => void;

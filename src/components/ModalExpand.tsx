@@ -1,13 +1,13 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CurrencyType } from '../helpers/types';
-import { modalHex, ModalHexTypes } from '../helpers/values';
+import { modalHex, ModalHexType } from '../helpers/values';
 import { buyModalHexAction } from '../state/actions';
 import { currencySelector, modalHexUpgradeSelector } from '../state/selectors';
 import ModalItem from './ModalItem';
 
 interface ModalExpandProps {
-  modal: ModalHexTypes;
+  modal: ModalHexType;
 }
 
 const ModalExpand = ({ modal }: ModalExpandProps) => {

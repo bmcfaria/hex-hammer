@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { buyUpgradeAction } from '../state/actions';
 import { currencySelector, incrementalsSelector } from '../state/selectors';
-import { upgrades, UpgradeTypes } from '../helpers/values';
+import { upgrades, UpgradeType } from '../helpers/values';
 import BuyableItem from './BuyableItem';
 import theme from '../helpers/theme';
 
@@ -18,7 +18,7 @@ const UpgradeButtonContainer = styled.div`
 `;
 
 interface UpgradeButtonProps {
-  upgradeId: UpgradeTypes;
+  upgradeId: UpgradeType;
   selectedHex: string;
 }
 

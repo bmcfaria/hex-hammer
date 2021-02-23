@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { incrementalsSelector, tradesSelector } from '../state/selectors';
-import { ModalHexTypes } from '../helpers/values';
+import { ModalHexType } from '../helpers/values';
 import ExpandUpgradeButton from './ExpandUpgradeButton';
 import SidebarIncrementalUpgrades from './SidebarIncrementalUpgrades';
 import ModalTrade from './ModalTrade';
@@ -47,7 +47,7 @@ const UpgradeCategoryButton = ({
           ))}
         {upgradeCategoryId === 'trade' &&
           Object.keys(trades).map(tradeKey => (
-            <ModalTrade modal={tradeKey as ModalHexTypes} key={tradeKey} />
+            <ModalTrade modal={tradeKey as ModalHexType} key={tradeKey} />
           ))}
       </ExpandUpgradeButton>
     </Container>

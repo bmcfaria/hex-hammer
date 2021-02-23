@@ -1,4 +1,4 @@
-import { ModalHexTypes, UpgradeTypes } from '../helpers/values';
+import { ModalHexType, UpgradeType } from '../helpers/values';
 import { CurrencyType } from '../helpers/types';
 
 export const RESET_TYPE = 'RESET';
@@ -15,7 +15,7 @@ export const incrementAction = (selectedHex: string) => ({
 export const BUY_UPGRADE_TYPE = 'BUY_UPGRADE';
 export const buyUpgradeAction = (
   selectedHex: string,
-  upgradeId: UpgradeTypes
+  upgradeId: UpgradeType
 ) => ({
   type: BUY_UPGRADE_TYPE,
   upgradeId,
@@ -29,7 +29,7 @@ export const buyModalHexAction = ({
   currency,
   convertTo,
 }: {
-  modalId: ModalHexTypes;
+  modalId: ModalHexType;
   priceIndex: number;
   currency?: CurrencyType;
   convertTo?: string;

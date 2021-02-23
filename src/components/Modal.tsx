@@ -3,7 +3,7 @@ import { MouseEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { GameObjectRefType } from '../helpers/types';
-import { modalHex, ModalHexTypes } from '../helpers/values';
+import { modalHex, ModalHexType } from '../helpers/values';
 import { incrementalsSelector, modalHexSelector } from '../state/selectors';
 import ModalExpand from './ModalExpand';
 import ModalTrade from './ModalTrade';
@@ -34,7 +34,7 @@ interface ModalProps {
 }
 
 const Modal = ({ sharedBabylonObject }: ModalProps) => {
-  const [modal, setModal] = useState<ModalHexTypes | undefined>();
+  const [modal, setModal] = useState<ModalHexType | undefined>();
   const incrementals = useSelector(incrementalsSelector);
 
   const modalHexValues = useSelector(modalHexSelector);
@@ -48,7 +48,7 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
   useEffect(() => {
     if (sharedBabylonObject.current) {
       if (!sharedBabylonObject.current?.ui?.openModal) {
-        sharedBabylonObject.current.ui.openModal = (modalId: ModalHexTypes) => {
+        sharedBabylonObject.current.ui.openModal = (modalId: ModalHexType) => {
           setModal(modalId);
         };
       }
@@ -61,7 +61,7 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
           );
         } else {
           sharedBabylonObject.current?.ui.openModal(
-            selectedHex as ModalHexTypes
+            selectedHex as ModalHexType
           );
         }
       };

@@ -30,7 +30,10 @@ const Button = styled.button`
   }
 `;
 
-const HexGrowing = styled(HexRectangle)<{ $startAnimation: boolean }>`
+const HexGrowing = styled(HexRectangle)<{
+  $startAnimation: boolean;
+  $interval: number;
+}>`
   position: absolute;
   top: 0;
   left: 0;
@@ -38,7 +41,7 @@ const HexGrowing = styled(HexRectangle)<{ $startAnimation: boolean }>`
   stroke: none;
   animation-name: ${({ $startAnimation }) =>
     $startAnimation ? 'hex-growing-animation' : 'none'};
-  animation-duration: 0.5s;
+  animation-duration: ${({ $interval }) => $interval}s;
   animation-timing-function: linear;
 
   @keyframes hex-growing-animation {
@@ -122,6 +125,9 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const lastCounter =
     incrementals[sharedBabylonObject.current?.selectedHex]?.lastCounter;
 
+  const interval =
+    (upgrades.interval.value[~~incrementalUpgrades?.interval] || 1) * 1000;
+
   useEffect(() => {
     const countDown = setInterval(() => {
       const tmpTimeLeft = new Date().getTime() - lastCounter;
@@ -138,7 +144,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
     if (longPressing) {
       countDown = setInterval(() => {
         const currentTime = new Date().getTime();
-        if (currentTime - (lastCounter || 0) >= 500) {
+        if (currentTime - (lastCounter || 0) >= interval) {
           dispatch(incrementAction(sharedBabylonObject.current.selectedHex));
 
           setStartAnimation(true);
@@ -151,7 +157,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
         clearInterval(countDown);
       }
     };
-  }, [dispatch, lastCounter, longPressing, sharedBabylonObject]);
+  }, [dispatch, interval, lastCounter, longPressing, sharedBabylonObject]);
 
   if (scene !== 'incremental') {
     return null;
@@ -164,7 +170,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
 
   const onMouseDown = () => {
     const currentTime = new Date().getTime();
-    if (currentTime - (lastCounter || 0) >= 500) {
+    if (currentTime - (lastCounter || 0) >= interval) {
       dispatch(incrementAction(sharedBabylonObject.current.selectedHex));
 
       setStartAnimation(true);
@@ -189,6 +195,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
         <HexBackground />
         <HexGrowing
           $startAnimation={startAnimation}
+          $interval={interval / 1000}
           onAnimationEnd={() => {
             setStartAnimation(false);
           }}
