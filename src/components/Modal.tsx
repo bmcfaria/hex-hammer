@@ -1,30 +1,14 @@
 import React from 'react';
-import { MouseEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { GameObjectRefType } from '../helpers/types';
 import { modalHex, ModalHexType } from '../helpers/values';
 import { incrementalsSelector, modalHexSelector } from '../state/selectors';
+import BaseModal from './BaseModal';
 import ModalExpand from './ModalExpand';
 import ModalTrade from './ModalTrade';
 import ModalUnlock from './ModalUnlock';
-
-const BackgroundShadow = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  background-color: #0000007d;
-`;
-
-const Container = styled.div`
-  width: 300px;
-  height: 400px;
-  background-color: beige;
-  margin: auto;
-`;
 
 const Name = styled.div``;
 const Description = styled.div``;
@@ -82,15 +66,13 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
   const modalInfo = modalHex[modal];
 
   return (
-    <BackgroundShadow onClick={close}>
-      <Container onClick={(e: MouseEvent) => e.stopPropagation()}>
-        <Name>{modalInfo.title}</Name>
-        <Description>{modalInfo.description}</Description>
-        {modalInfo.type === 'expand' && <ModalExpand modal={modal} />}
-        {modalInfo.type === 'trade' && <ModalTrade modal={modal} />}
-        {modalInfo.type === 'unlock' && <ModalUnlock modal={modal} />}
-      </Container>
-    </BackgroundShadow>
+    <BaseModal open={!!modal} close={close}>
+      <Name>{modalInfo.title}</Name>
+      <Description>{modalInfo.description}</Description>
+      {modalInfo.type === 'expand' && <ModalExpand modal={modal} />}
+      {modalInfo.type === 'trade' && <ModalTrade modal={modal} />}
+      {modalInfo.type === 'unlock' && <ModalUnlock modal={modal} />}
+    </BaseModal>
   );
 };
 
