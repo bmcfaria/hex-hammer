@@ -17,6 +17,7 @@ import { GameObjectContext } from './helpers/context';
 import { GameObjectRefType, SceneType } from './helpers/types';
 import GameAnimationHandler from './components/GameAnimationHandler';
 import { initializeGameObject } from './helpers/gameObject';
+import ZoomControls from './components/ZoomControls';
 
 const inDev = process.env.NODE_ENV === 'development';
 const composeEnhancers =
@@ -49,22 +50,6 @@ function App() {
       };
     }
   }, [sharedBabylonObject]);
-
-  const switchScene = () => {
-    if (sharedBabylonObject.current) {
-      sharedBabylonObject.current.sceneDisable.secondStageScene();
-      switch (sharedBabylonObject.current.scene) {
-        case 'incremental':
-          sharedBabylonObject.current.changeScene('secondStage');
-          break;
-        case 'secondStage':
-          sharedBabylonObject.current.changeScene('incremental', 'hex_0_0');
-          break;
-        default:
-          sharedBabylonObject.current.changeScene('secondStage');
-      }
-    }
-  };
 
   return (
     <Provider store={store}>
@@ -99,7 +84,7 @@ function App() {
             style={{
               position: 'absolute',
               bottom: 15,
-              left: 10,
+              right: 10,
               backgroundColor: 'black',
               border: '2px solid red',
               textAlign: 'center',
@@ -111,18 +96,9 @@ function App() {
           >
             0
           </div>
-          <button
-            onClick={switchScene}
-            style={{
-              position: 'absolute',
-              bottom: 15,
-              right: 10,
-            }}
-          >
-            Switch scene
-          </button>
-          <Modal sharedBabylonObject={sharedBabylonObject} />
         </div>
+        <ZoomControls />
+        <Modal sharedBabylonObject={sharedBabylonObject} />
       </GameObjectContext.Provider>
     </Provider>
   );

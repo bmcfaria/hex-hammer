@@ -54,7 +54,10 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
       }
 
       sharedBabylonObject.current.ui.openIncremental = selectedHex => {
-        if (incrementals[selectedHex]?.unlocked) {
+        if (
+          incrementals[selectedHex]?.unlocked ||
+          !modalHex[selectedHex as ModalHexType]
+        ) {
           sharedBabylonObject?.current?.changeScene?.(
             'incremental',
             selectedHex
@@ -66,7 +69,7 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
         }
       };
     }
-  }, [incrementals, sharedBabylonObject]);
+  }, [incrementals, modal, sharedBabylonObject]);
 
   const close = () => {
     setModal(undefined);

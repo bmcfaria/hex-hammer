@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
-import { ReactComponent as Minus } from '../assets/Minus.svg';
-import { ReactComponent as Plus } from '../assets/Plus.svg';
 import { ReactComponent as Up } from '../assets/Up.svg';
 import theme from '../helpers/theme';
 import { useContext } from 'react';
@@ -40,7 +38,7 @@ const HexLabel = styled.label`
   color: black;
 `;
 
-const Button = styled.button<{ $hide?: boolean }>`
+const Button = styled.button`
   position: relative;
   width: auto;
   height: 100%;
@@ -49,15 +47,13 @@ const Button = styled.button<{ $hide?: boolean }>`
   background: none;
   outline: none;
   margin: 0 8px;
-  /* To maintain spacing */
-  ${({ $hide }) => ($hide ? 'visibility: hidden;' : '')}
 
   &:hover > [data-background] {
     color: ${theme.colors.statusBar.buttons.backgroundHover};
     stroke: ${theme.colors.statusBar.buttons.borderHover};
   }
 
-  &:hover > [data-icon] > svg {
+  &:hover > [data-icon] {
     color: ${theme.colors.statusBar.buttons.iconHover};
   }
 `;
@@ -79,69 +75,48 @@ const IconContainer = styled.div`
   justify-content: center;
 `;
 
+const InfoIcon = styled.div`
+  font-size: 28px;
+  font-weight: bold;
+`;
+
 const StatusBarScreenControls = () => {
   const { gameObject, scene } = useContext(GameObjectContext);
 
-  const up = () => {
-    if (scene !== 'incremental') {
-      return;
-    }
+  if (scene !== 'incremental') {
+    return null;
+  }
 
+  const up = () => {
     if (gameObject?.current) {
       gameObject.current?.changeScene('secondStage');
     }
   };
 
-  const minus = () => {
-    if (scene !== 'secondStage') {
-      return;
-    }
-
-    gameObject?.current?.ui?.zoomOut?.();
-  };
-
-  const plus = () => {
-    if (scene !== 'secondStage') {
-      return;
-    }
-
-    gameObject?.current?.ui?.zoomIn?.();
-  };
-
-  let text = 'Zoom';
-  if (scene === 'incremental') {
-    text =
-      incrementals[gameObject?.current?.selectedHex || '']?.name ||
-      `${gameObject?.current?.selectedHex}`;
-  }
+  let text =
+    incrementals[gameObject?.current?.selectedHex || '']?.name ||
+    `${gameObject?.current?.selectedHex}`;
 
   return (
     <Container>
-      {scene === 'incremental' && (
-        <Button onClick={up}>
-          <HexStyled data-background />
-          <IconContainer data-icon>
-            <Up />
-          </IconContainer>
-        </Button>
-      )}
-      {scene === 'secondStage' && (
-        <Button onClick={minus}>
-          <HexStyled data-background />
-          <IconContainer data-icon>
-            <Minus />
-          </IconContainer>
-        </Button>
-      )}
+      <Button onClick={up}>
+        <HexStyled data-background />
+        <IconContainer data-icon>
+          <Up />
+        </IconContainer>
+      </Button>
       <HexLabelContainer>
         <HexRectangleStyled />
         <HexLabel>{text}</HexLabel>
       </HexLabelContainer>
-      {/* Visibility prop to maintain spacing */}
-      <Button data-background $hide={scene !== 'secondStage'} onClick={plus}>
-        <HexStyled />
+      <Button
+        onClick={() => {
+          console.log('Info button');
+        }}
+      >
+        <HexStyled data-background />
         <IconContainer data-icon>
-          <Plus />
+          <InfoIcon>i</InfoIcon>
         </IconContainer>
       </Button>
     </Container>
