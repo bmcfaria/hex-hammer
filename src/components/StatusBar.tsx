@@ -96,9 +96,11 @@ const StatusBar = () => {
   const defaultCurrency = 'base';
   let currenciesTotalValuePerSecond: { [index: string]: number } = {};
   Object.entries(incrementals).forEach(([incrementalKey, incrementalValue]) => {
-    const { increment, auto } = (incrementalValue as any)?.upgrades || {
-      increment: 0,
+    const { increment, auto, interval } = (incrementalValue as any)
+      ?.upgrades || {
       auto: 0,
+      increment: 0,
+      interval: 0,
     };
 
     const { unlocked, currency } = incrementalValue as any;
@@ -107,7 +109,15 @@ const StatusBar = () => {
     if (auto) {
       const valuePerSecond =
         (1 + ~~upgrades.increment.value[increment - 1]) /
-        upgrades.auto.value[auto - 1];
+        upgrades.auto.value[auto - 1] /
+        upgrades.interval.value[interval];
+
+      // console.log(
+      //   valuePerSecond,
+      //   1 + ~~upgrades.increment.value[increment - 1],
+      //   upgrades.auto.value[auto - 1],
+      //   upgrades.interval.value[interval]
+      // );
 
       if (
         !Object.keys(currenciesTotalValuePerSecond).includes(
