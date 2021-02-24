@@ -17,6 +17,7 @@ const incrementals: { [index: string]: any } = {
     unlocked: true,
     total: 0,
     lastCounter: 0,
+    currency: 'base',
     upgrades: {
       auto: 0,
       increment: 0,

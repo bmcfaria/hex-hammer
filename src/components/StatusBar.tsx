@@ -93,21 +93,30 @@ const StatusBar = () => {
     };
   }, [dispatch, incrementals]);
 
-  let totalValuePerSecond = 0;
+  const defaultCurrency = 'base';
+  let currenciesTotalValuePerSecond: { [index: string]: number } = {};
   Object.entries(incrementals).forEach(([incrementalKey, incrementalValue]) => {
     const { increment, auto } = (incrementalValue as any)?.upgrades || {
       increment: 0,
       auto: 0,
     };
 
-    const { unlocked } = incrementalValue as any;
+    const { unlocked, currency } = incrementalValue as any;
+    const incrementalCurrency = currency || defaultCurrency;
 
     if (auto) {
       const valuePerSecond =
         (1 + ~~upgrades.increment.value[increment - 1]) /
         upgrades.auto.value[auto - 1];
 
-      totalValuePerSecond += valuePerSecond;
+      if (
+        !Object.keys(currenciesTotalValuePerSecond).includes(
+          incrementalCurrency
+        )
+      ) {
+        currenciesTotalValuePerSecond[incrementalCurrency] = 0;
+      }
+      currenciesTotalValuePerSecond[incrementalCurrency] += valuePerSecond;
 
       if (~~valuePerSecond > 0) {
         // TODO: this type of visual updates could be in a different component/hook
@@ -129,9 +138,9 @@ const StatusBar = () => {
               <CurrencyContainer>
                 <HexCurrency $currency={currencyKey as CurrencyType} />
                 {currency[currencyKey]}
-                {~~totalValuePerSecond > 0 && (
+                {~~currenciesTotalValuePerSecond[currencyKey] > 0 && (
                   <CurrencyPerSecond>
-                    ({~~totalValuePerSecond}/s)
+                    ({~~currenciesTotalValuePerSecond[currencyKey]}/s)
                   </CurrencyPerSecond>
                 )}
               </CurrencyContainer>
