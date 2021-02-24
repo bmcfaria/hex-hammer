@@ -12,7 +12,15 @@ import {
   RESET_TYPE,
 } from './actions';
 
-const incrementals: { [index: string]: any } = {
+interface IncrementalType {
+  unlocked: boolean;
+  total: number;
+  lastCounter: number;
+  currency: CurrencyType;
+  upgrades: { [key in UpgradeType]: number };
+}
+
+const incrementals: { [index: string]: IncrementalType } = {
   hex_0_0: {
     unlocked: true,
     total: 0,

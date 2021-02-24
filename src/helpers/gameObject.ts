@@ -35,5 +35,6 @@ export const initializeGameObject = (gameObject: any) => {
     gameObject.current.sceneDisable = {
       secondStageScene: undefined,
     };
+    gameObject.current.incrementalLastCounter = {};
   }
 };

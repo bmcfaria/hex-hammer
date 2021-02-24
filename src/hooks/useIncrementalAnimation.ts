@@ -8,10 +8,20 @@ const useIncrementalAnimation = () => {
   const { gameObject, scene } = useContext(GameObjectContext);
 
   useEffect(() => {
-    if (scene === 'incremental') {
+    if (scene === 'incremental' && gameObject?.current) {
       Object.entries(incrementals).forEach(
         ([incrementalKey, incrementalValue]) => {
-          if (gameObject?.current?.selectedHex === incrementalKey) {
+          const selectedHex = gameObject.current?.selectedHex;
+          if (
+            selectedHex === incrementalKey &&
+            (incrementalValue as any)?.lastCounter !==
+              gameObject.current?.incrementalLastCounter?.[selectedHex]
+          ) {
+            if (gameObject?.current?.incrementalLastCounter) {
+              gameObject.current.incrementalLastCounter[
+                selectedHex
+              ] = (incrementalValue as any)?.lastCounter;
+            }
             const currentTotal = (incrementalValue as any)?.total || 0;
 
             gameObject.current?.mainAction?.(currentTotal + 1);

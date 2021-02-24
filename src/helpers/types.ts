@@ -30,6 +30,8 @@ export interface GameObjectRefType {
     secondStageScene: () => void;
   };
   modalHexValues: { [index: string]: boolean };
+  // To help synchronization
+  incrementalLastCounter: { [index: string]: boolean | undefined };
 }
 
 export interface GameObjectType {
