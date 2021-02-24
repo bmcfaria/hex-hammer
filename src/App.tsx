@@ -15,7 +15,7 @@ import StatusBar from './components/StatusBar';
 import Modal from './components/Modal';
 import { GameObjectContext } from './helpers/context';
 import { GameObjectRefType, SceneType } from './helpers/types';
-import GameAnimationHandler from './components/GameAnimationHandler';
+import GameHandler from './components/GameHandler';
 import { initializeGameObject } from './helpers/gameObject';
 import ZoomControls from './components/ZoomControls';
 
@@ -56,18 +56,8 @@ function App() {
       <GameObjectContext.Provider
         value={{ gameObject: sharedBabylonObject, scene: scene }}
       >
-        <GameAnimationHandler />
-        <div
-          className="App"
-          style={{
-            position: 'absolute',
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-            height: '100%',
-            overflow: 'hidden',
-          }}
-        >
+        <GameHandler />
+        <div className="App">
           <Babylon
             antialias
             onSceneReady={createScene(sharedBabylonObject)}
