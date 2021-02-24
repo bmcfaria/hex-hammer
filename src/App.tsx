@@ -44,6 +44,7 @@ function App() {
         if (sharedBabylonObject.current) {
           sharedBabylonObject.current.scene = tmpScene;
           sharedBabylonObject.current.selectedHex = selectedHex;
+          sharedBabylonObject.current.sceneDisable.secondStageScene();
         }
 
         setScene(tmpScene);

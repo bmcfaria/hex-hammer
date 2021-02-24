@@ -123,8 +123,6 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
           trigger: BABYLON.ActionManager.NothingTrigger,
         },
         () => {
-          polygon.isPickable = false;
-
           sharedBabylonObject.current?.changeScene('incremental', 'hex_0_0');
         }
       ),
