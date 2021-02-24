@@ -10,5 +10,6 @@ export const incrementals: { [index: string]: any } = {
       [2, 10, 'expand'],
     ],
     breakFree: 3,
+    description: 'Some info regarding this incremental',
   },
 };

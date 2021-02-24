@@ -3,9 +3,10 @@ import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { ReactComponent as Up } from '../assets/Up.svg';
 import theme from '../helpers/theme';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { GameObjectContext } from '../helpers/context';
 import { incrementals } from '../helpers/incrementals';
+import BaseModal from './BaseModal';
 
 const Container = styled.div`
   position: absolute;
@@ -80,7 +81,12 @@ const InfoIcon = styled.div`
   font-weight: bold;
 `;
 
+const InfoModalContainer = styled.div`
+  color: black;
+`;
+
 const StatusBarScreenControls = () => {
+  const [infoOpen, setInfoOpen] = useState(false);
   const { gameObject, scene } = useContext(GameObjectContext);
 
   if (scene !== 'incremental') {
@@ -93,33 +99,45 @@ const StatusBarScreenControls = () => {
     }
   };
 
-  let text =
+  const openInfo = () => {
+    setInfoOpen(true);
+  };
+
+  const closeInfo = () => {
+    setInfoOpen(false);
+  };
+
+  const text =
     incrementals[gameObject?.current?.selectedHex || '']?.name ||
     `${gameObject?.current?.selectedHex}`;
 
+  const infoModelDescription =
+    incrementals[gameObject?.current?.selectedHex || '']?.description;
+
   return (
-    <Container>
-      <Button onClick={up}>
-        <HexStyled data-background />
-        <IconContainer data-icon>
-          <Up />
-        </IconContainer>
-      </Button>
-      <HexLabelContainer>
-        <HexRectangleStyled />
-        <HexLabel>{text}</HexLabel>
-      </HexLabelContainer>
-      <Button
-        onClick={() => {
-          console.log('Info button');
-        }}
-      >
-        <HexStyled data-background />
-        <IconContainer data-icon>
-          <InfoIcon>i</InfoIcon>
-        </IconContainer>
-      </Button>
-    </Container>
+    <>
+      <Container>
+        <Button onClick={up}>
+          <HexStyled data-background />
+          <IconContainer data-icon>
+            <Up />
+          </IconContainer>
+        </Button>
+        <HexLabelContainer>
+          <HexRectangleStyled />
+          <HexLabel>{text}</HexLabel>
+        </HexLabelContainer>
+        <Button onClick={openInfo}>
+          <HexStyled data-background />
+          <IconContainer data-icon>
+            <InfoIcon>i</InfoIcon>
+          </IconContainer>
+        </Button>
+      </Container>
+      <BaseModal open={infoOpen} close={closeInfo}>
+        <InfoModalContainer>{infoModelDescription}</InfoModalContainer>
+      </BaseModal>
+    </>
   );
 };
 
