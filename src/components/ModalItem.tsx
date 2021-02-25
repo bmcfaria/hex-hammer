@@ -1,25 +1,8 @@
 import styled from 'styled-components';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
-import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { CurrencyType } from '../helpers/types';
 import theme from '../helpers/theme';
-
-const ButtonContainer = styled.button`
-  width: auto;
-  height: 40px;
-  border: none;
-  padding: 0;
-  background: none;
-  outline: none;
-  position: relative;
-  vertical-align: top;
-`;
-
-const HexRectangleStyled = styled(HexRectangle)`
-  width: auto;
-  height: 100%;
-  fill: white;
-`;
+import ButtonHex from './ButtonHex';
 
 const HexStyled = styled(Hex)<{ $currency: CurrencyType }>`
   width: auto;
@@ -51,33 +34,6 @@ const LabelContainer = styled.div`
 
 const ItemText = styled.div``;
 
-const PriceContainer = styled.div<{ $currency: CurrencyType }>`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: black;
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  font-size: 20px;
-  line-height: 20px;
-  padding: 0 12px;
-  box-sizing: border-box;
-
-  & > svg {
-    width: auto;
-    height: 20px;
-    margin-right: 2px;
-    ${({ $currency }) => `color: ${theme.currencyColors[$currency]};`}
-  }
-
-  & > span {
-    flex-grow: 1;
-  }
-`;
-
 interface ModalItemProps {
   text?: string;
   price: number;
@@ -104,13 +60,13 @@ const ModalItem = ({
         <ItemText>{text}</ItemText>
       </LabelContainer>
       {!bought && (
-        <ButtonContainer onClick={onClick} disabled={disabled || bought}>
-          <HexRectangleStyled data-button-hex-background />
-          <PriceContainer $currency={currency}>
-            <Hex />
-            <span>{price}</span>
-          </PriceContainer>
-        </ButtonContainer>
+        <ButtonHex
+          onClick={onClick}
+          disabled={disabled}
+          bought={bought}
+          currency={currency}
+          price={price}
+        />
       )}
     </ItemContainer>
   );

@@ -47,6 +47,12 @@ const theme = {
       icon: 'black',
       iconHover: baseColors.orange,
     },
+    modal: {
+      background: 'white',
+      backgroundSecondary: baseColors.whiteBlue,
+      border: baseColors.darkBlue,
+      expandHex: '#0000ff',
+    },
   },
   boxShadow: 'box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);',
 };

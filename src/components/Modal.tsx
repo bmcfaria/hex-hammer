@@ -10,8 +10,13 @@ import ModalExpand from './ModalExpand';
 import ModalTrade from './ModalTrade';
 import ModalUnlock from './ModalUnlock';
 
-const Name = styled.div``;
-const Description = styled.div``;
+const Name = styled.div`
+  width: 100%;
+  height: 40px;
+  text-align: center;
+  font-size: 20px;
+  line-height: 40px;
+`;
 
 interface ModalProps {
   sharedBabylonObject: { current?: GameObjectRefType };
@@ -68,7 +73,7 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
   return (
     <BaseModal open={!!modal} close={close}>
       <Name>{modalInfo.title}</Name>
-      <Description>{modalInfo.description}</Description>
+      {/* <Description>{modalInfo.description}</Description> */}
       {modalInfo.type === 'expand' && <ModalExpand modal={modal} />}
       {modalInfo.type === 'trade' && <ModalTrade modal={modal} />}
       {modalInfo.type === 'unlock' && <ModalUnlock modal={modal} />}

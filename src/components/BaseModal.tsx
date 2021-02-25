@@ -1,6 +1,7 @@
 import React from 'react';
 import { MouseEvent } from 'react';
 import styled from 'styled-components';
+import theme from '../helpers/theme';
 
 const BackgroundShadow = styled.div`
   position: fixed;
@@ -14,8 +15,10 @@ const BackgroundShadow = styled.div`
 
 const Container = styled.div`
   width: 300px;
-  height: 400px;
-  background-color: beige;
+  min-height: 10px;
+  height: auto;
+  background-color: ${theme.colors.modal.background};
+  border: 4px solid ${theme.colors.modal.border};
   margin: auto;
 `;
 
