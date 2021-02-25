@@ -7,6 +7,7 @@ import {
 import * as BABYLON from '@babylonjs/core';
 import { xRotation, ySlide } from './Animation';
 import { babylonTheme } from '../helpers/theme';
+import { flipsUntilRing } from '../helpers/utils';
 
 export const buildGround = (
   scene: Scene
@@ -71,8 +72,8 @@ export const turnRingsAnimations = (
   scene: Scene
 ) => {
   polygonsObject.forEach((_, ring) => {
-    if (total > 0 && total % 5 ** (ring + 1) === 0) {
-      const numberOfTurns = ~~(total / 5 ** (ring + 1));
+    if (total > 0 && total % flipsUntilRing(5, ring + 1) === 0) {
+      const numberOfTurns = ~~(total / flipsUntilRing(5, ring + 1));
       turnRingAnimation(
         polygonsObject,
         ring,

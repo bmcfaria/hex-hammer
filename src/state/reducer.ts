@@ -37,7 +37,7 @@ const modalHexUpgrade: { [index: string]: any } = {};
 const trades: { [index: string]: any } = {};
 export const initialState = {
   currency: {
-    base: 1, //Dev
+    base: 1000, //Dev
     red: 1000,
   },
   incrementals,

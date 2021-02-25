@@ -5,6 +5,18 @@
       "description": "Unlock surrounding Hexes",
       "buttonAllBought": "All bought"
     },
+    "info": {
+      "name": "name",
+      "type": "type",
+      "incremental": "incremental",
+      "level": "level",
+      "flips to expand": "flips to expand",
+      "max rings": "max rings",
+      "main currency": "main currency",
+      "break free": "break free",
+      "bonusTitle": "Bonus",
+      "bonus": ["6 blue hexes at ring 3"]
+    },
     "trade": {
       "title": "Trade",
       "description": "Description of trade"

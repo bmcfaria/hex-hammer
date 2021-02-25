@@ -7,6 +7,7 @@ import { useContext, useState } from 'react';
 import { GameObjectContext } from '../helpers/context';
 import { incrementals } from '../helpers/incrementals';
 import BaseModal from './BaseModal';
+import ModalInfo from './ModalInfo';
 
 const Container = styled.div`
   position: absolute;
@@ -85,6 +86,14 @@ const InfoModalContainer = styled.div`
   color: black;
 `;
 
+const Name = styled.div`
+  width: 100%;
+  height: 40px;
+  text-align: center;
+  font-size: 20px;
+  line-height: 40px;
+`;
+
 const StatusBarScreenControls = () => {
   const [infoOpen, setInfoOpen] = useState(false);
   const { gameObject, scene } = useContext(GameObjectContext);
@@ -111,9 +120,6 @@ const StatusBarScreenControls = () => {
     incrementals[gameObject?.current?.selectedHex || '']?.name ||
     `${gameObject?.current?.selectedHex}`;
 
-  const infoModelDescription =
-    incrementals[gameObject?.current?.selectedHex || '']?.description;
-
   return (
     <>
       <Container>
@@ -135,7 +141,10 @@ const StatusBarScreenControls = () => {
         </Button>
       </Container>
       <BaseModal open={infoOpen} close={closeInfo}>
-        <InfoModalContainer>{infoModelDescription}</InfoModalContainer>
+        <InfoModalContainer>
+          <Name>Info</Name>
+          <ModalInfo selectedHex={gameObject?.current?.selectedHex || ''} />
+        </InfoModalContainer>
       </BaseModal>
     </>
   );

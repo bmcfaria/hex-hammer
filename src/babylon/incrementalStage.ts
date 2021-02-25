@@ -2,6 +2,7 @@ import * as BABYLON from '@babylonjs/core';
 import { Scene } from '@babylonjs/core';
 import { incrementals } from '../helpers/incrementals';
 import { babylonTheme } from '../helpers/theme';
+import { flipsUntilRing } from '../helpers/utils';
 import {
   buildGround,
   turnCentralAnimation,
@@ -89,7 +90,7 @@ export const updateIncrementalState = (scene: Scene, total: number) => {
 
   // Generate rings of polygons
   [...Array(6)].forEach((_, ring) => {
-    const numberOfTurns = ~~(total / 5 ** (ring + 1));
+    const numberOfTurns = ~~(total / flipsUntilRing(5, ring + 1));
     [...Array(6 * (ring + 1))].forEach((_, index) => {
       const mesh = scene.getMeshByName(`hex_${ring + 1}_${index}`);
       const lathe = scene.getMeshByName(`lathe_${ring + 1}_${index}`);
@@ -122,7 +123,7 @@ const updateBonusHexes = (scene: Scene, total: number) => {
   // const maxActiveRing = ~~(Math.log(total) / Math.log(5));
 
   // Update bonus
-  (incrementals['hex_0_0'].bonus || []).forEach(
+  (incrementals['hex_0_0'].bonusModels || []).forEach(
     ([ring, index, type]: [number, number, string]) => {
       const lathe = scene.getMeshByName(`lathe_${ring}_${index}`);
       if (lathe) {
