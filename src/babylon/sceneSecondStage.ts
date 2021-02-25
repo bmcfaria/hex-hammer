@@ -123,7 +123,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
           trigger: BABYLON.ActionManager.NothingTrigger,
         },
         () => {
-          sharedBabylonObject.current?.changeScene('incremental', 'hex_0_0');
+          sharedBabylonObject.current.ui.openIncremental('hex_0_0');
         }
       ),
     ])
