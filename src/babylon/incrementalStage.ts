@@ -67,9 +67,6 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
     if (total >= 1) {
       camera.radius = cameraRadiusValue(total);
     }
-
-    // Update bonux hexes
-    // updateBonusHexes(scene, total);
   };
 
   initialize(scene);

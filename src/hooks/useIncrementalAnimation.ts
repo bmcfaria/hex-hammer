@@ -24,7 +24,7 @@ const useIncrementalAnimation = () => {
             }
             const currentTotal = (incrementalValue as any)?.total || 0;
 
-            gameObject.current?.mainAction?.(currentTotal + 1);
+            gameObject.current?.mainAction?.(currentTotal);
           }
         }
       );
