@@ -157,7 +157,7 @@ const initializeCamera = (scene: Scene) => {
     'camera_map',
     -Math.PI / 2,
     Math.PI / 4,
-    90,
+    15,
     new BABYLON.Vector3(0, 0, 0),
     scene
   );
@@ -237,7 +237,7 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
   if (camera) {
     // This targets the camera to scene origin
     camera.setTarget(BABYLON.Vector3.Zero());
-    camera.radius = 90;
+    camera.radius = 15;
   }
 
   // Initialize colors for the last ring
