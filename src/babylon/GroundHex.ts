@@ -58,9 +58,10 @@ export const createLatheHex = (
   } else {
     myShape = [
       new BABYLON.Vector3(radius, 0, 0),
-      new BABYLON.Vector3(radius + margin / 2 + 0.01, 0, 0),
-      new BABYLON.Vector3(radius + margin / 2 + 0.01, 1, 0),
+      new BABYLON.Vector3(radius + margin / 2, 0, 0),
+      new BABYLON.Vector3(radius + margin / 2, 1, 0),
       new BABYLON.Vector3(radius, 1, 0),
+      new BABYLON.Vector3(radius, 0, 0),
     ];
   }
 
