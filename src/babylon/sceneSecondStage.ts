@@ -45,8 +45,11 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     babylonTheme.colors.ambientColor.secondStage
   );
 
+  // Create a parent node for all meshes
+  const parentNode = new BABYLON.TransformNode('secondStageParent', scene);
+
   // Initialize camera
-  const camera = initializeCamera(scene);
+  const camera = initializeCamera(scene, parentNode);
 
   // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
   let light = new BABYLON.HemisphericLight(
@@ -63,9 +66,6 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   createMaterials(scene);
 
   const polygonOrientation = 1; // 0 - flat || 1 - pointy
-
-  // Create a parent node for all meshes
-  const parentNode = new BABYLON.TransformNode('secondStageParent', scene);
 
   let polygon = createCenterPolygon(scene, 'hex_0_0');
   polygon.position.y = 1;
@@ -152,7 +152,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   return scene;
 };
 
-const initializeCamera = (scene: Scene) => {
+const initializeCamera = (scene: Scene, parentNode: BABYLON.TransformNode) => {
   const camera = new BABYLON.ArcRotateCamera(
     'camera_map',
     -Math.PI / 2,
@@ -162,7 +162,7 @@ const initializeCamera = (scene: Scene) => {
     scene
   );
 
-  var ground = BABYLON.MeshBuilder.CreateGround(
+  const ground = BABYLON.MeshBuilder.CreateGround(
     'ground',
     { width: 50, height: 50 },
     scene
@@ -173,7 +173,12 @@ const initializeCamera = (scene: Scene) => {
   let pickOrigin: any;
   let isPanning = false;
   scene.onPointerDown = evt => {
-    var pickResult = scene.pick(scene.pointerX, scene.pointerY, m => {
+    // Don't do anything if parentNode disabled
+    if (!parentNode.isEnabled()) {
+      return;
+    }
+
+    const pickResult = scene.pick(scene.pointerX, scene.pointerY, m => {
       return m.name === 'ground';
     });
     if (pickResult?.pickedPoint) {
@@ -188,7 +193,7 @@ const initializeCamera = (scene: Scene) => {
 
   scene.onPointerMove = () => {
     if (isPanning) {
-      var pickResult = scene.pick(scene.pointerX, scene.pointerY, m => {
+      const pickResult = scene.pick(scene.pointerX, scene.pointerY, m => {
         return m.name === 'ground';
       });
       if (pickResult?.pickedPoint) {
