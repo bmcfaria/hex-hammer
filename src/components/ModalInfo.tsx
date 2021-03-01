@@ -65,7 +65,7 @@ const ModalInfo = ({ selectedHex }: ModalInfoProps) => {
   const isBonusActive = (bonus: any) => {
     switch (bonus.type) {
       case 'atRing':
-        const currentTotal = increment[selectedHex].total;
+        const currentTotal = increment[selectedHex]?.total;
         if (
           currentTotal >=
           flipsUntilRing(incrementalObject.flipsToExpand, bonus.value)
@@ -83,7 +83,7 @@ const ModalInfo = ({ selectedHex }: ModalInfoProps) => {
     <Container>
       <Row>
         <div>{stringsObject.modal.info.name}:</div>
-        <div>{selectedHex}</div>
+        <div>{incrementalObject.name}</div>
       </Row>
       <Row>
         <div>{stringsObject.modal.info.type}:</div>

@@ -95,8 +95,8 @@ export const modalHex = {
   },
   hex_5_0: {
     name: 'hex_5_0',
-    title: 'hex_5_0 incremental',
-    description: 'Unlock hex_5_0 incremental',
+    title: stringsObject.modal.unlock.title,
+    description: stringsObject.modal.unlock.description,
     type: 'unlock',
     currency: 'red',
     prices: [100],

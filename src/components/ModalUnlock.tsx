@@ -5,10 +5,16 @@ import { CurrencyType } from '../helpers/types';
 import { modalHex, ModalHexType } from '../helpers/values';
 import { buyModalHexAction } from '../state/actions';
 import { currencySelector } from '../state/selectors';
-import ModalItem from './ModalItem';
+import ButtonHex from './ButtonHex';
+import ModalInfo from './ModalInfo';
 
 const Container = styled.div`
+  width: 100%;
   color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
 `;
 
 interface ModalUnlockProps {
@@ -38,18 +44,13 @@ const ModalUnlock = ({ modal }: ModalUnlockProps) => {
 
   return (
     <Container>
-      {(modalInfo.prices as []).map((_, index) => (
-        <React.Fragment key={index}>
-          <ModalItem
-            text="Unlock"
-            price={modalInfo.prices[index]}
-            onClick={buy(index)}
-            disabled={currency[modalInfo.currency] < modalInfo.prices[index]}
-            currency={modalInfo.currency as CurrencyType}
-          />
-          <br />
-        </React.Fragment>
-      ))}
+      <ModalInfo selectedHex={modal} />
+      <ButtonHex
+        onClick={buy(0)}
+        disabled={currency[modalInfo.currency] < modalInfo.prices[0]}
+        currency={modalInfo.currency as CurrencyType}
+        price={modalInfo.prices[0]}
+      />
     </Container>
   );
 };

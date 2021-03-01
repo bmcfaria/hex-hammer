@@ -20,6 +20,10 @@
     "trade": {
       "title": "Trade",
       "description": "Description of trade"
+    },
+    "unlock": {
+      "title": "Unlock",
+      "description": ""
     }
   }
 }

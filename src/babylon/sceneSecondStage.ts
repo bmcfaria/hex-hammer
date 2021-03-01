@@ -348,7 +348,11 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
         cornerMesh.isPickable = true;
         cornerMesh.setEnabled(true);
 
-        updateHexText(cornerMesh.material?.name || '', scene, '?');
+        updateHexText(
+          cornerMesh.material?.name || '',
+          scene,
+          Object.keys(modalHex).includes(corner) ? '?' : ''
+        );
       }
     }
   });
