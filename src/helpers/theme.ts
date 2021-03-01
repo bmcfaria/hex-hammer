@@ -61,8 +61,8 @@ const theme = {
 export const babylonTheme = {
   colors: {
     clearColor: {
-      incremental: '#57606fff',
-      secondStage: '#3a5a40ff',
+      incremental: '#888888ff',
+      secondStage: '#222222ff',
     },
     ambientColor: {
       incremental: '#ffffff',

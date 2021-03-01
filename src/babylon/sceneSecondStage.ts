@@ -88,9 +88,9 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
         meshMaterial: scene.getMaterialByName('material_common_hex'),
         latheMaterial: scene.getMaterialByName('material_border_hex'),
         hideHexes: true,
-        drawBottom:
-          Object.keys(modalHex).includes(`hex_${ring + 1}_${index}`) ||
-          cornerNames.includes(`hex_${ring + 1}_${index}`),
+        // drawBottom:
+        //   Object.keys(modalHex).includes(`hex_${ring + 1}_${index}`) ||
+        //   cornerNames.includes(`hex_${ring + 1}_${index}`),
         bottomMaterial: scene.getMaterialByName('material_bottom'),
       })(_, index)
     )
