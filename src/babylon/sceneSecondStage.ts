@@ -45,22 +45,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     babylonTheme.colors.ambientColor.secondStage
   );
 
-  // This creates and positions a free camera (non-mesh)
-  const camera = new BABYLON.ArcRotateCamera(
-    'camera_map',
-    -Math.PI / 2,
-    Math.PI / 4,
-    90,
-    new BABYLON.Vector3(0, 0, 0),
-    scene
-  );
-
-  // This targets the camera to scene origin
-  camera.setTarget(BABYLON.Vector3.Zero());
-
-  // This attaches the camera to the canvas
-  // const canvas = scene.getEngine().getRenderingCanvas();
-  // camera.attachControl(canvas, true);
+  // Initialize camera
+  const camera = initializeCamera(scene);
 
   // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
   let light = new BABYLON.HemisphericLight(
@@ -110,9 +96,9 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     )
   );
 
-  initialize(scene, sharedBabylonObject);
+  initializeMeshes(scene, sharedBabylonObject);
   sharedBabylonObject.current.sceneInitialization.secondStageScene = () => {
-    initialize(scene, sharedBabylonObject);
+    initializeMeshes(scene, sharedBabylonObject);
   };
 
   polygon.actionManager = new BABYLON.ActionManager(scene);
@@ -174,7 +160,59 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   return scene;
 };
 
-const initialize = (scene: Scene, sharedBabylonObject: any) => {
+const initializeCamera = (scene: Scene) => {
+  const camera = new BABYLON.ArcRotateCamera(
+    'camera_map',
+    -Math.PI / 2,
+    Math.PI / 4,
+    90,
+    new BABYLON.Vector3(0, 0, 0),
+    scene
+  );
+
+  var ground = BABYLON.MeshBuilder.CreateGround(
+    'ground',
+    { width: 50, height: 50 },
+    scene
+  );
+  // Hidden ground, just being used for panning help
+  ground.setEnabled(false);
+
+  let pickOrigin: any;
+  let isPanning = false;
+  scene.onPointerDown = evt => {
+    var pickResult = scene.pick(scene.pointerX, scene.pointerY, m => {
+      return m.name === 'ground';
+    });
+    if (pickResult?.pickedPoint) {
+      pickOrigin = pickResult.pickedPoint;
+      isPanning = true;
+    }
+  };
+
+  scene.onPointerUp = () => {
+    isPanning = false;
+  };
+
+  scene.onPointerMove = () => {
+    if (isPanning) {
+      var pickResult = scene.pick(scene.pointerX, scene.pointerY, m => {
+        return m.name === 'ground';
+      });
+      if (pickResult?.pickedPoint) {
+        let diff = pickResult.pickedPoint.subtract(pickOrigin);
+
+        diff.y = 0; // Disable Y-axis panning.
+
+        camera.target.subtractInPlace(diff);
+      }
+    }
+  };
+
+  return camera;
+};
+
+const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
   // Hide every hex
   [...Array(5)].forEach((_, ring) =>
     [...Array(6 * (ring + 1))].forEach((_, index) => {
