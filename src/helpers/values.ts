@@ -90,7 +90,7 @@ export const modalHex = {
     type: 'trade',
     currency: 'base',
     convertTo: 'red',
-    multiplier: [1, 10, 99],
+    multiplier: [1, 10, 100],
     prices: [1, 10, 80],
   },
   hex_5_0: {
