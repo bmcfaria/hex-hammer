@@ -125,23 +125,15 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   sharedBabylonObject.current.inc.clearText = clearHexText(scene);
 
   sharedBabylonObject.current.ui.zoomIn = () => {
-    camera.radius -= 15;
+    // Zoom in limit
+    if (camera.radius >= 30) {
+      camera.radius -= 15;
+    }
   };
 
   sharedBabylonObject.current.ui.zoomOut = () => {
     camera.radius += 15;
   };
-
-  // var ground = BABYLON.MeshBuilder.CreateGround(
-  //   'ground',
-  //   { width: 40, height: 40 },
-  //   scene
-  // );
-  // new BABYLON.StandardMaterial(
-  //   'material_ground',
-  //   scene
-  // ).ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
-  // ground.material = scene.getMaterialByName('material_ground');
 
   // Set the node parent in all meshes (except central that already has it)
   [...Array(5)].forEach((_, ring) =>
