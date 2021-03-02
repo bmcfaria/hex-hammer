@@ -30,16 +30,22 @@ const CurrenciesContainer = styled.div`
   margin: 0 auto;
   height: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
+  align-items: center;
 `;
 
 const CurrencyContainer = styled.div`
   display: flex;
-  height: 30px;
+  flex-direction: column;
+  height: auto;
   align-items: center;
   font-size: 20px;
   line-height: 20px;
+`;
+
+const HexAndValue = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const HexCurrency = styled(Hex)<{ $currency: CurrencyType }>`
@@ -49,8 +55,10 @@ const HexCurrency = styled(Hex)<{ $currency: CurrencyType }>`
   ${({ $currency }) => `color: ${theme.currencyColors[$currency]};`}
 `;
 
-const CurrencyPerSecond = styled.span`
-  margin-left: 4px;
+const CurrencyPerSecond = styled.div`
+  height: 20px;
+  font-size: 16px;
+  margin-top: 4px;
 `;
 
 const StatusBar = () => {
@@ -112,13 +120,6 @@ const StatusBar = () => {
         upgrades.auto.value[auto - 1] /
         upgrades.interval.value[interval];
 
-      // console.log(
-      //   valuePerSecond,
-      //   1 + ~~upgrades.increment.value[increment - 1],
-      //   upgrades.auto.value[auto - 1],
-      //   upgrades.interval.value[interval]
-      // );
-
       if (
         !Object.keys(currenciesTotalValuePerSecond).includes(
           incrementalCurrency
@@ -144,10 +145,12 @@ const StatusBar = () => {
       <CurrenciesContainer>
         {Object.keys(currency).map(currencyKey => (
           <React.Fragment key={currencyKey}>
-            {currency[currencyKey] > 0 && (
+            {currency[currencyKey] >= 0 && (
               <CurrencyContainer>
-                <HexCurrency $currency={currencyKey as CurrencyType} />
-                {currency[currencyKey]}
+                <HexAndValue>
+                  <HexCurrency $currency={currencyKey as CurrencyType} />
+                  {currency[currencyKey]}
+                </HexAndValue>
                 {~~currenciesTotalValuePerSecond[currencyKey] > 0 && (
                   <CurrencyPerSecond>
                     ({~~currenciesTotalValuePerSecond[currencyKey]}/s)

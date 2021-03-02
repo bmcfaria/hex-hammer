@@ -37,8 +37,10 @@ const modalHexUpgrade: { [index: string]: any } = {};
 const trades: { [index: string]: any } = {};
 export const initialState = {
   currency: {
-    base: 1000, //Dev
-    red: 1000,
+    base: undefined as number | undefined, //Dev
+    red: undefined as number | undefined,
+    blue: 10 as number | undefined,
+    dark: undefined as number | undefined,
   },
   incrementals,
   modalHex: {
@@ -96,7 +98,7 @@ export const reducer = (state = initialState, payload: any) => {
         ...state,
         currency: {
           ...state.currency,
-          base: state.currency.base + incrementValue,
+          base: (state.currency?.base || 0) + incrementValue,
         },
         incrementals: {
           ...state.incrementals,
@@ -129,7 +131,11 @@ export const reducer = (state = initialState, payload: any) => {
       };
       const price = priceArray[~~currentSelectedHex.upgrades?.[upgradeId]];
 
-      if (!price || state.currency[selectedCurrency] < price || !selectedHex) {
+      if (
+        !price ||
+        (state.currency[selectedCurrency] || 0) < price ||
+        !selectedHex
+      ) {
         return state;
       }
 
@@ -137,7 +143,7 @@ export const reducer = (state = initialState, payload: any) => {
         ...state,
         currency: {
           ...state.currency,
-          [selectedCurrency]: state.currency[selectedCurrency] - price,
+          [selectedCurrency]: (state.currency[selectedCurrency] || 0) - price,
         },
         incrementals: {
           ...state.incrementals,
@@ -178,7 +184,7 @@ export const reducer = (state = initialState, payload: any) => {
 
       if (
         !price ||
-        state.currency[selectedCurrency] < price ||
+        (state.currency[selectedCurrency] || 0) < price ||
         state.modalHexUpgrade[modalId] >= 2 ||
         (type !== 'expand' && type !== 'trade' && type !== 'unlock')
       ) {
@@ -230,7 +236,7 @@ export const reducer = (state = initialState, payload: any) => {
         }, {});
       } else if (type === 'trade' && convertTo) {
         price = prices[priceIndex];
-        if (!price || state.currency[selectedCurrency] < price) {
+        if (!price || (state.currency[selectedCurrency] || 0) < price) {
           return state;
         }
 
@@ -244,7 +250,7 @@ export const reducer = (state = initialState, payload: any) => {
         ...state,
         currency: {
           ...state.currency,
-          [selectedCurrency]: state.currency[selectedCurrency] - price,
+          [selectedCurrency]: (state.currency[selectedCurrency] || 0) - price,
           ...currencies,
         },
         modalHex: {

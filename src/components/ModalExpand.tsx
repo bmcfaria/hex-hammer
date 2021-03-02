@@ -90,6 +90,7 @@ const ModalExpand = ({ modal }: ModalExpandProps) => {
         buyModalHexAction({
           modalId: modal,
           priceIndex: 0,
+          currency: modalInfo.currency as CurrencyType,
         })
       );
     }
