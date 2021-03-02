@@ -42,3 +42,14 @@ export interface GameObjectType {
 export type CurrencyType = keyof typeof theme.currencyColors;
 
 export type UpgradeCategoryType = 'incrementals' | 'trade';
+
+export interface BonusType {
+  name: string;
+  type: 'atRing';
+  value: number;
+  reward: {
+    type: 'currency';
+    key: CurrencyType;
+    value: number;
+  };
+}

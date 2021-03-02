@@ -1,4 +1,6 @@
-import { CurrencyType } from '../helpers/types';
+import { incrementals } from '../helpers/incrementals';
+import { BonusType, CurrencyType } from '../helpers/types';
+import { flipsUntilRing } from '../helpers/utils';
 import {
   modalHex,
   ModalHexType,
@@ -18,9 +20,10 @@ interface IncrementalType {
   lastCounter: number;
   currency: CurrencyType;
   upgrades: { [key in UpgradeType]: number };
+  unlockedBonus: { [index: number]: boolean };
 }
 
-const incrementals: { [index: string]: IncrementalType } = {
+const incrementalsState: { [index: string]: IncrementalType } = {
   hex_0_0: {
     unlocked: true,
     total: 0,
@@ -31,6 +34,7 @@ const incrementals: { [index: string]: IncrementalType } = {
       increment: 0,
       interval: 0,
     },
+    unlockedBonus: {},
   },
 };
 const modalHexUpgrade: { [index: string]: any } = {};
@@ -42,7 +46,7 @@ export const initialState = {
     blue: 10 as number | undefined,
     dark: undefined as number | undefined,
   },
-  incrementals,
+  incrementals: incrementalsState,
   modalHex: {
     ...[...Array(6)].reduce(
       (results, _, index) => ({ ...results, [`hex_${1}_${index}`]: true }),
@@ -94,18 +98,82 @@ export const reducer = (state = initialState, payload: any) => {
         incrementValue += ~~upgrades.increment.value[upgradeValue - 1];
       }
 
+      let bonusEarned = { unlockedBonus: {}, currencies: {} };
+      if (incrementals[selectedHex]?.bonus) {
+        bonusEarned = incrementals[selectedHex].bonus.reduce(
+          (results: any, bonus: BonusType, index: number) => {
+            if (currentSelectedHex.unlockedBonus[index]) {
+              return results;
+            }
+
+            // only handles atRing type at the moment
+            if (bonus.type === 'atRing') {
+              const isAtRing =
+                (currentSelectedHex.total || 0) + 1 >=
+                flipsUntilRing(
+                  incrementals[selectedHex].flipsToExpand,
+                  bonus.value
+                );
+
+              if (isAtRing) {
+                // only handles currency type at the moment
+                return {
+                  ...results,
+                  unlockedBonus: {
+                    ...results.unlockedBonus,
+                    [index]: true,
+                  },
+                  currencies: {
+                    ...results.currencies,
+                    [bonus.reward.key]: bonus.reward.value,
+                  },
+                };
+              }
+            }
+
+            return results;
+          },
+          { unlockedBonus: {}, currencies: {} }
+        );
+      }
+
+      // Bonus may override the increment value
+      let stateUpdateCurrencies = {
+        ...state.currency,
+        base: (state.currency?.base || 0) + incrementValue,
+      };
+
+      const bonusCurrencies = Object.entries(
+        bonusEarned.currencies as { string: number }
+      ).reduce(
+        (results, [key, value]) => ({
+          ...results,
+          [key]: value + (stateUpdateCurrencies[key as CurrencyType] || 0),
+        }),
+        {}
+      );
+
+      stateUpdateCurrencies = {
+        ...stateUpdateCurrencies,
+        ...bonusCurrencies,
+      };
+
       return {
         ...state,
         currency: {
-          ...state.currency,
-          base: (state.currency?.base || 0) + incrementValue,
+          ...stateUpdateCurrencies,
+          ...bonusCurrencies,
         },
         incrementals: {
           ...state.incrementals,
           [selectedHex]: {
             ...currentSelectedHex,
-            total: ~~currentSelectedHex.total + 1,
+            total: (currentSelectedHex.total || 0) + 1,
             lastCounter: currentTime,
+            unlockedBonus: {
+              ...(currentSelectedHex.unlockedBonus || {}),
+              ...bonusEarned.unlockedBonus,
+            },
           },
         },
       };
