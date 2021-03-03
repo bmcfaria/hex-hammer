@@ -2,8 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import theme from '../helpers/theme';
-import { CurrencyType } from '../helpers/types';
-import { modalHex, ModalHexType } from '../helpers/values';
+import { CurrencyType, ModalHexType } from '../helpers/types';
+import { modalsHex } from '../helpers/modals';
 import { buyModalHexAction } from '../state/actions';
 import { currencySelector, modalHexUpgradeSelector } from '../state/selectors';
 import { ReactComponent as Ring0 } from '../assets/Ring0.svg';
@@ -96,7 +96,7 @@ const ModalExpand = ({ modal }: ModalExpandProps) => {
     }
   };
 
-  const modalInfo = modalHex[modal];
+  const modalInfo = modalsHex[modal];
   if (!modalInfo || modalInfo.type !== 'expand') {
     return null;
   }

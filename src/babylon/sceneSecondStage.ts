@@ -1,7 +1,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { Scene } from '@babylonjs/core';
 import { babylonTheme } from '../helpers/theme';
-import { modalHex } from '../helpers/values';
+import { modalsHex } from '../helpers/modals';
 import {
   createRingPolygon,
   createLatheHex,
@@ -221,7 +221,7 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
   );
 
   // Mark special lathes
-  Object.entries(modalHex).forEach(([modalKey, modalValue]) => {
+  Object.entries(modalsHex).forEach(([modalKey, modalValue]) => {
     const values = modalKey.split('_');
     const currentRing = ~~values[1];
     const currentIndex = ~~values[2];
@@ -272,7 +272,7 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
     }
   });
 
-  Object.keys(modalHex).forEach(modalKey => {
+  Object.keys(modalsHex).forEach(modalKey => {
     const tmpMesh = scene.getMeshByName(modalKey);
 
     if (tmpMesh) {
@@ -351,7 +351,7 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
         updateHexText(
           cornerMesh.material?.name || '',
           scene,
-          Object.keys(modalHex).includes(corner) ? '?' : ''
+          Object.keys(modalsHex).includes(corner) ? '?' : ''
         );
       }
     }

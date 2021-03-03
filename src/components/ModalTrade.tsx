@@ -2,8 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import theme from '../helpers/theme';
-import { CurrencyType } from '../helpers/types';
-import { modalHex, ModalHexType } from '../helpers/values';
+import { CurrencyType, ModalHexType } from '../helpers/types';
+import { modalsHex } from '../helpers/modals';
 import { buyModalHexAction } from '../state/actions';
 import { currencySelector } from '../state/selectors';
 import ModalItem from './ModalItem';
@@ -47,7 +47,7 @@ const ModalTrade = ({ modal }: ModalTradeProps) => {
   const dispatch = useDispatch();
   const currency = useSelector(currencySelector);
 
-  const modalInfo = modalHex[modal];
+  const modalInfo = modalsHex[modal];
   if (!modalInfo || modalInfo.type !== 'trade') {
     return null;
   }

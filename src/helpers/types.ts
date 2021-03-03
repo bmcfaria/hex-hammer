@@ -1,8 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
+import { modalsHex } from './modals';
 import theme from './theme';
-import { ModalHexType } from './values';
 
 export type SceneType = 'incremental' | 'secondStage';
+
+export type ModalHexType = keyof typeof modalsHex;
 
 export interface GameObjectRefType {
   mainAction: (total: number) => void;

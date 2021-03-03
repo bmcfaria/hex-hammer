@@ -1,15 +1,16 @@
 import { incrementals } from '../helpers/incrementals';
-import { BonusType, CurrencyType, NotificationType } from '../helpers/types';
+import {
+  BonusType,
+  CurrencyType,
+  ModalHexType,
+  NotificationType,
+} from '../helpers/types';
 import {
   flipsUntilRing,
   generateNotificationIncrementalBonusId,
 } from '../helpers/utils';
-import {
-  modalHex,
-  ModalHexType,
-  upgrades,
-  UpgradeType,
-} from '../helpers/values';
+import { upgrades, UpgradeType } from '../helpers/values';
+import { modalsHex } from '../helpers/modals';
 import {
   BUY_MODAL_HEX_TYPE,
   BUY_UPGRADE_TYPE,
@@ -270,7 +271,7 @@ export const reducer = (state = initialState, payload: any) => {
         prices,
         type,
         multiplier,
-      }: { prices: number[]; type: string; multiplier?: number[] } = modalHex[
+      }: { prices: number[]; type: string; multiplier?: number[] } = modalsHex[
         modalId
       ];
 

@@ -2,8 +2,8 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { GameObjectRefType } from '../helpers/types';
-import { modalHex, ModalHexType } from '../helpers/values';
+import { GameObjectRefType, ModalHexType } from '../helpers/types';
+import { modalsHex } from '../helpers/modals';
 import { incrementalsSelector, modalHexSelector } from '../state/selectors';
 import BaseModal from './BaseModal';
 import ModalExpand from './ModalExpand';
@@ -45,7 +45,7 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
       sharedBabylonObject.current.ui.openIncremental = selectedHex => {
         if (
           incrementals[selectedHex]?.unlocked ||
-          !modalHex[selectedHex as ModalHexType]
+          !modalsHex[selectedHex as ModalHexType]
         ) {
           sharedBabylonObject?.current?.changeScene?.(
             'incremental',
@@ -68,7 +68,7 @@ const Modal = ({ sharedBabylonObject }: ModalProps) => {
     return null;
   }
 
-  const modalInfo = modalHex[modal];
+  const modalInfo = modalsHex[modal];
 
   return (
     <BaseModal open={!!modal} close={close}>

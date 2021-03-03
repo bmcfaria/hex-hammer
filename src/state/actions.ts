@@ -1,5 +1,5 @@
-import { ModalHexType, UpgradeType } from '../helpers/values';
-import { CurrencyType } from '../helpers/types';
+import { UpgradeType } from '../helpers/values';
+import { CurrencyType, ModalHexType } from '../helpers/types';
 
 export const RESET_TYPE = 'RESET';
 export const resetAction = {
