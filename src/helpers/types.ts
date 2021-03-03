@@ -53,3 +53,11 @@ export interface BonusType {
     value: number;
   };
 }
+
+export interface NotificationType {
+  id: string;
+  timestamp: number;
+  type: 'inc_bonus';
+  currency: CurrencyType;
+  value: number;
+}

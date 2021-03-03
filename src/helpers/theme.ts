@@ -39,6 +39,10 @@ const theme = {
       background: 'white',
       border: baseColors.darkBlue,
     },
+    statusBarNotifications: {
+      background: 'white',
+      border: baseColors.darkBlue,
+    },
     sidebar: {
       background: baseColors.whiteBlue,
       border: baseColors.darkBlue,

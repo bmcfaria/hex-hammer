@@ -1,6 +1,9 @@
 import { incrementals } from '../helpers/incrementals';
-import { BonusType, CurrencyType } from '../helpers/types';
-import { flipsUntilRing } from '../helpers/utils';
+import { BonusType, CurrencyType, NotificationType } from '../helpers/types';
+import {
+  flipsUntilRing,
+  generateNotificationIncrementalBonusId,
+} from '../helpers/utils';
 import {
   modalHex,
   ModalHexType,
@@ -10,6 +13,7 @@ import {
 import {
   BUY_MODAL_HEX_TYPE,
   BUY_UPGRADE_TYPE,
+  DELETE_NOTIFICATION_TYPE,
   INCREMENT_TYPE,
   RESET_TYPE,
 } from './actions';
@@ -37,11 +41,14 @@ const incrementalsState: { [index: string]: IncrementalType } = {
     unlockedBonus: {},
   },
 };
+
+const notificationsState: NotificationType[] = [];
+
 const modalHexUpgrade: { [index: string]: any } = {};
 const trades: { [index: string]: any } = {};
 export const initialState = {
   currency: {
-    base: undefined as number | undefined, //Dev
+    base: 100 as number | undefined, //Dev
     red: undefined as number | undefined,
     blue: 10 as number | undefined,
     dark: undefined as number | undefined,
@@ -61,6 +68,7 @@ export const initialState = {
   },
   modalHexUpgrade,
   trades,
+  notifications: notificationsState,
 };
 
 export const reducer = (state = initialState, payload: any) => {
@@ -98,7 +106,11 @@ export const reducer = (state = initialState, payload: any) => {
         incrementValue += ~~upgrades.increment.value[upgradeValue - 1];
       }
 
-      let bonusEarned = { unlockedBonus: {}, currencies: {} };
+      let bonusEarned = {
+        unlockedBonus: {},
+        currencies: {},
+        notifications: [],
+      };
       if (incrementals[selectedHex]?.bonus) {
         bonusEarned = incrementals[selectedHex].bonus.reduce(
           (results: any, bonus: BonusType, index: number) => {
@@ -127,13 +139,26 @@ export const reducer = (state = initialState, payload: any) => {
                     ...results.currencies,
                     [bonus.reward.key]: bonus.reward.value,
                   },
+                  notifications: [
+                    ...results.notifications,
+                    {
+                      id: generateNotificationIncrementalBonusId(
+                        incrementals[selectedHex],
+                        index
+                      ),
+                      timestamp: currentTime,
+                      type: 'inc_bonus',
+                      currency: bonus.reward.key,
+                      value: bonus.reward.value,
+                    },
+                  ],
                 };
               }
             }
 
             return results;
           },
-          { unlockedBonus: {}, currencies: {} }
+          { unlockedBonus: {}, currencies: {}, notifications: [] }
         );
       }
 
@@ -176,6 +201,9 @@ export const reducer = (state = initialState, payload: any) => {
             },
           },
         },
+        ...(bonusEarned.notifications.length > 0 && {
+          notifications: [...state.notifications, ...bonusEarned.notifications],
+        }),
       };
     }
 
@@ -346,6 +374,25 @@ export const reducer = (state = initialState, payload: any) => {
             },
           },
         }),
+      };
+    }
+
+    case DELETE_NOTIFICATION_TYPE: {
+      const {
+        notificationId,
+      }: {
+        notificationId?: string;
+      } = payload;
+
+      if (!notificationId) {
+        return state;
+      }
+
+      return {
+        ...state,
+        notifications: state.notifications.filter(
+          ({ id }) => id !== notificationId
+        ),
       };
     }
 

@@ -12,6 +12,7 @@ import theme from '../helpers/theme';
 import { CurrencyType } from '../helpers/types';
 import StatusBarScreenControls from './StatusBarScreenControls';
 import PauseButton from './PauseButton';
+import StatusBarNotifications from './StatusBarNotifications';
 
 const Container = styled.div`
   position: absolute;
@@ -164,6 +165,7 @@ const StatusBar = () => {
       <PauseButton />
       <Sidebar />
       <StatusBarScreenControls />
+      <StatusBarNotifications />
     </Container>
   );
 };

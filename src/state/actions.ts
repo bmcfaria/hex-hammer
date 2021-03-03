@@ -40,3 +40,9 @@ export const buyModalHexAction = ({
   currency,
   convertTo,
 });
+
+export const DELETE_NOTIFICATION_TYPE = 'DELETE_NOTIFICATION';
+export const deleteNotificationAction = (notificationId: string) => ({
+  type: DELETE_NOTIFICATION_TYPE,
+  notificationId,
+});
