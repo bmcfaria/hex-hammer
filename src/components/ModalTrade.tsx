@@ -16,6 +16,7 @@ const Description = styled.div`
   line-height: 32px;
   border-top: 1px solid ${theme.colors.modal.border};
   border-bottom: 1px solid ${theme.colors.modal.border};
+  color: black;
 `;
 
 const ContentContainer = styled.div`

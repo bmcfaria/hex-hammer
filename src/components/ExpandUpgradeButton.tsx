@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as Chevron } from '../assets/Chevron.svg';
+import { SidebarContext } from '../helpers/context';
 import theme, { resetButtonStyles } from '../helpers/theme';
 
 const Container = styled.button<{ $active?: boolean }>`
@@ -48,15 +49,23 @@ const ExpandPanel = styled.div<{ $active?: boolean }>`
 `;
 
 interface ExpandUpgradeButtonProps {
+  id: string;
+  parentId?: string;
   text: string;
   children?: React.ReactNode;
 }
 
-const ExpandUpgradeButton = ({ text, children }: ExpandUpgradeButtonProps) => {
-  const [active, setActive] = useState(false);
+const ExpandUpgradeButton = ({
+  id,
+  parentId,
+  text,
+  children,
+}: ExpandUpgradeButtonProps) => {
+  const { category, setCategory } = useContext(SidebarContext);
+  const active = category?.includes(id);
 
   const onClick = () => {
-    setActive(!active);
+    setCategory?.(category === id ? parentId || '' : id);
   };
 
   return (

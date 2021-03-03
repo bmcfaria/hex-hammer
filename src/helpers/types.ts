@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 import theme from './theme';
 import { ModalHexType } from './values';
 
@@ -37,6 +38,11 @@ export interface GameObjectRefType {
 export interface GameObjectType {
   gameObject?: { current?: GameObjectRefType };
   scene?: SceneType;
+}
+
+export interface SidebarType {
+  category?: string;
+  setCategory?: Dispatch<SetStateAction<string>>;
 }
 
 export type CurrencyType = keyof typeof theme.currencyColors;

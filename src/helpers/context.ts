@@ -1,4 +1,5 @@
 import { createContext } from 'react';
-import { GameObjectType } from './types';
+import { GameObjectType, SidebarType } from './types';
 
 export const GameObjectContext = createContext<GameObjectType>({});
+export const SidebarContext = createContext<SidebarType>({});

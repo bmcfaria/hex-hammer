@@ -38,6 +38,7 @@ const HexLabel = styled.label`
   left: 50%;
   transform: translate(-50%, -50%);
   color: black;
+  font-size: 14px;
 `;
 
 const Button = styled.button`

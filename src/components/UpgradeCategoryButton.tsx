@@ -38,10 +38,15 @@ const UpgradeCategoryButton = ({
 
   return (
     <Container>
-      <ExpandUpgradeButton text={text}>
+      <ExpandUpgradeButton id={upgradeCategoryId} text={text}>
         {upgradeCategoryId === 'incrementals' &&
           Object.keys(incrementals).map(incremental => (
-            <ExpandUpgradeButton text={incremental} key={incremental}>
+            <ExpandUpgradeButton
+              id={`${upgradeCategoryId}_${incremental}`}
+              parentId={upgradeCategoryId}
+              text={incremental}
+              key={incremental}
+            >
               <SidebarIncrementalUpgrades selectedHex={incremental} />
             </ExpandUpgradeButton>
           ))}

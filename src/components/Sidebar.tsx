@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import SidebarButton from './SidebarButton';
 import theme from '../helpers/theme';
-import { GameObjectContext } from '../helpers/context';
+import { GameObjectContext, SidebarContext } from '../helpers/context';
 import UpgradeCategoryButton from './UpgradeCategoryButton';
 import SidebarIncrementalUpgrades from './SidebarIncrementalUpgrades';
 
@@ -33,6 +33,7 @@ const SidebarContainer = styled.div`
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const { gameObject, scene } = useContext(GameObjectContext);
+  const [category, setCategory] = useState('');
 
   if (scene === 'secondStage') {
   }
@@ -42,7 +43,7 @@ const Sidebar = () => {
   };
 
   return (
-    <>
+    <SidebarContext.Provider value={{ category, setCategory }}>
       <SidebarButton active={open} onClick={onClickOpen} />
       <Container $open={open}>
         <SidebarContainer>
@@ -60,7 +61,7 @@ const Sidebar = () => {
           )}
         </SidebarContainer>
       </Container>
-    </>
+    </SidebarContext.Provider>
   );
 };
 

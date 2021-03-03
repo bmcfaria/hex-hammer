@@ -114,7 +114,7 @@ export const reducer = (state = initialState, payload: any) => {
       if (incrementals[selectedHex]?.bonus) {
         bonusEarned = incrementals[selectedHex].bonus.reduce(
           (results: any, bonus: BonusType, index: number) => {
-            if (currentSelectedHex.unlockedBonus[index]) {
+            if (currentSelectedHex.unlockedBonus?.[index]) {
               return results;
             }
 
