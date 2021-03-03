@@ -47,12 +47,13 @@ const CurrencyContainer = styled.div`
 const HexAndValue = styled.div`
   display: flex;
   align-items: center;
+  margin: 0 4px;
 `;
 
 const HexCurrency = styled(Hex)<{ $currency: CurrencyType }>`
   width: auto;
   height: 20px;
-  margin: 0 4px 0 8px;
+  margin: 0 4px;
   ${({ $currency }) => `color: ${theme.currencyColors[$currency]};`}
 `;
 

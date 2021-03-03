@@ -1,21 +1,18 @@
 import styled from 'styled-components';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
-import theme from '../helpers/theme';
+import theme, { resetButtonStyles } from '../helpers/theme';
 
 const Button = styled.button<{
   $side: 'left' | 'right';
   $customZIndex?: number;
 }>`
+  ${resetButtonStyles}
   position: absolute;
   top: 0;
   ${({ $side }) => ($side === 'left' ? 'left: -20px' : '')};
   ${({ $side }) => ($side === 'right' ? 'right: -20px' : '')};
   width: 69px;
   height: 60px;
-  border: none;
-  padding: 0;
-  background: none;
-  outline: none;
   z-index: ${({ $customZIndex }) => $customZIndex || 1};
 
   &:hover > [data-background] {

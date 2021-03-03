@@ -93,6 +93,7 @@ export const resetButtonStyles = `
   background: none;
   outline: none;
   font: unset;
+  cursor: pointer;
 `;
 
 export default theme;

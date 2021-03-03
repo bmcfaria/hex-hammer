@@ -2,15 +2,12 @@ import styled from 'styled-components';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { CurrencyType } from '../helpers/types';
-import theme from '../helpers/theme';
+import theme, { resetButtonStyles } from '../helpers/theme';
 
 const ButtonContainer = styled.button`
+  ${resetButtonStyles}
   width: auto;
   height: 40px;
-  border: none;
-  padding: 0;
-  background: none;
-  outline: none;
   position: relative;
   vertical-align: top;
 `;

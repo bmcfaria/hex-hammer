@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import theme from '../helpers/theme';
+import theme, { resetButtonStyles } from '../helpers/theme';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { ReactComponent as Minus } from '../assets/Minus.svg';
 import { ReactComponent as Plus } from '../assets/Plus.svg';
@@ -13,13 +13,10 @@ const Container = styled.div`
 `;
 
 const Button = styled.button`
+  ${resetButtonStyles}
   position: relative;
   width: auto;
   height: 40px;
-  border: none;
-  padding: 0;
-  background: none;
-  outline: none;
   margin: 8px 0 0 0;
   display: block;
 

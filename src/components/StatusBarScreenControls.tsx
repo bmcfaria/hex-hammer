@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { ReactComponent as Up } from '../assets/Up.svg';
-import theme from '../helpers/theme';
+import theme, { resetButtonStyles } from '../helpers/theme';
 import { useContext, useState } from 'react';
 import { GameObjectContext } from '../helpers/context';
 import { incrementals } from '../helpers/incrementals';
@@ -41,13 +41,10 @@ const HexLabel = styled.label`
 `;
 
 const Button = styled.button`
+  ${resetButtonStyles}
   position: relative;
   width: auto;
   height: 100%;
-  border: none;
-  padding: 0;
-  background: none;
-  outline: none;
   margin: 0 8px;
 
   &:hover > [data-background] {

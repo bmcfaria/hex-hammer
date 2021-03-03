@@ -8,25 +8,31 @@ import { ReactComponent as HexRectangleWithShadow } from '../assets/HexRectangle
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { upgrades } from '../helpers/values';
 import { GameObjectContext } from '../helpers/context';
-import theme from '../helpers/theme';
+import theme, { resetButtonStyles } from '../helpers/theme';
 
 const Container = styled.div`
   position: absolute;
   width: 100%;
-  bottom: 10%;
+  height: auto;
+  bottom: 60px;
+  display: flex;
+  justify-content: center;
 `;
 
 const Button = styled.button`
+  ${resetButtonStyles}
   position: relative;
-  width: 310px;
-  height: 100px;
-  border: none;
-  padding: 0;
-  background: none;
-  outline: none;
+  width: 188px;
+  height: auto;
+  min-height: 60px;
 
   &:hover [data-button-shadow] {
     visibility: hidden;
+  }
+
+  @media only screen and (min-width: 768px) {
+    width: 310px;
+    min-height: 100px;
   }
 `;
 
@@ -43,6 +49,8 @@ const HexGrowing = styled(HexRectangle)<{
     $startAnimation ? 'hex-growing-animation' : 'none'};
   animation-duration: ${({ $interval }) => $interval}s;
   animation-timing-function: linear;
+  width: 100%;
+  height: auto;
 
   @keyframes hex-growing-animation {
     from {
@@ -59,6 +67,7 @@ const HexBackgroundShadow = styled(HexRectangleWithShadow)`
   top: 0;
   left: 0;
   width: 100%;
+  height: auto;
 `;
 
 const HexBackground = styled(HexRectangle)`
@@ -67,6 +76,8 @@ const HexBackground = styled(HexRectangle)`
   left: 0;
   fill: ${theme.colors.hammerButton.background};
   stroke: none;
+  width: 100%;
+  height: auto;
 `;
 
 const HexBorder = styled(HexRectangle)`
@@ -74,20 +85,28 @@ const HexBorder = styled(HexRectangle)`
   top: 0;
   left: 0;
   stroke: ${theme.colors.hammerButton.border};
+  width: 100%;
+  height: auto;
 `;
 
 const AutoContainer = styled.div`
   display: flex;
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 4px;
+  right: 4px;
   width: auto;
-  height: 84px;
+  height: calc(100% - 2 * 4px);
+
+  @media only screen and (min-width: 768px) {
+    top: 8px;
+    right: 8px;
+    height: calc(100% - 2 * 8px);
+  }
 `;
 
 const AutoHex = styled(Hex)`
   width: auto;
-  height: 84px;
+  height: 100%;
   color: ${theme.colors.hammerButton.backgroundAuto};
 `;
 
@@ -101,7 +120,11 @@ const AutoTex = styled.div`
   align-items: center;
   justify-content: center;
   z-index: ${theme.zIndex.mainButton};
-  font-size: 18px;
+  font-size: 16px;
+
+  @media only screen and (min-width: 768px) {
+    font-size: 18px;
+  }
 `;
 
 interface HammerButtonProps {
