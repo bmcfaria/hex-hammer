@@ -57,7 +57,7 @@ const theme = {
       background: 'white',
       backgroundSecondary: baseColors.whiteBlue,
       border: baseColors.darkBlue,
-      expandHex: '#0000ff',
+      expandHex: baseColors.lightBlue,
       infoOddBackground: baseColors.whiteBlue,
     },
   },
