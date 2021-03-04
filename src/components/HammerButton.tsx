@@ -2,13 +2,15 @@ import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { incrementAction } from '../state/actions';
-import { incrementalsSelector } from '../state/selectors';
+import { incrementalsSelector, tutorialSelector } from '../state/selectors';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as HexRectangleWithShadow } from '../assets/HexRectangleWithShadow.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
+import { ReactComponent as Arrow } from '../assets/Arrow.svg';
 import { upgrades } from '../helpers/values';
 import { GameObjectContext } from '../helpers/context';
 import theme, { resetButtonStyles } from '../helpers/theme';
+import stringsObject from '../helpers/strings.json';
 
 const Container = styled.div`
   position: absolute;
@@ -127,6 +129,35 @@ const AutoTex = styled.div`
   }
 `;
 
+const TutorialContainer = styled.div`
+  position: absolute;
+  left: 50%;
+  bottom: 80px;
+  width: 200px;
+  height: auto;
+  transform: translate(-50%);
+
+  @media only screen and (min-width: 768px) {
+    bottom: 124px;
+  }
+`;
+
+const TutorialTextContainer = styled.div`
+  max-width: 100%;
+  padding: 20px;
+  background-color: ${theme.colors.tutorial.textContainer.background};
+  border: 4px solid ${theme.colors.tutorial.textContainer.border};
+  margin-bottom: 16px;
+
+  @media only screen and (min-width: 768px) {
+    margin-bottom: 20px;
+  }
+`;
+
+const ArrowStyled = styled(Arrow)`
+  transform: rotate(135deg);
+`;
+
 interface HammerButtonProps {
   sharedBabylonObject: any;
 }
@@ -134,6 +165,7 @@ interface HammerButtonProps {
 const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const dispatch = useDispatch();
   const incrementals = useSelector(incrementalsSelector);
+  const { mainButton: showTutorial } = useSelector(tutorialSelector);
 
   const incrementalUpgrades =
     incrementals[sharedBabylonObject?.current?.selectedHex]?.upgrades;
@@ -241,6 +273,14 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
           </AutoContainer>
         )}
       </Button>
+      {showTutorial && (
+        <TutorialContainer>
+          <TutorialTextContainer>
+            {stringsObject.tutorial.mainButton}
+          </TutorialTextContainer>
+          <ArrowStyled />
+        </TutorialContainer>
+      )}
     </Container>
   );
 };

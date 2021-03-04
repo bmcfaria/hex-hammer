@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { ReactComponent as Up } from '../assets/Up.svg';
+import { ReactComponent as Arrow } from '../assets/Arrow.svg';
 import theme, { resetButtonStyles } from '../helpers/theme';
 import { useContext, useState } from 'react';
 import { GameObjectContext } from '../helpers/context';
@@ -9,6 +10,9 @@ import { incrementals } from '../helpers/incrementals';
 import BaseModal from './BaseModal';
 import ModalInfo from './ModalInfo';
 import useUIVisibility from '../hooks/useUIVisibility';
+import { useDispatch, useSelector } from 'react-redux';
+import { tutorialSelector } from '../state/selectors';
+import { disableTutorialAction } from '../state/actions';
 
 const Container = styled.div`
   position: absolute;
@@ -93,9 +97,20 @@ const Name = styled.div`
   line-height: 40px;
 `;
 
+const ArrowStyled = styled(Arrow)`
+  position: absolute;
+  top: 36px;
+  right: 40px;
+`;
+
 const StatusBarScreenControls = () => {
   const [infoOpen, setInfoOpen] = useState(false);
   const { gameObject, scene } = useContext(GameObjectContext);
+  const {
+    statusBarControlsInfo: showInfoTutorial,
+    statusBarControlsGoUp: showGoUpTutorial,
+  } = useSelector(tutorialSelector);
+  const dispatch = useDispatch();
   const visibility = useUIVisibility()?.statusBar?.controls;
 
   if (scene !== 'incremental') {
@@ -103,12 +118,18 @@ const StatusBarScreenControls = () => {
   }
 
   const up = () => {
+    if (showGoUpTutorial) {
+      dispatch(disableTutorialAction('statusBarControlsGoUp'));
+    }
     if (gameObject?.current) {
       gameObject.current?.changeScene('secondStage');
     }
   };
 
   const openInfo = () => {
+    if (showInfoTutorial) {
+      dispatch(disableTutorialAction('statusBarControlsInfo'));
+    }
     setInfoOpen(true);
   };
 
@@ -129,6 +150,7 @@ const StatusBarScreenControls = () => {
             <IconContainer data-icon>
               <Up />
             </IconContainer>
+            {showGoUpTutorial && <ArrowStyled />}
           </Button>
         )}
         {visibility.name && (
@@ -143,6 +165,7 @@ const StatusBarScreenControls = () => {
             <IconContainer data-icon>
               <InfoIcon>i</InfoIcon>
             </IconContainer>
+            {showInfoTutorial && <ArrowStyled />}
           </Button>
         )}
       </Container>

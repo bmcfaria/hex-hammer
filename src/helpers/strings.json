@@ -25,5 +25,8 @@
       "title": "Unlock",
       "description": ""
     }
+  },
+  "tutorial": {
+    "mainButton": "Click or Long press"
   }
 }

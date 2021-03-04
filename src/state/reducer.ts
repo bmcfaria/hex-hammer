@@ -15,6 +15,7 @@ import {
   BUY_MODAL_HEX_TYPE,
   BUY_UPGRADE_TYPE,
   DELETE_NOTIFICATION_TYPE,
+  DISABLE_TUTORIAL_TYPE,
   INCREMENT_TYPE,
   RESET_TYPE,
 } from './actions';
@@ -48,6 +49,7 @@ const notificationsState: NotificationType[] = [];
 const modalHexUpgrade: { [index: string]: any } = {};
 const trades: { [index: string]: any } = {};
 export const initialState = {
+  devMode: false,
   currency: {
     base: undefined as number | undefined,
     red: undefined as number | undefined,
@@ -70,6 +72,11 @@ export const initialState = {
   modalHexUpgrade,
   trades,
   notifications: notificationsState,
+  tutorial: {
+    mainButton: true,
+    statusBarControlsInfo: true,
+    statusBarControlsGoUp: true,
+  },
 };
 
 export const reducer = (state = initialState, payload: any) => {
@@ -205,6 +212,10 @@ export const reducer = (state = initialState, payload: any) => {
         ...(bonusEarned.notifications.length > 0 && {
           notifications: [...state.notifications, ...bonusEarned.notifications],
         }),
+        tutorial: {
+          ...state.tutorial,
+          mainButton: false,
+        },
       };
     }
 
@@ -394,6 +405,26 @@ export const reducer = (state = initialState, payload: any) => {
         notifications: state.notifications.filter(
           ({ id }) => id !== notificationId
         ),
+      };
+    }
+
+    case DISABLE_TUTORIAL_TYPE: {
+      const {
+        tutorialKey,
+      }: {
+        tutorialKey: string;
+      } = payload;
+
+      if (!tutorialKey) {
+        return state;
+      }
+
+      return {
+        ...state,
+        tutorial: {
+          ...state.tutorial,
+          [tutorialKey]: false,
+        },
       };
     }
 

@@ -1,10 +1,11 @@
 import { useSelector } from 'react-redux';
 import { incrementals } from '../helpers/incrementals';
 import { flipsUntilRing } from '../helpers/utils';
-import { incrementalsSelector } from '../state/selectors';
+import { devModeSelector, incrementalsSelector } from '../state/selectors';
 
 const useUIVisibility = () => {
   const incrementalsState = useSelector(incrementalsSelector);
+  const devMode = useSelector(devModeSelector);
 
   const didBreakFree =
     incrementalsState?.hex_0_0?.total >=
@@ -18,9 +19,9 @@ const useUIVisibility = () => {
       controls: {
         info:
           incrementalsState?.hex_0_0?.total >=
-          flipsUntilRing(incrementals.hex_0_0.flipsToExpand, 2),
-        name: didBreakFree,
-        up: didBreakFree || true,
+            flipsUntilRing(incrementals.hex_0_0.flipsToExpand, 1) || devMode,
+        name: didBreakFree || devMode,
+        up: didBreakFree || devMode,
       },
     },
   };

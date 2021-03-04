@@ -46,3 +46,9 @@ export const deleteNotificationAction = (notificationId: string) => ({
   type: DELETE_NOTIFICATION_TYPE,
   notificationId,
 });
+
+export const DISABLE_TUTORIAL_TYPE = 'DISABLE_TUTORIAL';
+export const disableTutorialAction = (tutorialKey: string) => ({
+  type: DISABLE_TUTORIAL_TYPE,
+  tutorialKey,
+});
