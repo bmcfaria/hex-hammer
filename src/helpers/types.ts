@@ -23,6 +23,7 @@ export interface GameObjectRefType {
     openIncremental: (id: string) => void;
     zoomIn: () => void;
     zoomOut: () => void;
+    setZoom: (value: number) => void;
     center: () => void;
     setSecondStageCoordinates: (x: number, z: number) => void;
   };

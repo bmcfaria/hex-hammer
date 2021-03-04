@@ -7,6 +7,7 @@ import {
   createLatheHex,
   createCenterPolygon,
 } from './GroundHex';
+import { zoomLimit } from '../helpers/values';
 
 const modalMaterialMapping = {
   incremental: 'material_incremental',
@@ -126,13 +127,15 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
 
   sharedBabylonObject.current.ui.zoomIn = () => {
     // Zoom in limit
-    if (camera.radius >= 30) {
+    if (camera.radius >= zoomLimit) {
       camera.radius -= 15;
+      sharedBabylonObject?.current?.ui?.setZoom?.(camera.radius);
     }
   };
 
   sharedBabylonObject.current.ui.zoomOut = () => {
     camera.radius += 15;
+    sharedBabylonObject?.current?.ui?.setZoom?.(camera.radius);
   };
 
   sharedBabylonObject.current.ui.center = () => {
@@ -260,6 +263,7 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
     // This targets the camera to scene origin
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.radius = 15;
+    sharedBabylonObject?.current?.ui?.setZoom?.(camera.radius);
   }
 
   // Initialize colors for the last ring

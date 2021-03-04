@@ -30,4 +30,6 @@ export const upgrades = {
   },
 };
 
+export const zoomLimit = 30;
+
 export type UpgradeType = keyof typeof upgrades;

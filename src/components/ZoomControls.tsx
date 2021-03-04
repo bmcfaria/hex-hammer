@@ -61,7 +61,7 @@ const Circle = styled.div`
 
 const ZoomControls = () => {
   const { scene } = useContext(GameObjectContext);
-  const { center, minus, plus, isCentered } = useUIControl();
+  const { center, minus, plus, isCentered, isMaxZoom } = useUIControl();
 
   if (scene !== 'secondStage') {
     return null;
@@ -77,12 +77,14 @@ const ZoomControls = () => {
           </IconContainer>
         </Button>
       )}
-      <Button onClick={plus}>
-        <HexStyled data-background />
-        <IconContainer data-icon>
-          <Plus />
-        </IconContainer>
-      </Button>
+      {!isMaxZoom && (
+        <Button onClick={plus}>
+          <HexStyled data-background />
+          <IconContainer data-icon>
+            <Plus />
+          </IconContainer>
+        </Button>
+      )}
       <Button onClick={minus}>
         <HexStyled data-background />
         <IconContainer data-icon>
