@@ -69,11 +69,12 @@ export const turnRingAnimation = (
 export const turnRingsAnimations = (
   total: number,
   polygonsObject: BABYLON.TransformNode[][],
-  scene: Scene
+  scene: Scene,
+  flipsToExpand: number
 ) => {
   polygonsObject.forEach((_, ring) => {
-    if (total > 0 && total % flipsUntilRing(5, ring + 1) === 0) {
-      const numberOfTurns = ~~(total / flipsUntilRing(5, ring + 1));
+    if (total > 0 && total % flipsUntilRing(flipsToExpand, ring + 1) === 0) {
+      const numberOfTurns = ~~(total / flipsUntilRing(flipsToExpand, ring + 1));
       turnRingAnimation(
         polygonsObject,
         ring,

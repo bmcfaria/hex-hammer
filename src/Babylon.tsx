@@ -57,7 +57,7 @@ const Babylon = (props: BabylonjsProps) => {
 
       if (sharedBabylonObject.current) {
         sharedBabylonObject.current.updateIncrementalState = total => {
-          updateIncrementalState(incrementalScene, total);
+          updateIncrementalState(incrementalScene, total, sharedBabylonObject);
         };
       }
 

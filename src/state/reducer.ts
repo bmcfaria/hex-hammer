@@ -49,11 +49,11 @@ const notificationsState: NotificationType[] = [];
 const modalHexUpgrade: { [index: string]: any } = {};
 const trades: { [index: string]: any } = {};
 export const initialState = {
-  devMode: false,
+  devMode: true,
   currency: {
     base: undefined as number | undefined,
     red: undefined as number | undefined,
-    blue: undefined as number | undefined,
+    blue: 100 as number | undefined,
     dark: undefined as number | undefined,
   },
   incrementals: incrementalsState,

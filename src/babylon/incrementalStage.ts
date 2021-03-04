@@ -3,6 +3,7 @@ import { Scene } from '@babylonjs/core';
 import { incrementals } from '../helpers/incrementals';
 import { babylonTheme } from '../helpers/theme';
 import { flipsUntilRing } from '../helpers/utils';
+import { GameObjectRefType } from '../helpers/types';
 import {
   buildGround,
   turnCentralAnimation,
@@ -62,10 +63,14 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
       scene
     );
 
-    turnRingsAnimations(total, polygonsObject, scene);
+    const { flipsToExpand } = incrementals[
+      sharedBabylonObject?.current?.selectedHex
+    ];
+
+    turnRingsAnimations(total, polygonsObject, scene, flipsToExpand);
 
     if (total >= 1) {
-      camera.radius = cameraRadiusValue(total);
+      camera.radius = cameraRadiusValue(total, flipsToExpand);
     }
   };
 
@@ -77,7 +82,11 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   return scene;
 };
 
-export const updateIncrementalState = (scene: Scene, total: number) => {
+export const updateIncrementalState = (
+  scene: Scene,
+  total: number,
+  sharedBabylonObject: { current?: GameObjectRefType }
+) => {
   const centralMesh = scene.getMeshByName('polygon');
 
   if (!centralMesh) {
@@ -108,9 +117,15 @@ export const updateIncrementalState = (scene: Scene, total: number) => {
 
   // Update camera distance
   if (total > 0) {
+    const { flipsToExpand } = incrementals[
+      sharedBabylonObject?.current?.selectedHex || ''
+    ];
     (scene.getCameraByName(
       'camera'
-    ) as BABYLON.ArcRotateCamera).radius = cameraRadiusValue(total);
+    ) as BABYLON.ArcRotateCamera).radius = cameraRadiusValue(
+      total,
+      flipsToExpand
+    );
   } else {
     (scene.getCameraByName('camera') as BABYLON.ArcRotateCamera).radius = 15;
   }
@@ -146,8 +161,8 @@ const updateBonusHexes = (scene: Scene, total: number) => {
   }
 };
 
-const cameraRadiusValue = (total: number) =>
-  15 + ~~(Math.log(total) / Math.log(5)) * 15;
+const cameraRadiusValue = (total: number, flipsToExpand: number) =>
+  15 + ~~(Math.log(total) / Math.log(flipsToExpand)) * 15;
 
 const initialize = (scene: Scene) => {
   // Hide every hex
