@@ -8,6 +8,7 @@ import { GameObjectContext } from '../helpers/context';
 import { incrementals } from '../helpers/incrementals';
 import BaseModal from './BaseModal';
 import ModalInfo from './ModalInfo';
+import useUIVisibility from '../hooks/useUIVisibility';
 
 const Container = styled.div`
   position: absolute;
@@ -95,6 +96,7 @@ const Name = styled.div`
 const StatusBarScreenControls = () => {
   const [infoOpen, setInfoOpen] = useState(false);
   const { gameObject, scene } = useContext(GameObjectContext);
+  const visibility = useUIVisibility()?.statusBar?.controls;
 
   if (scene !== 'incremental') {
     return null;
@@ -121,22 +123,28 @@ const StatusBarScreenControls = () => {
   return (
     <>
       <Container>
-        <Button onClick={up}>
-          <HexStyled data-background />
-          <IconContainer data-icon>
-            <Up />
-          </IconContainer>
-        </Button>
-        <HexLabelContainer>
-          <HexRectangleStyled />
-          <HexLabel>{text}</HexLabel>
-        </HexLabelContainer>
-        <Button onClick={openInfo}>
-          <HexStyled data-background />
-          <IconContainer data-icon>
-            <InfoIcon>i</InfoIcon>
-          </IconContainer>
-        </Button>
+        {visibility.up && (
+          <Button onClick={up}>
+            <HexStyled data-background />
+            <IconContainer data-icon>
+              <Up />
+            </IconContainer>
+          </Button>
+        )}
+        {visibility.name && (
+          <HexLabelContainer>
+            <HexRectangleStyled />
+            <HexLabel>{text}</HexLabel>
+          </HexLabelContainer>
+        )}
+        {visibility.info && (
+          <Button onClick={openInfo}>
+            <HexStyled data-background />
+            <IconContainer data-icon>
+              <InfoIcon>i</InfoIcon>
+            </IconContainer>
+          </Button>
+        )}
       </Container>
       <BaseModal open={infoOpen} close={closeInfo}>
         <InfoModalContainer>

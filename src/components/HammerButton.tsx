@@ -153,11 +153,13 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
 
   useEffect(() => {
     const countDown = setInterval(() => {
-      if (autoValue > 1) {
+      if (autoValue > 0) {
         const tmpTimeLeft = new Date().getTime() - lastCounter;
         setAutoTimeLeft(tmpTimeLeft);
 
-        setStartAnimation(true);
+        if (upgrades.auto.value[autoValue - 1] * 1000 - tmpTimeLeft < 100) {
+          setStartAnimation(true);
+        }
       }
     }, 100);
 
