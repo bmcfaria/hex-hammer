@@ -5,6 +5,7 @@ import { ReactComponent as Minus } from '../assets/Minus.svg';
 import { ReactComponent as Plus } from '../assets/Plus.svg';
 import { useContext } from 'react';
 import { GameObjectContext } from '../helpers/context';
+import useUIControl from '../hooks/useUIControl';
 
 const Container = styled.div`
   position: fixed;
@@ -28,6 +29,10 @@ const Button = styled.button`
   &:hover > [data-icon] > svg {
     color: ${theme.colors.statusBar.buttons.iconHover};
   }
+
+  &:hover > [data-icon] > [data-circle] {
+    background-color: ${theme.colors.statusBar.buttons.iconHover};
+  }
 `;
 
 const HexStyled = styled(Hex)`
@@ -47,23 +52,31 @@ const IconContainer = styled.div`
   justify-content: center;
 `;
 
+const Circle = styled.div`
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background-color: black;
+`;
+
 const ZoomControls = () => {
-  const { gameObject, scene } = useContext(GameObjectContext);
+  const { scene } = useContext(GameObjectContext);
+  const { center, minus, plus, isCentered } = useUIControl();
 
   if (scene !== 'secondStage') {
     return null;
   }
 
-  const minus = () => {
-    gameObject?.current?.ui?.zoomOut?.();
-  };
-
-  const plus = () => {
-    gameObject?.current?.ui?.zoomIn?.();
-  };
-
   return (
     <Container>
+      {!isCentered && (
+        <Button onClick={center}>
+          <HexStyled data-background />
+          <IconContainer data-icon>
+            <Circle data-circle />
+          </IconContainer>
+        </Button>
+      )}
       <Button onClick={plus}>
         <HexStyled data-background />
         <IconContainer data-icon>

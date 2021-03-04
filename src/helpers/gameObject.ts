@@ -16,6 +16,8 @@ export const initializeGameObject = (gameObject: any) => {
     gameObject.current.ui.openIncremental = undefined;
     gameObject.current.ui.zoomIn = undefined;
     gameObject.current.ui.zoomOut = undefined;
+    gameObject.current.ui.center = undefined;
+    gameObject.current.ui.setSecondStageCoordinates = undefined;
 
     gameObject.current.modalHexValues = {};
 

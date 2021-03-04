@@ -20,7 +20,7 @@ const useUIVisibility = () => {
           incrementalsState?.hex_0_0?.total >=
           flipsUntilRing(incrementals.hex_0_0.flipsToExpand, 2),
         name: didBreakFree,
-        up: didBreakFree,
+        up: didBreakFree || true,
       },
     },
   };

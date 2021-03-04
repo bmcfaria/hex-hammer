@@ -49,7 +49,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   const parentNode = new BABYLON.TransformNode('secondStageParent', scene);
 
   // Initialize camera
-  const camera = initializeCamera(scene, parentNode);
+  const camera = initializeCamera(scene, parentNode, sharedBabylonObject);
 
   // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
   let light = new BABYLON.HemisphericLight(
@@ -135,6 +135,14 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     camera.radius += 15;
   };
 
+  sharedBabylonObject.current.ui.center = () => {
+    camera.target.subtractInPlace(camera.target);
+    sharedBabylonObject.current.ui.setSecondStageCoordinates(
+      camera.target.x,
+      camera.target.z
+    );
+  };
+
   // Set the node parent in all meshes (except central that already has it)
   [...Array(5)].forEach((_, ring) =>
     [...Array(6 * (ring + 1))].forEach((_, index) => {
@@ -152,7 +160,11 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   return scene;
 };
 
-const initializeCamera = (scene: Scene, parentNode: BABYLON.TransformNode) => {
+const initializeCamera = (
+  scene: Scene,
+  parentNode: BABYLON.TransformNode,
+  sharedBabylonObject: any
+) => {
   const camera = new BABYLON.ArcRotateCamera(
     'camera_map',
     -Math.PI / 2,
@@ -202,6 +214,11 @@ const initializeCamera = (scene: Scene, parentNode: BABYLON.TransformNode) => {
         diff.y = 0; // Disable Y-axis panning.
 
         camera.target.subtractInPlace(diff);
+
+        sharedBabylonObject.current.ui.setSecondStageCoordinates(
+          camera.target.x,
+          camera.target.z
+        );
       }
     }
   };
