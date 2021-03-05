@@ -121,7 +121,6 @@ const AutoTex = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: ${theme.zIndex.mainButton};
   font-size: 16px;
 
   @media only screen and (min-width: 768px) {

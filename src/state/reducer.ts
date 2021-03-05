@@ -51,7 +51,7 @@ const trades: { [index: string]: any } = {};
 export const initialState = {
   devMode: true,
   currency: {
-    base: 100 as number | undefined,
+    base: 100000 as number | undefined,
     red: undefined as number | undefined,
     blue: 10 as number | undefined,
     dark: undefined as number | undefined,
