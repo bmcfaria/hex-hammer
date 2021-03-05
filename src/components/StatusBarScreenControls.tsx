@@ -101,6 +101,8 @@ const ArrowStyled = styled(Arrow)`
   position: absolute;
   top: 36px;
   right: 40px;
+  width: 48px;
+  height: auto;
 `;
 
 const StatusBarScreenControls = () => {

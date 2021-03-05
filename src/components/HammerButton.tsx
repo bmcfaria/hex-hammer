@@ -156,6 +156,7 @@ const TutorialTextContainer = styled.div`
 
 const ArrowStyled = styled(Arrow)`
   transform: rotate(135deg);
+  height: auto;
 `;
 
 interface HammerButtonProps {

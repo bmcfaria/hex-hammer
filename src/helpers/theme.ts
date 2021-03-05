@@ -44,11 +44,14 @@ const theme = {
       border: baseColors.darkBlue,
     },
     sidebar: {
-      background: baseColors.whiteBlue,
-      border: baseColors.darkBlue,
+      background: baseColors.darkBlue,
+      borderTop: baseColors.whiteBlue,
+      borderLeft: baseColors.whiteBlue,
+      borderLeftOut: baseColors.darkBlue,
     },
     upgradeButtons: {
-      border: baseColors.darkBlue,
+      containerBackground: baseColors.whiteBlue,
+      border: baseColors.whiteBlue,
       borderHover: baseColors.orange,
       icon: 'black',
       iconHover: baseColors.orange,

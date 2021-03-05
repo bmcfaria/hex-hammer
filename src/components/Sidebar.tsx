@@ -6,7 +6,7 @@ import { GameObjectContext, SidebarContext } from '../helpers/context';
 import UpgradeCategoryButton from './UpgradeCategoryButton';
 import SidebarIncrementalUpgrades from './SidebarIncrementalUpgrades';
 
-const SIDEBAR_WIDTH = 300;
+const SIDEBAR_WIDTH = 212;
 
 const Container = styled.div<{ $open: boolean }>`
   position: absolute;
@@ -22,12 +22,22 @@ const SidebarContainer = styled.div`
   top: 60px;
   right: -${SIDEBAR_WIDTH + 4}px;
   width: ${SIDEBAR_WIDTH}px;
-  height: auto;
+  height: calc(100vh - 60px);
   background-color: ${theme.colors.sidebar.background};
-  border-left: 4px solid ${theme.colors.sidebar.border};
-  border-bottom: 4px solid ${theme.colors.sidebar.border};
+  border-top: 4px solid ${theme.colors.sidebar.borderTop};
+  border-left: 4px solid ${theme.colors.sidebar.borderLeft};
   padding-bottom: 8px;
   z-index: ${theme.zIndex.sidebar};
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: -4px;
+    width: 4px;
+    height: 100%;
+    background-color: ${theme.colors.sidebar.borderLeftOut};
+  }
 `;
 
 const Sidebar = () => {

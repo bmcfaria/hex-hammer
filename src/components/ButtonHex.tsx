@@ -10,6 +10,10 @@ const ButtonContainer = styled.button`
   height: 40px;
   position: relative;
   vertical-align: top;
+
+  &:hover [data-button-hex-background] {
+    stroke: ${theme.colors.upgradeButtons.borderHover};
+  }
 `;
 
 const HexRectangleStyled = styled(HexRectangle)`
