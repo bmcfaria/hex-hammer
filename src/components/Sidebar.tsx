@@ -51,6 +51,19 @@ const ArrowStyled = styled(Arrow)`
   right: 40px;
   width: 48px;
   height: auto;
+
+  animation: sidebar-arrow-animation infinite 1s linear alternate;
+
+  @keyframes sidebar-arrow-animation {
+    from {
+      top: 52px;
+      right: 40px;
+    }
+    to {
+      top: 72px;
+      right: 60px;
+    }
+  }
 `;
 
 const Sidebar = () => {
