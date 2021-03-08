@@ -9,19 +9,26 @@ import theme, { resetButtonStyles } from '../helpers/theme';
 import { CurrencyType } from '../helpers/types';
 import { formatMoney } from '../helpers/utils';
 
-const ButtonContainer = styled.button`
+const ButtonContainer = styled.button<{ $disabled: boolean }>`
   ${resetButtonStyles}
   width: 208px;
   height: 68px;
-  background-color: ${theme.colors.upgradeButtons.containerBackground};
+  background-color: ${({ $disabled }) =>
+    $disabled
+      ? theme.colors.upgradeButtons.containerBackgroundDisabled
+      : theme.colors.upgradeButtons.containerBackground};
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 8px;
   position: relative;
+  ${({ $disabled }) => ($disabled ? 'cursor: unset;' : '')}
 
   &:hover [data-button-hex-background] {
-    stroke: ${theme.colors.upgradeButtons.borderHover};
+    ${({ $disabled }) =>
+      $disabled
+        ? 'cursor: unset;'
+        : `stroke: ${theme.colors.upgradeButtons.borderHover};`}
   }
 `;
 
@@ -106,7 +113,11 @@ const UpgradeButton = ({ upgradeId, selectedHex }: UpgradeButtonProps) => {
   };
 
   return (
-    <ButtonContainer onClick={onClick} disabled={currencies[currency] < price}>
+    <ButtonContainer
+      onClick={onClick}
+      $disabled={currencies[currency] < price || !price}
+      disabled={currencies[currency] < price}
+    >
       <HexRectangleStyled data-button-hex-background />
       <InfoContainer>
         <TextContainer>

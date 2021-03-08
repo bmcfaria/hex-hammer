@@ -5,6 +5,7 @@ import ExpandUpgradeButton from './ExpandUpgradeButton';
 import SidebarIncrementalUpgrades from './SidebarIncrementalUpgrades';
 import ModalTrade from './ModalTrade';
 import { ModalHexType, UpgradeCategoryType } from '../helpers/types';
+import { incrementals } from '../helpers/incrementals';
 
 const Container = styled.div`
   width: 100%;
@@ -18,7 +19,7 @@ interface UpgradeCategoryButtonProps {
 const UpgradeCategoryButton = ({
   upgradeCategoryId,
 }: UpgradeCategoryButtonProps) => {
-  const incrementals = useSelector(incrementalsSelector);
+  const incrementalsState = useSelector(incrementalsSelector);
   const trades = useSelector(tradesSelector);
 
   let text = '';
@@ -39,11 +40,11 @@ const UpgradeCategoryButton = ({
     <Container>
       <ExpandUpgradeButton id={upgradeCategoryId} text={text}>
         {upgradeCategoryId === 'incrementals' &&
-          Object.keys(incrementals).map(incremental => (
+          Object.keys(incrementalsState).map(incremental => (
             <ExpandUpgradeButton
               id={`${upgradeCategoryId}_${incremental}`}
               parentId={upgradeCategoryId}
-              text={incremental}
+              text={incrementals[incremental].name}
               key={incremental}
             >
               <SidebarIncrementalUpgrades selectedHex={incremental} showInfo />

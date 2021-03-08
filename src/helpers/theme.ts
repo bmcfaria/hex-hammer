@@ -4,6 +4,7 @@ const baseColors = {
   whiteBlue: '#E0FBFC',
   orange: '#EE6C4D',
   darkBlue: '#293241',
+  gray: '#C4C4C4',
 };
 
 const theme = {
@@ -57,6 +58,7 @@ const theme = {
     },
     upgradeButtons: {
       containerBackground: baseColors.whiteBlue,
+      containerBackgroundDisabled: baseColors.gray,
       border: baseColors.whiteBlue,
       borderHover: baseColors.orange,
       icon: 'black',
