@@ -5,6 +5,11 @@ import theme from '../helpers/theme';
 import { GameObjectContext, SidebarContext } from '../helpers/context';
 import UpgradeCategoryButton from './UpgradeCategoryButton';
 import SidebarIncrementalUpgrades from './SidebarIncrementalUpgrades';
+import useUIVisibility from '../hooks/useUIVisibility';
+import { useDispatch, useSelector } from 'react-redux';
+import { tutorialSelector } from '../state/selectors';
+import { ReactComponent as Arrow } from '../assets/Arrow.svg';
+import { disableTutorialAction } from '../state/actions';
 
 const SIDEBAR_WIDTH = 212;
 
@@ -40,21 +45,38 @@ const SidebarContainer = styled.div`
   }
 `;
 
+const ArrowStyled = styled(Arrow)`
+  position: absolute;
+  top: 52px;
+  right: 40px;
+  width: 48px;
+  height: auto;
+`;
+
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const { gameObject, scene } = useContext(GameObjectContext);
   const [category, setCategory] = useState('');
+  const visibility = useUIVisibility()?.sidebar;
+  const { sidebar: sidebarTutorial } = useSelector(tutorialSelector);
+  const dispatch = useDispatch();
 
-  if (scene === 'secondStage') {
+  if (!visibility) {
+    return null;
   }
 
   const onClickOpen = () => {
+    if (sidebarTutorial) {
+      dispatch(disableTutorialAction('sidebar'));
+    }
+
     setOpen(!open);
   };
 
   return (
     <SidebarContext.Provider value={{ category, setCategory }}>
       <SidebarButton active={open} onClick={onClickOpen} />
+      {sidebarTutorial && <ArrowStyled />}
       <Container $open={open}>
         <SidebarContainer>
           {scene === 'secondStage' && (

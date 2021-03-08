@@ -7,8 +7,10 @@ const useUIVisibility = () => {
   const incrementalsState = useSelector(incrementalsSelector);
   const devMode = useSelector(devModeSelector);
 
+  const baseHexTotal = incrementalsState?.hex_0_0?.total;
+
   const didBreakFree =
-    incrementalsState?.hex_0_0?.total >=
+    baseHexTotal >=
     flipsUntilRing(
       incrementals.hex_0_0.flipsToExpand,
       incrementals.hex_0_0.breakFree
@@ -18,12 +20,15 @@ const useUIVisibility = () => {
     statusBar: {
       controls: {
         info:
-          incrementalsState?.hex_0_0?.total >=
+          baseHexTotal >=
             flipsUntilRing(incrementals.hex_0_0.flipsToExpand, 1) || devMode,
         name: didBreakFree || devMode,
         up: didBreakFree || devMode,
       },
     },
+    sidebar:
+      baseHexTotal >= flipsUntilRing(incrementals.hex_0_0.flipsToExpand, 1) ||
+      devMode,
   };
 };
 

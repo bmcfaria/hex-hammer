@@ -49,11 +49,11 @@ const notificationsState: NotificationType[] = [];
 const modalHexUpgrade: { [index: string]: any } = {};
 const trades: { [index: string]: any } = {};
 export const initialState = {
-  devMode: true,
+  devMode: false,
   currency: {
-    base: 100000 as number | undefined,
+    base: undefined as number | undefined,
     red: undefined as number | undefined,
-    blue: 10 as number | undefined,
+    blue: undefined as number | undefined,
     dark: undefined as number | undefined,
   },
   incrementals: incrementalsState,
@@ -76,6 +76,7 @@ export const initialState = {
     mainButton: true,
     statusBarControlsInfo: true,
     statusBarControlsGoUp: true,
+    sidebar: true,
   },
 };
 
