@@ -7,6 +7,7 @@ import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import theme, { resetButtonStyles } from '../helpers/theme';
 import { CurrencyType } from '../helpers/types';
+import { formatMoney } from '../helpers/utils';
 
 const ButtonContainer = styled.button`
   ${resetButtonStyles}
@@ -38,18 +39,25 @@ const InfoContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 16px;
   z-index: 1;
 `;
 
 const PriceContainer = styled.div`
+  width: 56px;
   display: flex;
   align-items: center;
-  margin-left: 8px;
+  margin-right: 16px;
+
+  & > span {
+    flex-grow: 1;
+  }
 `;
 
 const TextContainer = styled.div`
   width: 88px;
-  margin-right: 20px;
+  margin-left: 16px;
+  flex-grow: 1;
 `;
 
 const Description1 = styled.div`
@@ -87,32 +95,35 @@ const UpgradeButton = ({ upgradeId, selectedHex }: UpgradeButtonProps) => {
   ];
   const price = priceArray[upgradeValue];
 
+  const name =
+    description1.length > 1 ? description1[upgradeValue] : description1[0];
+
+  const description =
+    description2.length > 1 ? description2[upgradeValue] : description2[0];
+
   const onClick = () => {
     dispatch(buyUpgradeAction(selectedHex, upgradeId));
   };
 
   return (
-    <ButtonContainer onClick={onClick} disabled={currencies[currency] < price}>
-      <HexRectangleStyled data-button-hex-background />
-      <InfoContainer>
-        <PriceContainer>
-          <HexStyled $currency={currency as CurrencyType} />
-          <span>{price}</span>
-        </PriceContainer>
-        <TextContainer>
-          <Description1>
-            {description1.length > 1
-              ? description1[upgradeValue]
-              : description1[0]}
-          </Description1>
-          <Description2>
-            {description2.length > 1
-              ? description2[upgradeValue]
-              : description2[0]}
-          </Description2>
-        </TextContainer>
-      </InfoContainer>
-    </ButtonContainer>
+    <>
+      <ButtonContainer
+        onClick={onClick}
+        disabled={currencies[currency] < price}
+      >
+        <HexRectangleStyled data-button-hex-background />
+        <InfoContainer>
+          <TextContainer>
+            <Description1>{name}</Description1>
+            <Description2>{description}</Description2>
+          </TextContainer>
+          <PriceContainer>
+            <HexStyled $currency={currency as CurrencyType} />
+            <span>{price >= 0 ? formatMoney(price) : '?'}</span>
+          </PriceContainer>
+        </InfoContainer>
+      </ButtonContainer>
+    </>
   );
 };
 
