@@ -59,6 +59,8 @@ const MovementText = styled.div`
   transform: translate(-50%, -50%);
   color: white;
   font-size: 20px;
+  padding: 4px;
+  background-color: ${theme.colors.modal.backgroundShadow};
 `;
 
 const ArrowZoom = styled(ArrowStyled)`
@@ -73,6 +75,8 @@ const ZoomText = styled.div`
   left: 124px;
   color: white;
   font-size: 20px;
+  padding: 4px;
+  background-color: ${theme.colors.modal.backgroundShadow};
 `;
 
 const MovementTutorial = () => {
