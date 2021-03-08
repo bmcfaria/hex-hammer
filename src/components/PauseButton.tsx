@@ -1,10 +1,11 @@
 import { MouseEvent, useContext, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { ReactComponent as Pause } from '../assets/Pause.svg';
 import { GameObjectContext } from '../helpers/context';
 import theme from '../helpers/theme';
-import { resetAction } from '../state/actions';
+import { resetAction, toggleDevAction } from '../state/actions';
+import { devModeSelector } from '../state/selectors';
 import StatusBarButton from './StatusBarButton';
 
 const BackgroundShadow = styled.div`
@@ -21,22 +22,32 @@ const BackgroundShadow = styled.div`
 const ModalContainer = styled.div`
   width: 300px;
   height: 400px;
+  padding: 16px;
+  box-sizing: border-box;
   background-color: beige;
   margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: black;
 `;
 
 const Button = styled.button`
   display: block;
+`;
+
+const DevModeRow = styled.div`
   margin-top: 16px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const PauseButton = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const dispatch = useDispatch();
   const { gameObject } = useContext(GameObjectContext);
+  const devMode = useSelector(devModeSelector);
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
@@ -53,12 +64,22 @@ const PauseButton = () => {
     close();
   };
 
+  const toggleDev = () => {
+    dispatch(toggleDevAction);
+  };
+
   return (
     <>
       {modalOpen && (
         <BackgroundShadow onClick={close}>
           <ModalContainer onClick={(e: MouseEvent) => e.stopPropagation()}>
-            <Button onClick={reset}>Reset</Button>
+            <div>
+              <Button onClick={reset}>Reset</Button>
+            </div>
+            <DevModeRow>
+              <span>Dev mode: {devMode ? 'ON' : 'OFF'}</span>
+              <button onClick={toggleDev}>Toggle</button>
+            </DevModeRow>
           </ModalContainer>
         </BackgroundShadow>
       )}

@@ -18,6 +18,7 @@ import {
   DISABLE_TUTORIAL_TYPE,
   INCREMENT_TYPE,
   RESET_TYPE,
+  TOGGLE_DEV_TYPE,
 } from './actions';
 
 interface IncrementalType {
@@ -86,6 +87,13 @@ export const reducer = (state = initialState, payload: any) => {
     case RESET_TYPE: {
       return {
         ...initialState,
+      };
+    }
+
+    case TOGGLE_DEV_TYPE: {
+      return {
+        ...state,
+        devMode: !state.devMode,
       };
     }
 

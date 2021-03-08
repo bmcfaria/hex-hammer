@@ -6,6 +6,11 @@ export const resetAction = {
   type: RESET_TYPE,
 };
 
+export const TOGGLE_DEV_TYPE = 'TOGGLE_DEV';
+export const toggleDevAction = {
+  type: TOGGLE_DEV_TYPE,
+};
+
 export const INCREMENT_TYPE = 'INCREMENT';
 export const incrementAction = (selectedHex: string) => ({
   type: INCREMENT_TYPE,
