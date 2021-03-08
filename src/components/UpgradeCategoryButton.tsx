@@ -46,7 +46,7 @@ const UpgradeCategoryButton = ({
               text={incremental}
               key={incremental}
             >
-              <SidebarIncrementalUpgrades selectedHex={incremental} />
+              <SidebarIncrementalUpgrades selectedHex={incremental} showInfo />
             </ExpandUpgradeButton>
           ))}
         {upgradeCategoryId === 'trade' &&

@@ -28,5 +28,7 @@
   },
   "tutorial": {
     "mainButton": "Click or Long press"
-  }
+  },
+  "infoTitle": "Info",
+  "info": "info"
 }

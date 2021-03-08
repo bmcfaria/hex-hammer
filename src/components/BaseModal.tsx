@@ -11,6 +11,7 @@ const BackgroundShadow = styled.div`
   height: 100%;
   display: flex;
   background-color: #0000007d;
+  z-index: ${theme.zIndex.modal};
 `;
 
 const Container = styled.div`

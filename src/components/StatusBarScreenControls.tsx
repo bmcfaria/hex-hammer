@@ -13,6 +13,7 @@ import useUIVisibility from '../hooks/useUIVisibility';
 import { useDispatch, useSelector } from 'react-redux';
 import { tutorialSelector } from '../state/selectors';
 import { disableTutorialAction } from '../state/actions';
+import stringsObject from '../helpers/strings.json';
 
 const Container = styled.div`
   position: absolute;
@@ -173,7 +174,7 @@ const StatusBarScreenControls = () => {
       </Container>
       <BaseModal open={infoOpen} close={closeInfo}>
         <InfoModalContainer>
-          <Name>Info</Name>
+          <Name>{stringsObject.infoTitle}</Name>
           <ModalInfo selectedHex={gameObject?.current?.selectedHex || ''} />
         </InfoModalContainer>
       </BaseModal>
