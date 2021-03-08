@@ -77,6 +77,7 @@ export const initialState = {
     statusBarControlsInfo: true,
     statusBarControlsGoUp: true,
     sidebar: true,
+    secondStageMovement: true,
   },
 };
 

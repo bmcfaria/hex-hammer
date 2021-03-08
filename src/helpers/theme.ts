@@ -65,6 +65,7 @@ const theme = {
       iconHover: baseColors.orange,
     },
     modal: {
+      backgroundShadow: '#0000007d',
       background: 'white',
       backgroundSecondary: baseColors.whiteBlue,
       border: baseColors.darkBlue,

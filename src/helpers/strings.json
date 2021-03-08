@@ -27,7 +27,9 @@
     }
   },
   "tutorial": {
-    "mainButton": "Click or Long press"
+    "mainButton": "Click or Long press",
+    "movement": "Drag to move",
+    "zoom": "Zoom"
   },
   "infoTitle": "Info",
   "info": "info"

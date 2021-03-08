@@ -10,7 +10,7 @@ const BackgroundShadow = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  background-color: #0000007d;
+  background-color: ${theme.colors.modal.backgroundShadow};
   z-index: ${theme.zIndex.modal};
 `;
 

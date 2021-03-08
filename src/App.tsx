@@ -18,6 +18,7 @@ import { GameObjectRefType, SceneType } from './helpers/types';
 import GameHandler from './components/GameHandler';
 import { initializeGameObject } from './helpers/gameObject';
 import ZoomControls from './components/ZoomControls';
+import MovementTutorial from './components/MovementTutorial';
 
 const inDev = process.env.NODE_ENV === 'development';
 const composeEnhancers =
@@ -90,6 +91,7 @@ function App() {
         </div>
         <ZoomControls />
         <Modal sharedBabylonObject={sharedBabylonObject} />
+        <MovementTutorial />
       </GameObjectContext.Provider>
     </Provider>
   );
