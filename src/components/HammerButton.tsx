@@ -24,9 +24,9 @@ const Container = styled.div`
 const Button = styled.button`
   ${resetButtonStyles}
   position: relative;
-  width: 188px;
+  width: 212px;
   height: auto;
-  min-height: 60px;
+  min-height: 68px;
 
   &:hover [data-button-shadow] {
     visibility: hidden;
@@ -155,6 +155,7 @@ const TutorialTextContainer = styled.div`
 
 const ArrowStyled = styled(Arrow)`
   transform: rotate(135deg);
+  width: 48px;
   height: auto;
 `;
 

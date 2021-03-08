@@ -106,24 +106,19 @@ const UpgradeButton = ({ upgradeId, selectedHex }: UpgradeButtonProps) => {
   };
 
   return (
-    <>
-      <ButtonContainer
-        onClick={onClick}
-        disabled={currencies[currency] < price}
-      >
-        <HexRectangleStyled data-button-hex-background />
-        <InfoContainer>
-          <TextContainer>
-            <Description1>{name}</Description1>
-            <Description2>{description}</Description2>
-          </TextContainer>
-          <PriceContainer>
-            <HexStyled $currency={currency as CurrencyType} />
-            <span>{price >= 0 ? formatMoney(price) : '?'}</span>
-          </PriceContainer>
-        </InfoContainer>
-      </ButtonContainer>
-    </>
+    <ButtonContainer onClick={onClick} disabled={currencies[currency] < price}>
+      <HexRectangleStyled data-button-hex-background />
+      <InfoContainer>
+        <TextContainer>
+          <Description1>{name}</Description1>
+          <Description2>{description}</Description2>
+        </TextContainer>
+        <PriceContainer>
+          <HexStyled $currency={currency as CurrencyType} />
+          <span>{price >= 0 ? formatMoney(price) : '?'}</span>
+        </PriceContainer>
+      </InfoContainer>
+    </ButtonContainer>
   );
 };
 
