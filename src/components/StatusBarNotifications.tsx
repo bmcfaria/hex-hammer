@@ -20,6 +20,10 @@ const Container = styled.div`
   border: 4px solid ${theme.colors.statusBarNotifications.border};
   color: black;
   padding: 8px;
+
+  @media only screen and (min-width: 600px) {
+    left: calc(50% - 300px);
+  }
 `;
 
 const NotificationContainer = styled.div`
