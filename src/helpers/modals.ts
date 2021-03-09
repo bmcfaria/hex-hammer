@@ -7,7 +7,7 @@ export const modalsHex = {
     description: stringsObject.modal.expand.description,
     type: 'expand',
     currency: 'blue',
-    prices: [6, 1],
+    prices: [6, 20],
   },
   hex_2_2: {
     name: 'hex_2_2',
@@ -15,7 +15,7 @@ export const modalsHex = {
     description: stringsObject.modal.expand.description,
     type: 'expand',
     currency: 'blue',
-    prices: [6, 1],
+    prices: [6, 20],
   },
   hex_2_4: {
     name: 'hex_2_4',
@@ -23,7 +23,7 @@ export const modalsHex = {
     description: stringsObject.modal.expand.description,
     type: 'expand',
     currency: 'blue',
-    prices: [6, 1],
+    prices: [6, 20],
   },
   hex_2_6: {
     name: 'hex_2_6',
@@ -31,7 +31,7 @@ export const modalsHex = {
     description: stringsObject.modal.expand.description,
     type: 'expand',
     currency: 'blue',
-    prices: [6, 1],
+    prices: [6, 20],
   },
   hex_2_8: {
     name: 'hex_2_8',
@@ -39,7 +39,7 @@ export const modalsHex = {
     description: stringsObject.modal.expand.description,
     type: 'expand',
     currency: 'blue',
-    prices: [6, 1],
+    prices: [6, 20],
   },
   hex_2_10: {
     name: 'hex_2_10',
@@ -47,7 +47,7 @@ export const modalsHex = {
     description: stringsObject.modal.expand.description,
     type: 'expand',
     currency: 'blue',
-    prices: [6, 1],
+    prices: [6, 20],
   },
   hex_2_9: {
     name: 'hex_2_9',

@@ -115,8 +115,8 @@ const UpgradeButton = ({ upgradeId, selectedHex }: UpgradeButtonProps) => {
   return (
     <ButtonContainer
       onClick={onClick}
-      $disabled={currencies[currency] < price || !price}
-      disabled={currencies[currency] < price}
+      $disabled={(currencies[currency] || 0) < price || !price}
+      disabled={(currencies[currency] || 0) < price}
     >
       <HexRectangleStyled data-button-hex-background />
       <InfoContainer>
