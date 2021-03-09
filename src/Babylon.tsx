@@ -1,23 +1,22 @@
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { Engine, EngineOptions, Scene, SceneOptions } from '@babylonjs/core';
-import { GameObjectRefType } from './helpers/types';
-import { updateIncrementalState } from './babylon/incrementalStage';
+import createScene, {
+  updateIncrementalState,
+} from './babylon/incrementalStage';
+import { GameObjectContext } from './helpers/context';
+import {
+  createSceneSecondStage,
+  onRenderSecondStage,
+} from './babylon/sceneSecondStage';
 
-export type BabylonjsProps = {
+type BabylonjsProps = {
   antialias?: boolean;
   engineOptions?: EngineOptions;
   adaptToDeviceRatio?: boolean;
   renderChildrenWhenReady?: boolean;
   sceneOptions?: SceneOptions;
-  onSceneReady: (scene: Scene) => void;
-  onSceneReady1: (scene: Scene) => void;
   onRender?: (scene: Scene) => void;
-  onRenderSecondStage?: (
-    scene: Scene,
-    sharedBabylonObject: { current?: GameObjectRefType }
-  ) => void;
   id: string;
-  sharedBabylonObject: { current?: GameObjectRefType };
   children?: React.ReactNode;
 };
 
@@ -29,12 +28,13 @@ const Babylon = (props: BabylonjsProps) => {
     adaptToDeviceRatio,
     sceneOptions,
     onRender,
-    onRenderSecondStage,
-    onSceneReady,
-    onSceneReady1,
-    sharedBabylonObject,
     ...rest
   } = props;
+
+  const { gameObject } = useContext(GameObjectContext);
+
+  const onSceneReady = createScene(gameObject);
+  const onSceneReady1 = createSceneSecondStage(gameObject);
 
   useEffect(() => {
     if (reactCanvas.current) {
@@ -48,29 +48,29 @@ const Babylon = (props: BabylonjsProps) => {
       const secondStageScene = new Scene(engine, sceneOptions);
 
       if (incrementalScene.isReady()) {
-        props.onSceneReady(incrementalScene);
+        onSceneReady(incrementalScene);
       } else {
         incrementalScene.onReadyObservable.addOnce(scene =>
-          props.onSceneReady(scene)
+          onSceneReady(scene)
         );
       }
 
-      if (sharedBabylonObject.current) {
-        sharedBabylonObject.current.updateIncrementalState = total => {
-          updateIncrementalState(incrementalScene, total, sharedBabylonObject);
+      if (gameObject?.current) {
+        gameObject.current.updateIncrementalState = total => {
+          updateIncrementalState(incrementalScene, total, gameObject);
         };
       }
 
       if (secondStageScene.isReady()) {
-        props.onSceneReady1(secondStageScene);
+        onSceneReady1(secondStageScene);
       } else {
         secondStageScene.onReadyObservable.addOnce(secondStageScene =>
-          props.onSceneReady1(secondStageScene)
+          onSceneReady1(secondStageScene)
         );
       }
 
       engine.runRenderLoop(() => {
-        switch (sharedBabylonObject.current?.scene) {
+        switch (gameObject?.current?.scene) {
           case 'incremental':
             if (typeof onRender === 'function') {
               onRender(incrementalScene);
@@ -78,8 +78,8 @@ const Babylon = (props: BabylonjsProps) => {
             incrementalScene.render();
             break;
           default:
-            if (typeof onRenderSecondStage === 'function') {
-              onRenderSecondStage(secondStageScene, sharedBabylonObject);
+            if (typeof onRenderSecondStage === 'function' && gameObject) {
+              onRenderSecondStage(secondStageScene, gameObject);
             }
             // Update FPS
             if (typeof onRender === 'function') {

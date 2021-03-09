@@ -100,6 +100,7 @@ export const babylonTheme = {
       incremental: '#ff0000',
       trade: '#00ff00',
       expand: '#0000ff',
+      upgrade: '#FFFF00',
       bottom: '#293241',
     },
   },

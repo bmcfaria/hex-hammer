@@ -40,14 +40,19 @@ export interface GameObjectRefType {
   incrementalLastCounter: { [index: string]: boolean | undefined };
 }
 
-export interface GameObjectType {
+export interface GameContextType {
   gameObject?: { current?: GameObjectRefType };
   scene?: SceneType;
 }
 
-export interface SidebarType {
+export interface SidebarContextType {
   category?: string;
   setCategory?: Dispatch<SetStateAction<string>>;
+}
+
+export interface ModalContextType {
+  modal?: ModalHexType;
+  setModal?: Dispatch<SetStateAction<ModalHexType | undefined>>;
 }
 
 export type CurrencyType = keyof typeof theme.currencyColors;

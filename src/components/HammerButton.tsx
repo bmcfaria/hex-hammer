@@ -159,27 +159,23 @@ const ArrowStyled = styled(Arrow)`
   height: auto;
 `;
 
-interface HammerButtonProps {
-  sharedBabylonObject: any;
-}
-
-const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
+const HammerButton = () => {
+  const { gameObject, scene } = useContext(GameObjectContext);
   const dispatch = useDispatch();
   const incrementals = useSelector(incrementalsSelector);
   const { mainButton: showTutorial } = useSelector(tutorialSelector);
 
   const incrementalUpgrades =
-    incrementals[sharedBabylonObject?.current?.selectedHex]?.upgrades;
+    incrementals[gameObject?.current?.selectedHex || '']?.upgrades;
   const autoValue = ~~incrementalUpgrades?.auto;
 
   const [longPressing, setLongPressing] = useState(false);
 
   const [startAnimation, setStartAnimation] = useState(false);
   const [autoTimeLeft, setAutoTimeLeft] = useState(0);
-  const { scene } = useContext(GameObjectContext);
 
   const lastCounter =
-    incrementals[sharedBabylonObject.current?.selectedHex]?.lastCounter;
+    incrementals[gameObject?.current?.selectedHex || '']?.lastCounter;
 
   const interval =
     (upgrades.interval.value[~~incrementalUpgrades?.interval] || 1) * 1000;
@@ -199,7 +195,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
     return () => {
       clearInterval(countDown);
     };
-  }, [autoValue, dispatch, lastCounter, sharedBabylonObject]);
+  }, [autoValue, dispatch, lastCounter, gameObject]);
 
   useEffect(() => {
     let countDown: NodeJS.Timeout;
@@ -207,7 +203,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
       countDown = setInterval(() => {
         const currentTime = new Date().getTime();
         if (currentTime - (lastCounter || 0) >= interval) {
-          dispatch(incrementAction(sharedBabylonObject.current.selectedHex));
+          dispatch(incrementAction(gameObject?.current?.selectedHex || ''));
 
           setStartAnimation(true);
         }
@@ -219,7 +215,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
         clearInterval(countDown);
       }
     };
-  }, [dispatch, interval, lastCounter, longPressing, sharedBabylonObject]);
+  }, [dispatch, interval, lastCounter, longPressing, gameObject]);
 
   if (scene !== 'incremental') {
     return null;
@@ -233,7 +229,7 @@ const HammerButton = ({ sharedBabylonObject }: HammerButtonProps) => {
   const onMouseDown = () => {
     const currentTime = new Date().getTime();
     if (currentTime - (lastCounter || 0) >= interval) {
-      dispatch(incrementAction(sharedBabylonObject.current.selectedHex));
+      dispatch(incrementAction(gameObject?.current?.selectedHex || ''));
 
       setStartAnimation(true);
     }

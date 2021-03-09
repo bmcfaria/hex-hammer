@@ -48,13 +48,13 @@ const incrementalsState: { [index: string]: IncrementalType } = {
 const notificationsState: NotificationType[] = [];
 
 const modalHexUpgrade: { [index: string]: any } = {};
-const trades: { [index: string]: any } = {};
+const trades: { [index: string]: boolean } = {};
 export const initialState = {
   devMode: false,
   currency: {
-    base: undefined as number | undefined,
+    base: 1000 as number | undefined,
     red: undefined as number | undefined,
-    blue: undefined as number | undefined,
+    blue: 6 as number | undefined,
     dark: undefined as number | undefined,
   },
   incrementals: incrementalsState,
@@ -63,11 +63,11 @@ export const initialState = {
       (results, _, index) => ({ ...results, [`hex_${1}_${index}`]: true }),
       {}
     ),
-    hex_2_0: true,
+    // hex_2_0: true,
     // hex_2_2: true,
-    hex_2_4: true,
-    // hex_2_6: true,
-    hex_2_8: true,
+    // hex_2_4: true,
+    hex_2_6: true,
+    // hex_2_8: true,
     // hex_2_10: true,
   },
   modalHexUpgrade,

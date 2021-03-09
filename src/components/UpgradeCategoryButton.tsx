@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { incrementalsSelector, tradesSelector } from '../state/selectors';
 import ExpandUpgradeButton from './ExpandUpgradeButton';
 import SidebarIncrementalUpgrades from './SidebarIncrementalUpgrades';
-import ModalTrade from './ModalTrade';
 import { ModalHexType, UpgradeCategoryType } from '../helpers/types';
 import { incrementals } from '../helpers/incrementals';
+import TradeButton from './TradeButton';
 
 const Container = styled.div`
   width: 100%;
@@ -51,8 +51,8 @@ const UpgradeCategoryButton = ({
             </ExpandUpgradeButton>
           ))}
         {upgradeCategoryId === 'trade' &&
-          Object.keys(trades).map(tradeKey => (
-            <ModalTrade modal={tradeKey as ModalHexType} key={tradeKey} />
+          Object.keys(trades).map(modalKey => (
+            <TradeButton modalKey={modalKey as ModalHexType} key={modalKey} />
           ))}
       </ExpandUpgradeButton>
     </Container>

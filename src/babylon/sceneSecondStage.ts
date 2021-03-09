@@ -13,6 +13,7 @@ const modalMaterialMapping = {
   incremental: 'material_incremental',
   expand: 'material_expand',
   trade: 'material_trade',
+  upgrade: 'material_upgrade',
 };
 
 const cornerNames = [
@@ -419,6 +420,13 @@ const createMaterials = (scene: Scene) => {
     'material_expand',
     scene
   ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.expand);
+
+  new BABYLON.StandardMaterial(
+    'material_upgrade',
+    scene
+  ).ambientColor = BABYLON.Color3.FromHexString(
+    babylonTheme.colors.map.upgrade
+  );
 
   new BABYLON.StandardMaterial(
     'material_bottom',

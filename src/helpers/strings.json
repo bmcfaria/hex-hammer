@@ -24,6 +24,10 @@
     "unlock": {
       "title": "Unlock",
       "description": ""
+    },
+    "upgrade": {
+      "title": "Unlock upgrades",
+      "description": ""
     }
   },
   "tutorial": {
