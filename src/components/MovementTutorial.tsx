@@ -17,7 +17,6 @@ const BackgroundShadow = styled.div`
   display: flex;
   background-color: ${theme.colors.modal.backgroundShadow};
   z-index: ${theme.zIndex.modal};
-  user-select: none;
 `;
 
 const ArrowStyled = styled(Arrow)`
