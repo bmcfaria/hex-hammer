@@ -56,8 +56,8 @@ export const modalsHex = {
     type: 'trade',
     currency: 'base',
     convertTo: 'blue',
-    multiplier: [1, 10, 100],
-    prices: [1, 10, 80],
+    rate: 2,
+    prices: [],
   },
   hex_2_5: {
     name: 'hex_2_5',
@@ -66,8 +66,8 @@ export const modalsHex = {
     type: 'trade',
     currency: 'base',
     convertTo: 'blue',
-    multiplier: [1, 10, 100],
-    prices: [1, 10, 80],
+    rate: 2,
+    prices: [],
   },
   hex_2_9: {
     name: 'hex_2_9',
@@ -76,8 +76,8 @@ export const modalsHex = {
     type: 'trade',
     currency: 'base',
     convertTo: 'blue',
-    multiplier: [1, 10, 100],
-    prices: [1, 10, 80],
+    rate: 2,
+    prices: [],
   },
   hex_3_10: {
     name: 'hex_3_10',

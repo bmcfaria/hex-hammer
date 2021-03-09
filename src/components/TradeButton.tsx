@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
-import { ReactComponent as ArrowConversion } from '../assets/ArrowConversion.svg';
+import { ReactComponent as ArrowsConversion } from '../assets/ArrowsConversion.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import theme, { resetButtonStyles } from '../helpers/theme';
 import { CurrencyType, ModalHexType } from '../helpers/types';
@@ -74,7 +74,7 @@ const TradeButton = ({ modalKey }: TradeButtonProps) => {
       <HexRectangleStyled data-button-hex-background />
       <InfoContainer>
         <HexStyled $currency={convertFrom} />
-        <ArrowConversion />
+        <ArrowsConversion />
         <HexStyled $currency={convertTo} />
       </InfoContainer>
     </ButtonContainer>

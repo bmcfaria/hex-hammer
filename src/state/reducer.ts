@@ -13,6 +13,7 @@ import { upgrades, UpgradeType } from '../helpers/values';
 import { modalsHex } from '../helpers/modals';
 import {
   BUY_MODAL_HEX_TYPE,
+  BUY_MODAL_TRADE_TYPE,
   BUY_UPGRADE_TYPE,
   DELETE_NOTIFICATION_TYPE,
   DISABLE_TUTORIAL_TYPE,
@@ -396,6 +397,53 @@ export const reducer = (state = initialState, payload: any) => {
             },
           },
         }),
+      };
+    }
+
+    case BUY_MODAL_TRADE_TYPE: {
+      const {
+        modalId,
+        multiplier,
+        invert,
+      }: {
+        modalId: ModalHexType;
+        multiplier: number;
+        invert?: boolean;
+      } = payload;
+
+      const {
+        rate,
+        type,
+        currency,
+        convertTo,
+      }: {
+        rate: number;
+        type: string;
+        currency: CurrencyType;
+        convertTo: CurrencyType;
+      } = modalsHex[modalId] as any;
+
+      const selectedCurrency = !!invert ? convertTo : currency;
+      const convertToCurrency = !!invert ? currency : convertTo;
+      const price = !!invert ? multiplier : rate * multiplier;
+      const convertedAmount = !!invert ? rate * multiplier : multiplier;
+
+      if (type !== 'trade' || (state.currency[selectedCurrency] || 0) < price) {
+        return state;
+      }
+
+      return {
+        ...state,
+        currency: {
+          ...state.currency,
+          [selectedCurrency]: (state.currency[selectedCurrency] || 0) - price,
+          [convertToCurrency]:
+            (state.currency[convertToCurrency] || 0) + convertedAmount,
+        },
+        trades: {
+          ...state.trades,
+          [modalId]: true,
+        },
       };
     }
 

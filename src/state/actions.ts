@@ -46,6 +46,22 @@ export const buyModalHexAction = ({
   convertTo,
 });
 
+export const BUY_MODAL_TRADE_TYPE = 'BUY_MODAL_TRADE';
+export const butModalTradeAction = ({
+  modalId,
+  multiplier,
+  invert,
+}: {
+  modalId: ModalHexType;
+  multiplier: number;
+  invert?: boolean;
+}) => ({
+  type: BUY_MODAL_TRADE_TYPE,
+  modalId,
+  multiplier,
+  invert,
+});
+
 export const DELETE_NOTIFICATION_TYPE = 'DELETE_NOTIFICATION';
 export const deleteNotificationAction = (notificationId: string) => ({
   type: DELETE_NOTIFICATION_TYPE,
