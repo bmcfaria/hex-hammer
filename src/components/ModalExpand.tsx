@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import theme from '../helpers/theme';
@@ -11,6 +10,7 @@ import { ReactComponent as Ring1 } from '../assets/Ring1.svg';
 import { ReactComponent as Ring2 } from '../assets/Ring2.svg';
 import ButtonHex from './ButtonHex';
 import stringsObject from '../helpers/strings.json';
+import useModal from '../hooks/useModal';
 
 const Description = styled.div`
   width: 100%;
@@ -50,9 +50,9 @@ const BlinkRing = styled.div<{ $blink: boolean }>`
   left: 50%;
   transform: translate(-50%, -50%);
   animation: ${({ $blink }) =>
-    $blink ? 'blinck-ring 1s ease infinite alternate-reverse' : 'none'};
+    $blink ? 'blink-ring 1s ease infinite alternate-reverse' : 'none'};
 
-  @keyframes blinck-ring {
+  @keyframes blink-ring {
     100% {
       opacity: 0.1;
     }
@@ -81,11 +81,22 @@ interface ModalExpandProps {
 const ModalExpand = ({ modal }: ModalExpandProps) => {
   const dispatch = useDispatch();
   const currencies = useSelector(currencySelector);
+  const { closeModal } = useModal();
 
   const modalHexUpgradeValues = useSelector(modalHexUpgradeSelector);
+  const currentLevel = ~~modalHexUpgradeValues[modal];
+
+  const modalInfo = modalsHex[modal];
+  if (!modalInfo || modalInfo.type !== 'expand') {
+    return null;
+  }
+
+  const currentCurrency = modalInfo.currency as CurrencyType;
+  const enoughtMoney =
+    currencies[currentCurrency] >= modalInfo.prices[currentLevel];
 
   const buy = () => {
-    if (modal) {
+    if (enoughtMoney) {
       dispatch(
         buyModalExpandAction({
           modalId: modal,
@@ -93,16 +104,13 @@ const ModalExpand = ({ modal }: ModalExpandProps) => {
           currency: modalInfo.currency as CurrencyType,
         })
       );
+
+      // close modal if buying last level
+      if (modalInfo.prices.length <= currentLevel + 1) {
+        closeModal();
+      }
     }
   };
-
-  const modalInfo = modalsHex[modal];
-  if (!modalInfo || modalInfo.type !== 'expand') {
-    return null;
-  }
-
-  const currentLevel = ~~modalHexUpgradeValues[modal];
-  const currentCurrency = modalInfo.currency as CurrencyType;
 
   return (
     <>
@@ -134,9 +142,7 @@ const ModalExpand = ({ modal }: ModalExpandProps) => {
             <ButtonHex
               onClick={buy}
               currency={currentCurrency}
-              disabled={
-                currencies[currentCurrency] < modalInfo.prices[currentLevel]
-              }
+              disabled={!enoughtMoney}
               price={modalInfo.prices[currentLevel]}
             />
           )}

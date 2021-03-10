@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { tutorialSelector } from '../state/selectors';
 import { disableTutorialAction } from '../state/actions';
 import stringsObject from '../helpers/strings.json';
+import useScene from '../hooks/useScene';
 
 const Container = styled.div`
   position: absolute;
@@ -128,6 +129,7 @@ const StatusBarScreenControls = () => {
   } = useSelector(tutorialSelector);
   const dispatch = useDispatch();
   const visibility = useUIVisibility()?.statusBar?.controls;
+  const { openSecondStage } = useScene();
 
   if (scene !== 'incremental') {
     return null;
@@ -137,9 +139,8 @@ const StatusBarScreenControls = () => {
     if (showGoUpTutorial) {
       dispatch(disableTutorialAction('statusBarControlsGoUp'));
     }
-    if (gameObject?.current) {
-      gameObject.current?.changeScene('secondStage');
-    }
+
+    openSecondStage();
   };
 
   const openInfo = () => {

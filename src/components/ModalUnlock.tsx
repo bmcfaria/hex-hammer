@@ -7,6 +7,8 @@ import { butModalUnlockAction } from '../state/actions';
 import { currencySelector } from '../state/selectors';
 import ButtonHex from './ButtonHex';
 import ModalInfo from './ModalInfo';
+import useModal from '../hooks/useModal';
+import useScene from '../hooks/useScene';
 
 const Container = styled.div`
   width: 100%;
@@ -23,19 +25,30 @@ interface ModalUnlockProps {
 
 const ModalUnlock = ({ modal }: ModalUnlockProps) => {
   const dispatch = useDispatch();
-  const currency = useSelector(currencySelector);
+  const currencies = useSelector(currencySelector);
+  const { closeModal } = useModal();
+  const { openIncremental } = useScene();
 
   const modalInfo = modalsHex[modal];
   if (!modalInfo || modalInfo.type !== 'unlock') {
     return null;
   }
 
+  const price = modalInfo.prices[0];
+  const enoughtMoney = currencies[modalInfo.currency] >= price;
+
   const buy = () => {
-    dispatch(
-      butModalUnlockAction({
-        modalId: modal,
-      })
-    );
+    if (enoughtMoney) {
+      dispatch(
+        butModalUnlockAction({
+          modalId: modal,
+        })
+      );
+
+      // close modal and open incremental
+      closeModal();
+      openIncremental(modal);
+    }
   };
 
   return (
@@ -43,9 +56,9 @@ const ModalUnlock = ({ modal }: ModalUnlockProps) => {
       <ModalInfo selectedHex={modal} />
       <ButtonHex
         onClick={buy}
-        disabled={currency[modalInfo.currency] < modalInfo.prices[0]}
+        disabled={!enoughtMoney}
         currency={modalInfo.currency as CurrencyType}
-        price={modalInfo.prices[0]}
+        price={price}
       />
     </Container>
   );
