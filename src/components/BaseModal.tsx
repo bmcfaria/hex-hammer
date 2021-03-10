@@ -12,6 +12,7 @@ const BackgroundShadow = styled.div`
   display: flex;
   background-color: ${theme.colors.modal.backgroundShadow};
   z-index: ${theme.zIndex.modal};
+  cursor: pointer;
 `;
 
 const Container = styled.div`
@@ -21,6 +22,7 @@ const Container = styled.div`
   background-color: ${theme.colors.modal.background};
   border: 4px solid ${theme.colors.modal.border};
   margin: auto;
+  cursor: default;
 `;
 
 interface BaseModalProps {
