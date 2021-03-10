@@ -1,6 +1,18 @@
 import stringsObject from './strings.json';
+import {
+  ModalExpandType,
+  ModalTradeType,
+  ModalUnlockType,
+  ModalUpgradeType,
+} from './types';
 
-export const modalsHex = {
+type CombinedModalsType =
+  | ModalExpandType
+  | ModalTradeType
+  | ModalUnlockType
+  | ModalUpgradeType;
+
+export const modalsHex: { [index: string]: CombinedModalsType } = {
   hex_2_0: {
     name: 'hex_2_0',
     title: stringsObject.modal.expand.title,

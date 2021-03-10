@@ -61,11 +61,15 @@ interface TradeButtonProps {
 const TradeButton = ({ modalKey }: TradeButtonProps) => {
   const { openModal } = useModal();
 
-  const convertFrom = modalsHex[modalKey].currency as CurrencyType;
-  const convertTo = (modalsHex[modalKey] as any).convertTo as CurrencyType;
+  const modalInfo = modalsHex[modalKey];
+  if (!modalInfo || modalInfo.type !== 'trade') {
+    return null;
+  }
+
+  const convertFrom = modalInfo.currency as CurrencyType;
+  const convertTo = modalInfo.convertTo as CurrencyType;
 
   const onClick = () => {
-    // dispatch(buyUpgradeAction(selectedHex, upgradeId));
     openModal(modalKey);
   };
 

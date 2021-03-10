@@ -94,9 +94,9 @@ const ModalTrade = ({ modal }: ModalTradeProps) => {
   };
 
   const convertFrom = modalInfo.currency as CurrencyType;
-  const convertTo = (modalInfo as any).convertTo;
+  const convertTo = modalInfo.convertTo;
 
-  const rate = (modalInfo as any).rate;
+  const rate = modalInfo.rate;
 
   return (
     <Container>

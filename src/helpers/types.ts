@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
-import { modalsHex } from './modals';
+// import { modalsHex } from './modals';
 import theme from './theme';
 
 export type SceneType = 'incremental' | 'secondStage';
 
-export type ModalHexType = keyof typeof modalsHex;
+export type ModalHexType = string; // keyof typeof modalsHex;
 
 export interface GameObjectRefType {
   mainAction: (total: number) => void;
@@ -76,4 +76,42 @@ export interface NotificationType {
   type: 'inc_bonus';
   currency: CurrencyType;
   value: number;
+}
+
+export interface ModalExpandType {
+  name: string;
+  title: string;
+  description: string;
+  type: 'expand';
+  currency: CurrencyType;
+  prices: number[];
+}
+
+export interface ModalTradeType {
+  name: string;
+  title: string;
+  description: string;
+  type: 'trade';
+  currency: CurrencyType;
+  convertTo: CurrencyType;
+  rate: number;
+  prices: number[];
+}
+
+export interface ModalUnlockType {
+  name: string;
+  title: string;
+  description: string;
+  type: 'unlock';
+  currency: CurrencyType;
+  prices: number[];
+}
+
+export interface ModalUpgradeType {
+  name: string;
+  title: string;
+  description: string;
+  type: 'upgrade';
+  currency: CurrencyType;
+  prices: number[];
 }

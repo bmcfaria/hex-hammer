@@ -3,6 +3,8 @@ import {
   BonusType,
   CurrencyType,
   ModalHexType,
+  ModalTradeType,
+  ModalUnlockType,
   NotificationType,
 } from '../helpers/types';
 import {
@@ -286,9 +288,7 @@ export const reducer = (state = initialState, payload: any) => {
         modalId: ModalHexType;
         currency?: CurrencyType;
       } = payload;
-      const { prices, type }: { prices: number[]; type: string } = modalsHex[
-        modalId
-      ];
+      const { prices, type } = modalsHex[modalId];
 
       const selectedCurrency = currency || 'base';
 
@@ -382,7 +382,7 @@ export const reducer = (state = initialState, payload: any) => {
         type: string;
         currency: CurrencyType;
         convertTo: CurrencyType;
-      } = modalsHex[modalId] as any;
+      } = modalsHex[modalId] as ModalTradeType;
 
       const selectedCurrency = !!invert ? convertTo : currency;
       const convertToCurrency = !!invert ? currency : convertTo;
@@ -423,7 +423,7 @@ export const reducer = (state = initialState, payload: any) => {
         type: string;
         currency: CurrencyType;
         prices: number[];
-      } = modalsHex[modalId] as any;
+      } = modalsHex[modalId] as ModalUnlockType;
 
       const price = prices[0];
 
