@@ -136,7 +136,7 @@ const ModalTrade = ({ modal }: ModalTradeProps) => {
           text={`x ${multiplier}`}
           price={rate * multiplier}
           onClick={buy(false)}
-          disabled={currency[convertFrom] < rate * rate}
+          disabled={currency[convertFrom] < rate * multiplier}
           currency={convertFrom}
           convertTo={convertTo}
         />

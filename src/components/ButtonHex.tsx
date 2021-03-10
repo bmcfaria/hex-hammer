@@ -10,9 +10,11 @@ const ButtonContainer = styled.button`
   height: 40px;
   position: relative;
   vertical-align: top;
+  ${({ disabled }) => (disabled ? 'cursor: unset;' : '')}
 
   &:hover [data-button-hex-background] {
-    stroke: ${theme.colors.upgradeButtons.borderHover};
+    ${({ disabled }) =>
+      disabled ? '' : `stroke: ${theme.colors.upgradeButtons.borderHover};`}
   }
 `;
 
@@ -22,7 +24,10 @@ const HexRectangleStyled = styled(HexRectangle)`
   fill: white;
 `;
 
-const PriceContainer = styled.div<{ $currency: CurrencyType }>`
+const PriceContainer = styled.div<{
+  $currency: CurrencyType;
+  disabled?: boolean;
+}>`
   width: 100%;
   height: 100%;
   position: absolute;

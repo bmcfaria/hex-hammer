@@ -26,9 +26,7 @@ const ButtonContainer = styled.button<{ $disabled: boolean }>`
 
   &:hover [data-button-hex-background] {
     ${({ $disabled }) =>
-      $disabled
-        ? 'cursor: unset;'
-        : `stroke: ${theme.colors.upgradeButtons.borderHover};`}
+      $disabled ? '' : `stroke: ${theme.colors.upgradeButtons.borderHover};`}
   }
 `;
 
