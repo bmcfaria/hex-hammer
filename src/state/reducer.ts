@@ -12,8 +12,9 @@ import {
 import { upgrades, UpgradeType } from '../helpers/values';
 import { modalsHex } from '../helpers/modals';
 import {
-  BUY_MODAL_HEX_TYPE,
+  BUY_MODAL_EXPAND_TYPE,
   BUY_MODAL_TRADE_TYPE,
+  BUY_MODAL_UNLOCK_TYPE,
   BUY_UPGRADE_TYPE,
   DELETE_NOTIFICATION_TYPE,
   DISABLE_TUTORIAL_TYPE,
@@ -277,23 +278,15 @@ export const reducer = (state = initialState, payload: any) => {
       };
     }
 
-    case BUY_MODAL_HEX_TYPE: {
+    case BUY_MODAL_EXPAND_TYPE: {
       const {
         modalId,
-        priceIndex,
         currency,
-        convertTo,
       }: {
         modalId: ModalHexType;
-        priceIndex: number;
         currency?: CurrencyType;
-        convertTo?: string;
       } = payload;
-      const {
-        prices,
-        type,
-        multiplier,
-      }: { prices: number[]; type: string; multiplier?: number[] } = modalsHex[
+      const { prices, type }: { prices: number[]; type: string } = modalsHex[
         modalId
       ];
 
@@ -305,72 +298,55 @@ export const reducer = (state = initialState, payload: any) => {
         !price ||
         (state.currency[selectedCurrency] || 0) < price ||
         state.modalHexUpgrade[modalId] >= 2 ||
-        (type !== 'expand' && type !== 'trade' && type !== 'unlock')
+        type !== 'expand'
       ) {
         return state;
       }
 
-      let currencies = {};
-
       let newValues = {};
-      if (type === 'expand') {
-        // Activate more hexes
-        const values = modalId.split('_');
-        const currentRing = ~~values[1];
-        const currentIndex = ~~values[2];
+      // Activate more hexes
+      const values = modalId.split('_');
+      const currentRing = ~~values[1];
+      const currentIndex = ~~values[2];
 
-        const ringRange = [3, 5][~~state.modalHexUpgrade[modalId]];
+      const ringRange = [3, 5][~~state.modalHexUpgrade[modalId]];
 
-        const baseRing = currentRing - ~~(ringRange / 2);
+      const baseRing = currentRing - ~~(ringRange / 2);
 
-        const indexWidth = {
-          3: [1, 3, 3],
-          5: [1, 3, 5, 5, 5],
-        }[ringRange as 3 | 5];
+      const indexWidth = {
+        3: [1, 3, 3],
+        5: [1, 3, 5, 5, 5],
+      }[ringRange as 3 | 5];
 
-        newValues = [...Array(ringRange)].reduce((results, _, ringDiff) => {
-          const tmpRing = baseRing + ringDiff;
-          const tmpIndex = ~~(
-            (currentIndex * ((baseRing + ringDiff) * 6)) /
-            (currentRing * 6)
-          );
+      newValues = [...Array(ringRange)].reduce((results, _, ringDiff) => {
+        const tmpRing = baseRing + ringDiff;
+        const tmpIndex = ~~(
+          (currentIndex * ((baseRing + ringDiff) * 6)) /
+          (currentRing * 6)
+        );
 
-          const indexResults = [...Array(indexWidth[ringDiff])].reduce(
-            (tmpIndexResults, _, indexDiff) => {
-              const diff = tmpIndex - ~~(indexWidth[ringDiff] / 2) + indexDiff;
-              return {
-                ...tmpIndexResults,
-                [`hex_${tmpRing}_${
-                  diff < 0 ? tmpRing * 6 + diff : diff
-                }`]: true,
-              };
-            },
-            {}
-          );
+        const indexResults = [...Array(indexWidth[ringDiff])].reduce(
+          (tmpIndexResults, _, indexDiff) => {
+            const diff = tmpIndex - ~~(indexWidth[ringDiff] / 2) + indexDiff;
+            return {
+              ...tmpIndexResults,
+              [`hex_${tmpRing}_${diff < 0 ? tmpRing * 6 + diff : diff}`]: true,
+            };
+          },
+          {}
+        );
 
-          return {
-            ...results,
-            ...indexResults,
-          };
-        }, {});
-      } else if (type === 'trade' && convertTo) {
-        price = prices[priceIndex];
-        if (!price || (state.currency[selectedCurrency] || 0) < price) {
-          return state;
-        }
-
-        const multiplierValue = multiplier?.[priceIndex] || 1;
-        currencies = {
-          [convertTo]: ~~(state.currency as any)[convertTo] + multiplierValue,
+        return {
+          ...results,
+          ...indexResults,
         };
-      }
+      }, {});
 
       return {
         ...state,
         currency: {
           ...state.currency,
           [selectedCurrency]: (state.currency[selectedCurrency] || 0) - price,
-          ...currencies,
         },
         modalHex: {
           ...state.modalHex,
@@ -382,21 +358,6 @@ export const reducer = (state = initialState, payload: any) => {
             ~~state.modalHexUpgrade[modalId] +
             ~~(Object.keys(newValues).length > 0),
         },
-        ...(type === 'trade' && {
-          trades: {
-            ...state.trades,
-            [modalId]: true,
-          },
-        }),
-        ...(type === 'unlock' && {
-          incrementals: {
-            ...state.incrementals,
-            [modalId]: {
-              ...(state.incrementals[modalId] || {}),
-              unlocked: true,
-            },
-          },
-        }),
       };
     }
 
@@ -443,6 +404,51 @@ export const reducer = (state = initialState, payload: any) => {
         trades: {
           ...state.trades,
           [modalId]: true,
+        },
+      };
+    }
+
+    case BUY_MODAL_UNLOCK_TYPE: {
+      const {
+        modalId,
+      }: {
+        modalId: ModalHexType;
+      } = payload;
+
+      const {
+        type,
+        currency,
+        prices,
+      }: {
+        type: string;
+        currency: CurrencyType;
+        prices: number[];
+      } = modalsHex[modalId] as any;
+
+      const price = prices[0];
+
+      const alreadyUnlocked = state.incrementals[modalId]?.unlocked;
+
+      if (
+        type !== 'unlock' ||
+        (state.currency[currency] || 0) < price ||
+        alreadyUnlocked
+      ) {
+        return state;
+      }
+
+      return {
+        ...state,
+        currency: {
+          ...state.currency,
+          [currency]: (state.currency[currency] || 0) - price,
+        },
+        incrementals: {
+          ...state.incrementals,
+          [modalId]: {
+            ...(state.incrementals[modalId] || {}),
+            unlocked: true,
+          },
         },
       };
     }

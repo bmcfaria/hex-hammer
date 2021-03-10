@@ -27,8 +27,8 @@ export const buyUpgradeAction = (
   selectedHex,
 });
 
-export const BUY_MODAL_HEX_TYPE = 'BUY_MODAL_HEX';
-export const buyModalHexAction = ({
+export const BUY_MODAL_EXPAND_TYPE = 'BUY_EXPAND_HEX';
+export const buyModalExpandAction = ({
   modalId,
   priceIndex,
   currency,
@@ -39,7 +39,7 @@ export const buyModalHexAction = ({
   currency?: CurrencyType;
   convertTo?: string;
 }) => ({
-  type: BUY_MODAL_HEX_TYPE,
+  type: BUY_MODAL_EXPAND_TYPE,
   modalId,
   priceIndex,
   currency,
@@ -60,6 +60,16 @@ export const butModalTradeAction = ({
   modalId,
   multiplier,
   invert,
+});
+
+export const BUY_MODAL_UNLOCK_TYPE = 'BUY_MODAL_UNLOCK';
+export const butModalUnlockAction = ({
+  modalId,
+}: {
+  modalId: ModalHexType;
+}) => ({
+  type: BUY_MODAL_UNLOCK_TYPE,
+  modalId,
 });
 
 export const DELETE_NOTIFICATION_TYPE = 'DELETE_NOTIFICATION';

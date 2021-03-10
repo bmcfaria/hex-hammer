@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import theme from '../helpers/theme';
 import { CurrencyType, ModalHexType } from '../helpers/types';
 import { modalsHex } from '../helpers/modals';
-import { buyModalHexAction } from '../state/actions';
+import { buyModalExpandAction } from '../state/actions';
 import { currencySelector, modalHexUpgradeSelector } from '../state/selectors';
 import { ReactComponent as Ring0 } from '../assets/Ring0.svg';
 import { ReactComponent as Ring1 } from '../assets/Ring1.svg';
@@ -87,7 +87,7 @@ const ModalExpand = ({ modal }: ModalExpandProps) => {
   const buy = () => {
     if (modal) {
       dispatch(
-        buyModalHexAction({
+        buyModalExpandAction({
           modalId: modal,
           priceIndex: 0,
           currency: modalInfo.currency as CurrencyType,

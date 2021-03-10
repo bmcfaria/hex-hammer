@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { CurrencyType, ModalHexType } from '../helpers/types';
 import { modalsHex } from '../helpers/modals';
-import { buyModalHexAction } from '../state/actions';
+import { butModalUnlockAction } from '../state/actions';
 import { currencySelector } from '../state/selectors';
 import ButtonHex from './ButtonHex';
 import ModalInfo from './ModalInfo';
@@ -30,23 +30,19 @@ const ModalUnlock = ({ modal }: ModalUnlockProps) => {
     return null;
   }
 
-  const buy = (index: number) => () => {
-    if (modal) {
-      dispatch(
-        buyModalHexAction({
-          modalId: modal,
-          priceIndex: index,
-          currency: modalInfo.currency as CurrencyType,
-        })
-      );
-    }
+  const buy = () => {
+    dispatch(
+      butModalUnlockAction({
+        modalId: modal,
+      })
+    );
   };
 
   return (
     <Container>
       <ModalInfo selectedHex={modal} />
       <ButtonHex
-        onClick={buy(0)}
+        onClick={buy}
         disabled={currency[modalInfo.currency] < modalInfo.prices[0]}
         currency={modalInfo.currency as CurrencyType}
         price={modalInfo.prices[0]}
