@@ -52,6 +52,7 @@ const BoldText = styled.div`
 
 const CheckmarkStyled = styled(Checkmark)`
   margin-right: -4px;
+  color: ${theme.colors.modal.checkmark};
 `;
 
 interface ModalInfoProps {

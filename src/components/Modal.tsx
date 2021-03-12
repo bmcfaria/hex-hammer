@@ -5,6 +5,7 @@ import ModalExpand from './ModalExpand';
 import ModalTrade from './ModalTrade';
 import ModalUnlock from './ModalUnlock';
 import useModal from '../hooks/useModal';
+import ModalUpgrade from './ModalUpgrade';
 
 const Name = styled.div`
   width: 100%;
@@ -29,6 +30,7 @@ const Modal = () => {
       {modalInfo.type === 'expand' && <ModalExpand modal={modal} />}
       {modalInfo.type === 'trade' && <ModalTrade modal={modal} />}
       {modalInfo.type === 'unlock' && <ModalUnlock modal={modal} />}
+      {modalInfo.type === 'upgrade' && <ModalUpgrade modal={modal} />}
     </BaseModal>
   );
 };

@@ -71,6 +71,7 @@ const theme = {
       border: baseColors.darkBlue,
       expandHex: baseColors.lightBlue,
       infoOddBackground: baseColors.whiteBlue,
+      checkmark: baseColors.darkBlue,
     },
     tutorial: {
       textContainer: {

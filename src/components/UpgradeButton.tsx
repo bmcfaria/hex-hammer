@@ -1,8 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { buyUpgradeAction } from '../state/actions';
-import { currencySelector, incrementalsSelector } from '../state/selectors';
-import { upgrades, UpgradeType } from '../helpers/values';
+import {
+  currencySelector,
+  incrementalsSelector,
+  upgradesSelector,
+} from '../state/selectors';
+import { upgrades, UpgradeKeyType } from '../helpers/values';
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import theme, { resetButtonStyles } from '../helpers/theme';
@@ -49,19 +53,26 @@ const InfoContainer = styled.div`
 `;
 
 const PriceContainer = styled.div`
-  width: 56px;
+  width: 72px;
   display: flex;
   align-items: center;
-  margin-right: 16px;
+  text-align: left;
 
   & > span {
+    padding-left: 4px;
     flex-grow: 1;
   }
 `;
 
+const LockedContainer = styled.div`
+  width: 68px;
+  margin-left: 4px;
+  text-align: left;
+`;
+
 const TextContainer = styled.div`
   width: 88px;
-  margin-left: 16px;
+  /* margin-left: 16px; */
   flex-grow: 1;
 `;
 
@@ -81,13 +92,14 @@ const HexStyled = styled(Hex)<{ $currency: CurrencyType }>`
 `;
 
 interface UpgradeButtonProps {
-  upgradeId: UpgradeType;
+  upgradeId: UpgradeKeyType;
   selectedHex: string;
 }
 
 const UpgradeButton = ({ upgradeId, selectedHex }: UpgradeButtonProps) => {
   const currencies = useSelector(currencySelector);
   const incrementals = useSelector(incrementalsSelector);
+  const upgradesState = useSelector(upgradesSelector);
 
   const dispatch = useDispatch();
 
@@ -95,10 +107,19 @@ const UpgradeButton = ({ upgradeId, selectedHex }: UpgradeButtonProps) => {
 
   const upgradeValue = ~~incrementalUpgrades?.[upgradeId];
 
-  const { price: priceArray, description1, description2, currency } = upgrades[
-    upgradeId
-  ];
+  const {
+    price: priceArray,
+    description1,
+    description2,
+    currency,
+    levelLock,
+  } = upgrades[upgradeId];
   const price = priceArray[upgradeValue];
+
+  const currentLockLevel = upgradesState[upgradeId]?.levelLock || 0;
+  const isLocked = upgradeValue + 1 >= levelLock[currentLockLevel];
+
+  const maxLevel = priceArray.length <= upgradeValue;
 
   const name =
     description1.length > 1 ? description1[upgradeValue] : description1[0];
@@ -107,25 +128,28 @@ const UpgradeButton = ({ upgradeId, selectedHex }: UpgradeButtonProps) => {
     description2.length > 1 ? description2[upgradeValue] : description2[0];
 
   const onClick = () => {
-    dispatch(buyUpgradeAction(selectedHex, upgradeId));
+    if (!maxLevel && !isLocked) {
+      dispatch(buyUpgradeAction(selectedHex, upgradeId));
+    }
   };
 
+  const disabled = (currencies[currency] || 0) < price || !price || isLocked;
+
   return (
-    <ButtonContainer
-      onClick={onClick}
-      $disabled={(currencies[currency] || 0) < price || !price}
-      disabled={(currencies[currency] || 0) < price}
-    >
+    <ButtonContainer onClick={onClick} $disabled={disabled} disabled={disabled}>
       <HexRectangleStyled data-button-hex-background />
       <InfoContainer>
         <TextContainer>
           <Description1>{name}</Description1>
           <Description2>{description}</Description2>
         </TextContainer>
-        <PriceContainer>
-          <HexStyled $currency={currency as CurrencyType} />
-          <span>{price >= 0 ? formatMoney(price) : '?'}</span>
-        </PriceContainer>
+        {!isLocked && !maxLevel && (
+          <PriceContainer>
+            <HexStyled $currency={currency as CurrencyType} />
+            <span>{price >= 0 ? formatMoney(price) : '?'}</span>
+          </PriceContainer>
+        )}
+        {isLocked && !maxLevel && <LockedContainer>Locked</LockedContainer>}
       </InfoContainer>
     </ButtonContainer>
   );

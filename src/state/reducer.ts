@@ -5,13 +5,14 @@ import {
   ModalHexType,
   ModalTradeType,
   ModalUnlockType,
+  ModalUpgradeType,
   NotificationType,
 } from '../helpers/types';
 import {
   flipsUntilRing,
   generateNotificationIncrementalBonusId,
 } from '../helpers/utils';
-import { upgrades, UpgradeType } from '../helpers/values';
+import { upgrades, UpgradeKeyType } from '../helpers/values';
 import { modalsHex } from '../helpers/modals';
 import {
   BUY_MODAL_EXPAND_TYPE,
@@ -23,6 +24,7 @@ import {
   INCREMENT_TYPE,
   RESET_TYPE,
   TOGGLE_DEV_TYPE,
+  UNLOCK_UPGRADE_TYPE,
 } from './actions';
 
 interface IncrementalType {
@@ -30,7 +32,7 @@ interface IncrementalType {
   total: number;
   lastCounter: number;
   currency: CurrencyType;
-  upgrades: { [key in UpgradeType]: number };
+  upgrades: { [key in UpgradeKeyType]: number };
   unlockedBonus: { [index: number]: boolean };
 }
 
@@ -48,6 +50,10 @@ const incrementalsState: { [index: string]: IncrementalType } = {
     unlockedBonus: {},
   },
 };
+interface UpgradeType {
+  levelLock: number;
+}
+const upgradesState: { [index: string]: UpgradeType } = {};
 
 const notificationsState: NotificationType[] = [];
 
@@ -56,12 +62,13 @@ const trades: { [index: string]: boolean } = {};
 export const initialState = {
   devMode: false,
   currency: {
-    base: 1000 as number | undefined,
+    base: 100000 as number | undefined,
     red: undefined as number | undefined,
     blue: 6 as number | undefined,
     dark: undefined as number | undefined,
   },
   incrementals: incrementalsState,
+  upgrades: upgradesState,
   modalHex: {
     ...[...Array(6)].reduce(
       (results, _, index) => ({ ...results, [`hex_${1}_${index}`]: true }),
@@ -239,24 +246,30 @@ export const reducer = (state = initialState, payload: any) => {
         selectedHex,
         currency,
       }: {
-        upgradeId: UpgradeType;
+        upgradeId: UpgradeKeyType;
         selectedHex: string;
         currency?: CurrencyType;
       } = payload;
 
       const selectedCurrency = currency || 'base';
 
-      const { price: priceArray } = upgrades[upgradeId];
+      // TODO: do proper type check
+      const { price: priceArray, levelLock } = upgrades[upgradeId] as any;
+
+      const currentLockLevel = state.upgrades[upgradeId]?.levelLock || 0;
+      const currentLock = levelLock[currentLockLevel];
 
       const currentSelectedHex = state.incrementals[selectedHex] || {
         upgrades: {},
       };
-      const price = priceArray[~~currentSelectedHex.upgrades?.[upgradeId]];
+      const currenctUpgradeValue = ~~currentSelectedHex.upgrades?.[upgradeId];
+      const price = priceArray[currenctUpgradeValue];
 
       if (
         !price ||
         (state.currency[selectedCurrency] || 0) < price ||
-        !selectedHex
+        !selectedHex ||
+        currenctUpgradeValue + 1 >= currentLock
       ) {
         return state;
       }
@@ -273,8 +286,47 @@ export const reducer = (state = initialState, payload: any) => {
             ...currentSelectedHex,
             upgrades: {
               ...(currentSelectedHex.upgrades || {}),
-              [upgradeId]: ~~currentSelectedHex.upgrades?.[upgradeId] + 1,
+              [upgradeId]: currenctUpgradeValue + 1,
             },
+          },
+        },
+      };
+    }
+
+    case UNLOCK_UPGRADE_TYPE: {
+      const {
+        upgradeId,
+        modalId,
+      }: { upgradeId: UpgradeKeyType; modalId: ModalHexType } = payload;
+
+      const { prices: priceArray, type, currency, lockIndex } = modalsHex[
+        modalId
+      ] as ModalUpgradeType;
+
+      const selectedCurrency = currency || 'base';
+
+      const price = priceArray[0];
+
+      const isNextUpgrade =
+        (state.upgrades[upgradeId]?.levelLock || 0) + 1 === lockIndex;
+
+      if (
+        type !== 'upgrade' ||
+        !price ||
+        (state.currency[selectedCurrency] || 0) < price ||
+        !modalId ||
+        !isNextUpgrade
+      ) {
+        return state;
+      }
+
+      return {
+        ...state,
+        upgrades: {
+          ...state.upgrades,
+          [upgradeId]: {
+            ...(state.upgrades[upgradeId] || {}),
+            levelLock: lockIndex,
           },
         },
       };

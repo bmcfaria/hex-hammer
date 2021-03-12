@@ -27,7 +27,8 @@
     },
     "upgrade": {
       "title": "Unlock upgrades",
-      "description": ""
+      "description": "",
+      "locked": "Locked"
     }
   },
   "tutorial": {

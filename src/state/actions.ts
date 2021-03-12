@@ -1,4 +1,4 @@
-import { UpgradeType } from '../helpers/values';
+import { UpgradeKeyType } from '../helpers/values';
 import { CurrencyType, ModalHexType } from '../helpers/types';
 
 export const RESET_TYPE = 'RESET';
@@ -19,12 +19,22 @@ export const incrementAction = (selectedHex: string) => ({
 
 export const BUY_UPGRADE_TYPE = 'BUY_UPGRADE';
 export const buyUpgradeAction = (
-  selectedHex: string,
-  upgradeId: UpgradeType
+  selectedHex: ModalHexType,
+  upgradeId: UpgradeKeyType
 ) => ({
   type: BUY_UPGRADE_TYPE,
   upgradeId,
   selectedHex,
+});
+
+export const UNLOCK_UPGRADE_TYPE = 'UNLOCK_UPGRADE';
+export const unlockUpgradeAction = (
+  modalId: ModalHexType,
+  upgradeId: UpgradeKeyType
+) => ({
+  type: UNLOCK_UPGRADE_TYPE,
+  modalId,
+  upgradeId,
 });
 
 export const BUY_MODAL_EXPAND_TYPE = 'BUY_EXPAND_HEX';
@@ -69,6 +79,16 @@ export const butModalUnlockAction = ({
   modalId: ModalHexType;
 }) => ({
   type: BUY_MODAL_UNLOCK_TYPE,
+  modalId,
+});
+
+export const BUY_MODAL_UPGRADE_TYPE = 'BUY_MODAL_UPGRADE';
+export const butModalUpgradeAction = ({
+  modalId,
+}: {
+  modalId: ModalHexType;
+}) => ({
+  type: BUY_MODAL_UPGRADE_TYPE,
   modalId,
 });
 

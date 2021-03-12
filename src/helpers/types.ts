@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 // import { modalsHex } from './modals';
 import theme from './theme';
+import { UpgradeKeyType } from './values';
 
 export type SceneType = 'incremental' | 'secondStage';
 
@@ -112,6 +113,8 @@ export interface ModalUpgradeType {
   title: string;
   description: string;
   type: 'upgrade';
+  upgrade: UpgradeKeyType;
+  lockIndex: number;
   currency: CurrencyType;
   prices: number[];
 }
