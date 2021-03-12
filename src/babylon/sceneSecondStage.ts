@@ -357,6 +357,12 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
       scene.getMeshByName(hexName)?.setEnabled(true);
       // Hide bottom if exists
       scene.getMeshByName(`${hexName}_bottom`)?.setEnabled(false);
+
+      // Reset lathe color
+      const lathe = scene.getMeshByName(hexName.replace('hex', 'lathe'));
+      if (lathe) {
+        lathe.material = scene.getMaterialByName('material_border_hex');
+      }
     }
   );
 
