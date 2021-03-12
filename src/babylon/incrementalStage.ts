@@ -31,6 +31,8 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
     scene
   );
 
+  // camera.attachControl(null, true, true);
+
   // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
   let light = new BABYLON.HemisphericLight(
     'light',

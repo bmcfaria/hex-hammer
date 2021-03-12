@@ -6,6 +6,7 @@ import {
   createRingPolygon,
   createLatheHex,
   createCenterPolygon,
+  createTextMesh,
 } from './GroundHex';
 import { zoomLimit } from '../helpers/values';
 
@@ -35,7 +36,7 @@ const cornersAndUnlockHex = [
   ['hex_5_25', 'hex_4_20'],
 ];
 
-const font = 'bold 32px verdana';
+const font = 'bold 64px verdana';
 
 export const createSceneSecondStage = (sharedBabylonObject: any) => (
   scene: Scene
@@ -70,7 +71,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   const polygonOrientation = 1; // 0 - flat || 1 - pointy
 
   let polygon = createCenterPolygon(scene, 'hex_0_0');
-  polygon.position.y = 1;
+  polygon.position.y = 0;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
   polygon.setParent(parentNode);
 
@@ -281,16 +282,12 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
     if (tmpMaterial && tmpMesh) {
       tmpMesh.material = tmpMaterial;
 
-      let textTexture = new BABYLON.DynamicTexture(
-        `text_${hexName}`,
-        { width: 100, height: 100 },
-        scene,
-        false
-      );
-      textTexture.wAng = -Math.PI / 2;
-      (tmpMaterial as BABYLON.StandardMaterial).diffuseTexture = textTexture;
+      let textMesh = createTextMesh(scene, `text_${hexName}`);
+      // TODO: In this scene the pivot is probably not necessary
+      textMesh.position.x = (tmpMesh.parent as BABYLON.TransformNode).position?.x;
+      textMesh.position.z = (tmpMesh.parent as BABYLON.TransformNode).position?.z;
 
-      textTexture.drawText('', null, null, font, 'green', 'white', true, true);
+      updateHexText(hexName, scene, '?');
     }
   });
 
@@ -451,12 +448,24 @@ const createMaterials = (scene: Scene) => {
 };
 
 const updateHexText = (hexName: string, scene: Scene, text: string) => {
-  let tmpMaterial = scene.getMaterialByName(
-    hexName
-  ) as BABYLON.StandardMaterial;
-  const textTexture = tmpMaterial?.diffuseTexture as BABYLON.DynamicTexture;
-  if (textTexture) {
-    textTexture.drawText(text, null, null, font, 'black', 'white', true, true);
+  const tmpMesh = scene.getMeshByName(`text_${hexName}`);
+  if (tmpMesh) {
+    const textTexture = (tmpMesh.material as BABYLON.StandardMaterial)
+      ?.diffuseTexture as BABYLON.DynamicTexture;
+    if (textTexture) {
+      // textTexture.drawText('', null, null, font, 'black', 'white', true, true);
+      textTexture.getContext().clearRect(0, 0, 200, 200);
+      textTexture.drawText(
+        text,
+        null,
+        null,
+        font,
+        'black',
+        'transparent',
+        true,
+        true
+      );
+    }
   }
 };
 
@@ -464,9 +473,9 @@ const updateValuePerSecondText = (scene: any) => (
   name: string,
   value: number
 ) => {
-  updateHexText(`material_${name}`, scene, `${~~value}/s`);
+  updateHexText(name, scene, `${~~value}/s`);
 };
 
 const clearHexText = (scene: any) => (name: string) => {
-  updateHexText(`material_${name}`, scene, '');
+  updateHexText(name, scene, '');
 };

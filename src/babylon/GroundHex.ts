@@ -51,7 +51,6 @@ export const createLatheHex = (
   scene: Scene,
   bottom?: boolean
 ) => {
-  // 0.02 or else it will have margin between lathes
   let myShape;
   if (bottom) {
     myShape = [new BABYLON.Vector3(radius, 0, 0), new BABYLON.Vector3(0, 0, 0)];
@@ -124,7 +123,7 @@ export const createRingPolygon = (
 
   tmpPolygon.parent = pivot;
   tmpPolygon.position.x = 0;
-  tmpPolygon.position.y = 0.5;
+  tmpPolygon.position.y = -0.5;
   tmpPolygon.position.z = 0;
 
   tmpPolygon.rotation.y = Math.PI / 2 - pivot.rotation.y;
@@ -176,24 +175,68 @@ export const createRingPolygon = (
 };
 
 export const createCenterPolygon = (scene: Scene, name: string = 'polygon') => {
-  let shape = [];
-  for (let i = 0; i < 6; i++) {
-    shape.push(
-      new BABYLON.Vector3(
-        radius * Math.cos((i * Math.PI) / 3),
-        0,
-        radius * Math.sin((i * Math.PI) / 3)
-      )
-    );
-  }
+  const myShape = [
+    new BABYLON.Vector3(0, 0, 0),
+    new BABYLON.Vector3(radius, 0, 0),
+    new BABYLON.Vector3(radius, 1, 0),
+    new BABYLON.Vector3(0, 1, 0),
+  ];
 
-  let polygon = BABYLON.MeshBuilder.ExtrudePolygon(
+  const polygon = BABYLON.MeshBuilder.CreateLathe(
     name,
-    { shape: shape, depth: 1, sideOrientation: BABYLON.Mesh.DOUBLESIDE },
+    {
+      shape: myShape,
+      radius: 1,
+      tessellation: 6,
+      sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+    },
     scene
   );
-  polygon.position.y = 0.5;
-  polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
+  polygon.position.y = -0.5;
+  polygon.rotation.y = Math.PI / 2;
+  polygon.convertToFlatShadedMesh();
+
+  // return lathe;
 
   return polygon;
+};
+
+export const createTextMesh = (scene: Scene, name: string) => {
+  //Set width an height for plane
+  var planeWidth = radius * 1.5;
+  var planeHeight = radius * 1.5;
+
+  const plane = BABYLON.MeshBuilder.CreateGround(
+    name,
+    {
+      width: planeWidth,
+      height: planeHeight,
+    },
+    scene
+  );
+  plane.isPickable = false;
+  plane.position.y = 1.01;
+
+  let planeMaterial = new BABYLON.StandardMaterial(name, scene);
+  plane.material = planeMaterial;
+  // planeMaterial.alpha = 0.5;
+  (plane.material as any).specularColor = new BABYLON.Color3(0, 0, 0);
+
+  //Set width and height for dynamic texture using same multiplier
+  const multiplier = 4;
+  var DTWidth = 50 * multiplier;
+  var DTHeight = 50 * multiplier;
+
+  //Create dynamic texture
+  var dynamicTexture = new BABYLON.DynamicTexture(
+    'DynamicTexture',
+    { width: DTWidth, height: DTHeight },
+    scene,
+    false
+  );
+  dynamicTexture.hasAlpha = true;
+
+  planeMaterial.diffuseTexture = dynamicTexture;
+
+  return plane;
 };
