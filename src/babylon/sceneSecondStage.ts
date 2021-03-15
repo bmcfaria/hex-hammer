@@ -286,8 +286,6 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
       // TODO: In this scene the pivot is probably not necessary
       textMesh.position.x = (tmpMesh.parent as BABYLON.TransformNode).position?.x;
       textMesh.position.z = (tmpMesh.parent as BABYLON.TransformNode).position?.z;
-
-      updateHexText(hexName, scene, '?');
     }
   });
 
@@ -374,7 +372,7 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
         cornerMesh.setEnabled(true);
 
         updateHexText(
-          cornerMesh.material?.name || '',
+          cornerMesh.name || '',
           scene,
           Object.keys(modalsHex).includes(corner) ? '?' : ''
         );
