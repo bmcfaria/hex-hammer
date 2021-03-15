@@ -4,18 +4,18 @@ export const incrementals: { [index: string]: any } = {
   hex_0_0: {
     name: 'Central Inc',
     bonusModels: [
-      [3, 0, 'expand'],
-      [3, 3, 'expand'],
-      [3, 6, 'expand'],
-      [3, 12, 'expand'],
-      [3, 15, 'expand'],
-      [3, 18, 'expand'],
+      [2, 0, 'expand'],
+      [2, 2, 'expand'],
+      [2, 4, 'expand'],
+      [2, 6, 'expand'],
+      [2, 8, 'expand'],
+      [2, 10, 'expand'],
     ],
     bonus: [
       {
         name: stringsObject.modal.info.bonus[0],
         type: 'atRing',
-        value: 3,
+        value: 2,
         reward: {
           type: 'currency',
           key: 'blue',

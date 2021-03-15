@@ -19,7 +19,7 @@ const Container = styled.div`
   }
 `;
 
-const Row = styled.div`
+const BaseRow = styled.div`
   width: 100%;
   height: 32px;
   text-align: left;
@@ -29,9 +29,17 @@ const Row = styled.div`
   padding: 0 16px;
   box-sizing: border-box;
   align-items: center;
+`;
 
+const Row = styled(BaseRow)`
   & > div:first-child {
     flex-grow: 1;
+  }
+`;
+
+const BonusRowStyled = styled(BaseRow)`
+  & > [data-hex-currency] {
+    margin: 0 4px;
   }
 `;
 
@@ -51,6 +59,7 @@ const BoldText = styled.div`
 `;
 
 const CheckmarkStyled = styled(Checkmark)`
+  margin-left: auto;
   margin-right: -4px;
   color: ${theme.colors.modal.checkmark};
 `;
@@ -58,6 +67,36 @@ const CheckmarkStyled = styled(Checkmark)`
 interface ModalInfoProps {
   selectedHex: string;
 }
+
+const BonusRow = ({ text, active }: { text: string; active: boolean }) => {
+  const textSplit = text.split('#');
+
+  const generateRow = (textFragment: string, index: number) => {
+    if (index === 0) {
+      return <div>- {textFragment}</div>;
+    }
+
+    const coin = textFragment.split(' ')[0] as CurrencyType;
+    const restOfText = textFragment.substring(coin.length);
+    return (
+      <>
+        <HexStyled data-hex-currency $currency={coin} />
+        <div>{restOfText}</div>
+      </>
+    );
+  };
+
+  return (
+    <BonusRowStyled>
+      {textSplit.map((textFragment, index) => (
+        <React.Fragment key={`${textFragment}_${index}`}>
+          {generateRow(textFragment, index)}
+        </React.Fragment>
+      ))}
+      {active && <CheckmarkStyled />}
+    </BonusRowStyled>
+  );
+};
 
 const ModalInfo = ({ selectedHex }: ModalInfoProps) => {
   const increment = useSelector(incrementalsSelector);
@@ -118,10 +157,11 @@ const ModalInfo = ({ selectedHex }: ModalInfoProps) => {
             </CenterText>
           </Row>
           {incrementalObject.bonus.map((bonus: any, index: number) => (
-            <Row key={index}>
-              <div>- {bonus.name}</div>
-              {isBonusActive(bonus) && <CheckmarkStyled />}
-            </Row>
+            <BonusRow
+              text={bonus.name}
+              active={isBonusActive(bonus)}
+              key={index}
+            />
           ))}
         </>
       )}
