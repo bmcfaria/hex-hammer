@@ -4,7 +4,11 @@ import styled from 'styled-components';
 import { ReactComponent as Pause } from '../assets/Pause.svg';
 import { GameObjectContext } from '../helpers/context';
 import theme from '../helpers/theme';
-import { resetAction, toggleDevAction } from '../state/actions';
+import {
+  devAddFundsAction,
+  resetAction,
+  devToggleAction,
+} from '../state/actions';
 import { devModeSelector } from '../state/selectors';
 import StatusBarButton from './StatusBarButton';
 
@@ -65,7 +69,11 @@ const PauseButton = () => {
   };
 
   const toggleDev = () => {
-    dispatch(toggleDevAction);
+    dispatch(devToggleAction);
+  };
+
+  const devAddFunds = () => {
+    dispatch(devAddFundsAction);
   };
 
   return (
@@ -80,6 +88,9 @@ const PauseButton = () => {
               <span>Dev mode: {devMode ? 'ON' : 'OFF'}</span>
               <button onClick={toggleDev}>Toggle</button>
             </DevModeRow>
+            <div>
+              <Button onClick={devAddFunds}>DEV: add funds</Button>
+            </div>
           </ModalContainer>
         </BackgroundShadow>
       )}

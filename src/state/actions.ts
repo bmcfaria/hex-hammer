@@ -6,9 +6,14 @@ export const resetAction = {
   type: RESET_TYPE,
 };
 
-export const TOGGLE_DEV_TYPE = 'TOGGLE_DEV';
-export const toggleDevAction = {
-  type: TOGGLE_DEV_TYPE,
+export const DEV_TOGGLE_TYPE = 'DEV_TOGGLE';
+export const devToggleAction = {
+  type: DEV_TOGGLE_TYPE,
+};
+
+export const DEV_ADD_FUNDS_TYPE = 'DEV_ADD_FUNDS';
+export const devAddFundsAction = {
+  type: DEV_ADD_FUNDS_TYPE,
 };
 
 export const INCREMENT_TYPE = 'INCREMENT';

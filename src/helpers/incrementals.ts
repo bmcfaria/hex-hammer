@@ -24,9 +24,9 @@ export const incrementals: { [index: string]: any } = {
       },
     ],
     flipsToExpand: 4,
-    maxRings: 4,
+    maxRings: 3,
     mainCurrency: 'base',
-    breakFree: 4,
+    breakFree: 3,
   },
   hex_5_0: {
     name: 'East Inc',

@@ -40,7 +40,7 @@ export const upgrades = {
     description2: ['(2s -> 1s)', '(1s -> .5s)', '(.5s)'],
     value: [2, 1, 0.5],
     currency: 'base',
-    levelLock: [5, 6],
+    levelLock: [2],
   },
 };
 

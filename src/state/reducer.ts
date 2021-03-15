@@ -1,4 +1,5 @@
 import { incrementals } from '../helpers/incrementals';
+import { modalsHex } from '../helpers/modals';
 import {
   BonusType,
   CurrencyType,
@@ -12,18 +13,18 @@ import {
   flipsUntilRing,
   generateNotificationIncrementalBonusId,
 } from '../helpers/utils';
-import { upgrades, UpgradeKeyType } from '../helpers/values';
-import { modalsHex } from '../helpers/modals';
+import { UpgradeKeyType, upgrades } from '../helpers/values';
 import {
   BUY_MODAL_EXPAND_TYPE,
   BUY_MODAL_TRADE_TYPE,
   BUY_MODAL_UNLOCK_TYPE,
   BUY_UPGRADE_TYPE,
   DELETE_NOTIFICATION_TYPE,
+  DEV_ADD_FUNDS_TYPE,
   DISABLE_TUTORIAL_TYPE,
   INCREMENT_TYPE,
   RESET_TYPE,
-  TOGGLE_DEV_TYPE,
+  DEV_TOGGLE_TYPE,
   UNLOCK_UPGRADE_TYPE,
 } from './actions';
 
@@ -62,9 +63,9 @@ const trades: { [index: string]: boolean } = {};
 export const initialState = {
   devMode: false,
   currency: {
-    base: 100000 as number | undefined,
+    base: undefined as number | undefined,
     red: undefined as number | undefined,
-    blue: 6 as number | undefined,
+    blue: undefined as number | undefined,
     dark: undefined as number | undefined,
   },
   incrementals: incrementalsState,
@@ -101,10 +102,23 @@ export const reducer = (state = initialState, payload: any) => {
       };
     }
 
-    case TOGGLE_DEV_TYPE: {
+    case DEV_TOGGLE_TYPE: {
       return {
         ...state,
         devMode: !state.devMode,
+      };
+    }
+
+    case DEV_ADD_FUNDS_TYPE: {
+      return {
+        ...state,
+        currency: {
+          ...state.currency,
+          base: (state.currency.base || 0) + 100,
+          red: (state.currency.red || 0) + 100,
+          blue: (state.currency.blue || 0) + 100,
+          dark: (state.currency.dark || 0) + 100,
+        },
       };
     }
 
