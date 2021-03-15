@@ -174,13 +174,23 @@ export const createRingPolygon = (
   return pivot;
 };
 
-export const createCenterPolygon = (scene: Scene, name: string = 'polygon') => {
-  const myShape = [
-    new BABYLON.Vector3(0, 0, 0),
-    new BABYLON.Vector3(radius, 0, 0),
-    new BABYLON.Vector3(radius, 1, 0),
-    new BABYLON.Vector3(0, 1, 0),
-  ];
+export const createCenterPolygon = (
+  scene: Scene,
+  name: string = 'polygon',
+  top = false
+) => {
+  let myShape;
+
+  if (top) {
+    myShape = [new BABYLON.Vector3(radius, 1, 0), new BABYLON.Vector3(0, 1, 0)];
+  } else {
+    myShape = [
+      new BABYLON.Vector3(0, 0, 0),
+      new BABYLON.Vector3(radius, 0, 0),
+      new BABYLON.Vector3(radius, 1, 0),
+      new BABYLON.Vector3(0, 1, 0),
+    ];
+  }
 
   const polygon = BABYLON.MeshBuilder.CreateLathe(
     name,

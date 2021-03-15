@@ -70,7 +70,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
 
   const polygonOrientation = 1; // 0 - flat || 1 - pointy
 
-  let polygon = createCenterPolygon(scene, 'hex_0_0');
+  let polygon = createCenterPolygon(scene, 'hex_0_0', true);
   polygon.position.y = 0;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
   polygon.setParent(parentNode);
