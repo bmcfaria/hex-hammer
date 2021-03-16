@@ -9,6 +9,7 @@ import {
   createTextMesh,
 } from './GroundHex';
 import { zoomLimit } from '../helpers/values';
+import { GameObjectRefType } from '../helpers/types';
 
 const modalMaterialMapping = {
   incremental: 'material_incremental',
@@ -128,16 +129,11 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   sharedBabylonObject.current.inc.clearText = clearHexText(scene);
 
   sharedBabylonObject.current.ui.zoomIn = () => {
-    // Zoom in limit
-    if (camera.radius >= zoomLimit) {
-      camera.radius -= 15;
-      sharedBabylonObject?.current?.ui?.setZoom?.(camera.radius);
-    }
+    zoomIn(camera, sharedBabylonObject);
   };
 
   sharedBabylonObject.current.ui.zoomOut = () => {
-    camera.radius += 15;
-    sharedBabylonObject?.current?.ui?.setZoom?.(camera.radius);
+    zoomOut(camera, sharedBabylonObject);
   };
 
   sharedBabylonObject.current.ui.center = () => {
@@ -165,10 +161,29 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   return scene;
 };
 
+const zoomIn = (
+  camera: BABYLON.ArcRotateCamera,
+  sharedBabylonObject: { current: GameObjectRefType }
+) => {
+  // Zoom in limit
+  if (camera.radius >= zoomLimit) {
+    camera.radius -= 15;
+    sharedBabylonObject?.current?.ui?.setZoom?.(camera.radius);
+  }
+};
+
+const zoomOut = (
+  camera: BABYLON.ArcRotateCamera,
+  sharedBabylonObject: { current: GameObjectRefType }
+) => {
+  camera.radius += 15;
+  sharedBabylonObject?.current?.ui?.setZoom?.(camera.radius);
+};
+
 const initializeCamera = (
   scene: Scene,
   parentNode: BABYLON.TransformNode,
-  sharedBabylonObject: any
+  sharedBabylonObject: { current: GameObjectRefType }
 ) => {
   const camera = new BABYLON.ArcRotateCamera(
     'camera_map',
@@ -229,6 +244,25 @@ const initializeCamera = (
       }
     }
   };
+
+  scene.onPointerObservable.add(pointerInfo => {
+    // Don't do anything if parentNode disabled
+    if (!parentNode.isEnabled()) {
+      return;
+    }
+
+    switch (pointerInfo.type) {
+      case BABYLON.PointerEventTypes.POINTERWHEEL:
+        const wheelDeltaY = (pointerInfo?.event as any)?.wheelDeltaY;
+
+        if (wheelDeltaY > 0) {
+          zoomIn(camera, sharedBabylonObject);
+        } else if (wheelDeltaY < 0) {
+          zoomOut(camera, sharedBabylonObject);
+        }
+        break;
+    }
+  });
 
   return camera;
 };
