@@ -195,12 +195,14 @@ const initializeCamera = (
       return;
     }
 
-    const pickResult = scene.pick(scene.pointerX, scene.pointerY, m => {
-      return m.name === 'ground';
-    });
-    if (pickResult?.pickedPoint) {
-      pickOrigin = pickResult.pickedPoint;
-      isPanning = true;
+    if (evt.button === 0) {
+      const pickResult = scene.pick(scene.pointerX, scene.pointerY, m => {
+        return m.name === 'ground';
+      });
+      if (pickResult?.pickedPoint) {
+        pickOrigin = pickResult.pickedPoint;
+        isPanning = true;
+      }
     }
   };
 
