@@ -1,4 +1,5 @@
 import { incrementals } from '../helpers/incrementals';
+import { initialHexes } from '../helpers/initialHexes';
 import { modalsHex } from '../helpers/modals';
 import {
   BonusType,
@@ -71,16 +72,7 @@ export const initialState = {
   incrementals: incrementalsState,
   upgrades: upgradesState,
   modalHex: {
-    ...[...Array(6)].reduce(
-      (results, _, index) => ({ ...results, [`hex_${1}_${index}`]: true }),
-      {}
-    ),
-    // hex_2_0: true,
-    // hex_2_2: true,
-    // hex_2_4: true,
-    hex_2_6: true,
-    // hex_2_8: true,
-    // hex_2_10: true,
+    ...initialHexes[0],
   },
   modalHexUpgrade,
   trades,

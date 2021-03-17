@@ -69,6 +69,8 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
       sharedBabylonObject?.current?.selectedHex
     ];
 
+    // TODO: take into account the max ring property
+
     turnRingsAnimations(total, polygonsObject, scene, flipsToExpand);
 
     if (total >= 1) {
