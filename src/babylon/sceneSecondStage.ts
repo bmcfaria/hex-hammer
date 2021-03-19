@@ -286,9 +286,10 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
     const currentIndex = ~~values[2];
     const type = modalValue.type as keyof typeof modalMaterialMapping;
 
-    (
-      scene.getMeshByName(modalKey) || { material: null }
-    ).material = scene.getMaterialByName(modalMaterialMapping[type]);
+    const tmpMesh = scene.getMeshByName(modalKey);
+    if (tmpMesh) {
+      changeHexVisual(tmpMesh, type);
+    }
 
     const latheName = `lathe_${currentRing}_${currentIndex}`;
     const tmpLathe = scene.getMeshByName(latheName);
@@ -308,17 +309,17 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
 
   // Initialize colors for the last ring
   [...Array(6 * 5)].forEach((_, index) => {
-    (
-      scene.getMeshByName(`hex_${5}_${index}`) || { material: null }
-    ).material = scene.getMaterialByName('material_lathe');
-    scene.getMeshByName(`hex_${5}_${index}`)?.setEnabled(true);
+    const tmpMesh = scene.getMeshByName(`hex_${5}_${index}`);
+    if (tmpMesh) {
+      changeHexVisual(tmpMesh, 'default');
+      tmpMesh.setEnabled(true);
+    }
   });
 
   incrementalHexes.forEach(hexName => {
-    let tmpMaterial = scene.getMaterialByName(`material_${hexName}`);
     let tmpMesh = scene.getMeshByName(hexName);
-    if (tmpMaterial && tmpMesh) {
-      tmpMesh.material = tmpMaterial;
+    if (tmpMesh) {
+      changeHexVisual(tmpMesh, 'incremental');
 
       let textMesh = createTextMesh(scene, `text_${hexName}`);
       // TODO: In this scene the pivot is probably not necessary
@@ -468,14 +469,14 @@ const createMaterials = (scene: Scene) => {
   ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.bottom);
 
   // Create unique material for each incremental (for dynamic texture)
-  incrementalHexes.forEach(hexName => {
-    new BABYLON.StandardMaterial(
-      `material_${hexName}`,
-      scene
-    ).ambientColor = BABYLON.Color3.FromHexString(
-      babylonTheme.colors.map.incremental
-    );
-  });
+  // incrementalHexes.forEach(hexName => {
+  //   new BABYLON.StandardMaterial(
+  //     `material_${hexName}`,
+  //     scene
+  //   ).ambientColor = BABYLON.Color3.FromHexString(
+  //     babylonTheme.colors.map.incremental
+  //   );
+  // });
 };
 
 const changeLatheVisual = (lathe: BABYLON.AbstractMesh, type: string) => {
@@ -489,6 +490,20 @@ const changeLatheVisual = (lathe: BABYLON.AbstractMesh, type: string) => {
   const scene = lathe.getScene();
 
   lathe.material = scene.getMaterialByName(types[type]);
+};
+
+// It's equals to lathe logic but separated for now
+const changeHexVisual = (hex: BABYLON.AbstractMesh, type: string) => {
+  const types: { [index: string]: string } = {
+    default: 'material_lathe',
+    incremental: 'material_incremental',
+    expand: 'material_expand',
+    trade: 'material_trade',
+    upgrade: 'material_upgrade',
+  };
+  const scene = hex.getScene();
+
+  hex.material = scene.getMaterialByName(types[type]);
 };
 
 const updateHexText = (hexName: string, scene: Scene, text: string) => {
