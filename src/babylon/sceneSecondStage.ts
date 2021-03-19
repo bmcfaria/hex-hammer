@@ -78,7 +78,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
 
   const lathe = createLatheHex('lathe_0_0', scene);
   lathe.setParent(parentNode);
-  lathe.material = scene.getMaterialByName('material_lathe');
+
+  changeLatheVisual(lathe, 'default');
 
   // Disable parent
   parentNode.setEnabled(false);
@@ -90,7 +91,7 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
     [...Array(6 * (ring + 1))].map((_, index) =>
       createRingPolygon(polygon, ring + 1, {
         meshMaterial: scene.getMaterialByName('material_common_hex'),
-        latheMaterial: scene.getMaterialByName('material_border_hex'),
+        latheMaterial: scene.getMaterialByName('material_lathe'),
         hideHexes: true,
         // drawBottom:
         //   Object.keys(modalHex).includes(`hex_${ring + 1}_${index}`) ||
@@ -290,9 +291,10 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
     ).material = scene.getMaterialByName(modalMaterialMapping[type]);
 
     const latheName = `lathe_${currentRing}_${currentIndex}`;
-    (
-      scene.getMeshByName(latheName) || { material: null }
-    ).material = scene.getMaterialByName(modalMaterialMapping[type]);
+    const tmpLathe = scene.getMeshByName(latheName);
+    if (tmpLathe) {
+      changeLatheVisual(tmpLathe, type);
+    }
   });
 
   // Reset camera
@@ -352,7 +354,7 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
     const cornerLathe = scene.getMeshByName(`lathe_${5}_${index}`);
 
     if (cornerLathe) {
-      cornerLathe.material = scene.getMaterialByName('material_central');
+      changeLatheVisual(cornerLathe, 'incremental');
     }
 
     const cornerHex = scene.getMeshByName(`hex_${5}_${index}`);
@@ -392,7 +394,7 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
       // Reset lathe color
       const lathe = scene.getMeshByName(hexName.replace('hex', 'lathe'));
       if (lathe) {
-        lathe.material = scene.getMaterialByName('material_border_hex');
+        changeLatheVisual(lathe, 'default');
       }
     }
   );
@@ -435,11 +437,6 @@ const createMaterials = (scene: Scene) => {
     scene
   ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.common);
 
-  new BABYLON.StandardMaterial(
-    'material_border_hex',
-    scene
-  ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.border);
-
   // Materials
   new BABYLON.StandardMaterial(
     'material_incremental',
@@ -479,6 +476,19 @@ const createMaterials = (scene: Scene) => {
       babylonTheme.colors.map.incremental
     );
   });
+};
+
+const changeLatheVisual = (lathe: BABYLON.AbstractMesh, type: string) => {
+  const types: { [index: string]: string } = {
+    default: 'material_lathe',
+    incremental: 'material_incremental',
+    expand: 'material_expand',
+    trade: 'material_trade',
+    upgrade: 'material_upgrade',
+  };
+  const scene = lathe.getScene();
+
+  lathe.material = scene.getMaterialByName(types[type]);
 };
 
 const updateHexText = (hexName: string, scene: Scene, text: string) => {
