@@ -9,6 +9,11 @@ import {
   turnCentralAnimation,
   turnRingsAnimations,
 } from './GroundHelper';
+import {
+  changeHexVisual,
+  changeLatheVisual,
+  createMaterials,
+} from './incrementalStageColor';
 
 const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   // This creates a basic Babylon Scene object (non-mesh)
@@ -59,11 +64,7 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   });
 
   sharedBabylonObject.current.mainAction = (total: number) => {
-    turnCentralAnimation(
-      polygonPivot,
-      scene.getMaterialByName(`material_${total % 5}`),
-      scene
-    );
+    turnCentralAnimation(polygonPivot, `material_${total % 5}`, scene);
 
     const { flipsToExpand } = incrementals[
       sharedBabylonObject?.current?.selectedHex
@@ -96,7 +97,7 @@ export const updateIncrementalState = (
   if (!centralMesh) {
     return;
   }
-  centralMesh.material = scene.getMaterialByName(`material_${total % 5}`);
+  changeHexVisual(centralMesh, `material_${total % 5}`);
 
   // Generate rings of polygons
   [...Array(6)].forEach((_, ring) => {
@@ -109,9 +110,7 @@ export const updateIncrementalState = (
         mesh.setEnabled(numberOfTurns !== 0);
         lathe.setEnabled(numberOfTurns !== 0);
 
-        mesh.material = scene.getMaterialByName(
-          `material_${(numberOfTurns - 1) % 5}`
-        );
+        changeHexVisual(mesh, `material_${(numberOfTurns - 1) % 5}`);
       }
     });
   });
@@ -136,17 +135,14 @@ export const updateIncrementalState = (
 };
 
 const updateBonusHexes = (scene: Scene, total: number) => {
-  // const maxActiveRing = ~~(Math.log(total) / Math.log(5));
+  // TODO: not using total?
 
   // Update bonus
   (incrementals['hex_0_0'].bonusModels || []).forEach(
     ([ring, index, type]: [number, number, string]) => {
       const lathe = scene.getMeshByName(`lathe_${ring}_${index}`);
       if (lathe) {
-        lathe.material = scene.getMaterialByName(`material_${type}`);
-        // if (ring - 1 <= maxActiveRing) {
-        //   lathe.setEnabled(true);
-        // }
+        changeLatheVisual(lathe, `material_${type}`);
       }
     }
   );
@@ -156,10 +152,7 @@ const updateBonusHexes = (scene: Scene, total: number) => {
     [...Array(breakFreeRing * 6)].forEach((_, index) => {
       const lathe = scene.getMeshByName(`lathe_${breakFreeRing}_${index}`);
       if (lathe) {
-        lathe.material = scene.getMaterialByName(`material_break_free`);
-        // if (breakFreeRing - 1 <= maxActiveRing) {
-        //   lathe.setEnabled(true);
-        // }
+        changeLatheVisual(lathe, `material_break_free`);
       }
     });
   }
@@ -188,18 +181,6 @@ const initialize = (scene: Scene) => {
   if (camera) {
     camera.radius = 15;
   }
-};
-
-const createMaterials = (scene: Scene) => {
-  new BABYLON.StandardMaterial(
-    'material_expand',
-    scene
-  ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.expand);
-
-  new BABYLON.StandardMaterial(
-    'material_break_free',
-    scene
-  ).ambientColor = BABYLON.Color3.FromHexString('#ff0000');
 };
 
 export default createScene;

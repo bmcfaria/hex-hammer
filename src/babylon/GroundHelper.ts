@@ -6,8 +6,8 @@ import {
 } from './GroundHex';
 import * as BABYLON from '@babylonjs/core';
 import { xRotation, ySlide } from './Animation';
-import { babylonTheme } from '../helpers/theme';
 import { flipsUntilRing } from '../helpers/utils';
+import { changeHexVisual } from './incrementalStageColor';
 
 export const buildGround = (
   scene: Scene
@@ -33,33 +33,29 @@ export const buildGround = (
   polygon.parent = polygonPivot;
   polygonPivot.animations.push(...[xRotation, ySlide]);
 
-  let centralHexColor = new BABYLON.StandardMaterial('centralHex', scene);
-  centralHexColor.ambientColor = BABYLON.Color3.FromHexString(
-    babylonTheme.colors.map.central
-  );
-  polygon.material = centralHexColor;
+  changeHexVisual(polygon, 'central_hex');
 
   return [polygonPivot, polygonsObject];
 };
 
 export const turnCentralAnimation = (
   polygonPivot: BABYLON.TransformNode,
-  material: BABYLON.Nullable<BABYLON.Material>,
+  material: string,
   scene: Scene
 ) => {
   scene.beginAnimation(polygonPivot, 0, 10, true);
-  polygonPivot.getChildMeshes()[0].material = material;
+  changeHexVisual(polygonPivot.getChildMeshes()[0], material);
 };
 
 export const turnRingAnimation = (
   polygonsObject: BABYLON.TransformNode[][],
   index: number,
-  material: BABYLON.Nullable<BABYLON.Material>,
+  material: string,
   scene: Scene
 ) => {
   const meshArray = polygonsObject[index];
   meshArray.forEach((mesh, innerIndex) => {
-    mesh.getChildMeshes()[0].material = material;
+    changeHexVisual(mesh.getChildMeshes()[0], material);
     mesh.getChildMeshes()[0].setEnabled(true);
 
     scene.getMeshByName(`lathe_${index + 1}_${innerIndex}`)?.setEnabled(true);
@@ -79,7 +75,7 @@ export const turnRingsAnimations = (
       turnRingAnimation(
         polygonsObject,
         ring,
-        scene.getMaterialByName(`material_${(numberOfTurns - 1) % 5}`),
+        `material_${(numberOfTurns - 1) % 5}`,
         scene
       );
     }
