@@ -22,6 +22,7 @@ export const buildGround = (
       createRingPolygon(polygon, index + 1, {
         hideHexes: true,
         hideLathes: true,
+        usePivot: true,
       })
     )
   );

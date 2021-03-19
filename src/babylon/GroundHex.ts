@@ -91,6 +91,7 @@ export const createRingPolygon = (
     hideLathes,
     drawBottom,
     bottomMaterial,
+    usePivot,
   }: {
     meshMaterial?: Nullable<BABYLON.Material>;
     latheMaterial?: Nullable<BABYLON.Material>;
@@ -98,6 +99,7 @@ export const createRingPolygon = (
     hideLathes?: boolean;
     drawBottom?: boolean;
     bottomMaterial?: Nullable<BABYLON.Material>;
+    usePivot?: boolean;
   } = {}
 ) => (_: any, index: number) => {
   let tmpPolygon = polygon.clone();
@@ -105,28 +107,41 @@ export const createRingPolygon = (
   tmpPolygon.isPickable = false;
 
   let CoR_At = hexCoordinates(ring, index);
-  let pivot = new BABYLON.TransformNode(`root_${ring}_${index}`);
-  pivot.position = CoR_At;
+  let returnObject;
 
-  let pivotRotation = 0;
-  pivotRotation = CoR_At.x > 0 ? Math.PI / 2 : pivotRotation;
-  pivotRotation = CoR_At.x < 0 ? -Math.PI / 2 : pivotRotation;
-  pivotRotation = CoR_At.x === 0 && CoR_At.z < 0 ? Math.PI : pivotRotation;
-  pivotRotation =
-    CoR_At.x > 0 && CoR_At.z < 0 ? (5 * Math.PI) / 6 : pivotRotation;
-  pivotRotation = CoR_At.x > 0 && CoR_At.z > 0 ? Math.PI / 6 : pivotRotation;
-  pivotRotation =
-    CoR_At.x < 0 && CoR_At.z < 0 ? (7 * Math.PI) / 6 : pivotRotation;
-  pivotRotation = CoR_At.x < 0 && CoR_At.z > 0 ? -Math.PI / 6 : pivotRotation;
+  if (usePivot) {
+    let pivot = new BABYLON.TransformNode(`root_${ring}_${index}`);
+    pivot.position = CoR_At;
 
-  pivot.rotation.y = pivotRotation;
+    let pivotRotation = 0;
+    pivotRotation = CoR_At.x > 0 ? Math.PI / 2 : pivotRotation;
+    pivotRotation = CoR_At.x < 0 ? -Math.PI / 2 : pivotRotation;
+    pivotRotation = CoR_At.x === 0 && CoR_At.z < 0 ? Math.PI : pivotRotation;
+    pivotRotation =
+      CoR_At.x > 0 && CoR_At.z < 0 ? (5 * Math.PI) / 6 : pivotRotation;
+    pivotRotation = CoR_At.x > 0 && CoR_At.z > 0 ? Math.PI / 6 : pivotRotation;
+    pivotRotation =
+      CoR_At.x < 0 && CoR_At.z < 0 ? (7 * Math.PI) / 6 : pivotRotation;
+    pivotRotation = CoR_At.x < 0 && CoR_At.z > 0 ? -Math.PI / 6 : pivotRotation;
 
-  tmpPolygon.parent = pivot;
-  tmpPolygon.position.x = 0;
-  tmpPolygon.position.y = -0.5;
-  tmpPolygon.position.z = 0;
+    pivot.rotation.y = pivotRotation;
 
-  tmpPolygon.rotation.y = Math.PI / 2 - pivot.rotation.y;
+    tmpPolygon.parent = pivot;
+    pivot.animations.push(...[xRotation, ySlide]);
+
+    tmpPolygon.position.x = 0;
+    tmpPolygon.position.y = -0.5;
+    tmpPolygon.position.z = 0;
+
+    tmpPolygon.rotation.y = Math.PI / 2 - pivot.rotation.y;
+
+    returnObject = pivot;
+  } else {
+    tmpPolygon.position = CoR_At;
+    tmpPolygon.position.y = 0;
+    returnObject = tmpPolygon;
+  }
+
   if (hideHexes) {
     tmpPolygon.setEnabled(false);
   }
@@ -134,8 +149,6 @@ export const createRingPolygon = (
   if (meshMaterial) {
     tmpPolygon.material = meshMaterial;
   }
-
-  pivot.animations.push(...[xRotation, ySlide]);
 
   const lathe = createLatheHex(`lathe_${ring}_${index}`, polygon.getScene());
   lathe.position = CoR_At.clone();
@@ -162,16 +175,7 @@ export const createRingPolygon = (
     }
   }
 
-  // if (ring === outterRing) {
-  //   const material = new BABYLON.StandardMaterial(
-  //     `material_${index}`,
-  //     polygon.getScene()
-  //   );
-  //   material.ambientColor = new BABYLON.Color3(1, 0, 0);
-  //   lathe.material = material;
-  // }
-
-  return pivot;
+  return returnObject;
 };
 
 export const createCenterPolygon = (
@@ -205,8 +209,6 @@ export const createCenterPolygon = (
   polygon.position.y = -0.5;
   polygon.rotation.y = Math.PI / 2;
   polygon.convertToFlatShadedMesh();
-
-  // return lathe;
 
   return polygon;
 };
