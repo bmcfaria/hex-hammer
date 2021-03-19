@@ -422,13 +422,6 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
 
 const createMaterials = (scene: Scene) => {
   new BABYLON.StandardMaterial(
-    'material_central',
-    scene
-  ).ambientColor = BABYLON.Color3.FromHexString(
-    babylonTheme.colors.map.central
-  );
-
-  new BABYLON.StandardMaterial(
     'material_lathe',
     scene
   ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.border);
@@ -467,16 +460,6 @@ const createMaterials = (scene: Scene) => {
     'material_bottom',
     scene
   ).ambientColor = BABYLON.Color3.FromHexString(babylonTheme.colors.map.bottom);
-
-  // Create unique material for each incremental (for dynamic texture)
-  // incrementalHexes.forEach(hexName => {
-  //   new BABYLON.StandardMaterial(
-  //     `material_${hexName}`,
-  //     scene
-  //   ).ambientColor = BABYLON.Color3.FromHexString(
-  //     babylonTheme.colors.map.incremental
-  //   );
-  // });
 };
 
 const changeLatheVisual = (lathe: BABYLON.AbstractMesh, type: string) => {

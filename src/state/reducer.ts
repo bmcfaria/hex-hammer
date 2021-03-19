@@ -328,6 +328,10 @@ export const reducer = (state = initialState, payload: any) => {
 
       return {
         ...state,
+        currency: {
+          ...state.currency,
+          [selectedCurrency]: (state.currency[selectedCurrency] || 0) - price,
+        },
         upgrades: {
           ...state.upgrades,
           [upgradeId]: {
