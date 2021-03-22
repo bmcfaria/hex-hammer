@@ -23,3 +23,6 @@ export const convertToColor4IfNecessary = (color: string) => {
 
   return color;
 };
+
+export const generateCornersArray = (ring: number) =>
+  [...Array(6)].map((_, tmpIndex) => tmpIndex * ring);

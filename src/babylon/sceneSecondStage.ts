@@ -10,7 +10,10 @@ import {
 } from './GroundHex';
 import { zoomLimit } from '../helpers/values';
 import { GameObjectRefType } from '../helpers/types';
-import { convertToColor4IfNecessary } from '../helpers/utils';
+import {
+  convertToColor4IfNecessary,
+  generateCornersArray,
+} from '../helpers/utils';
 
 const modalMaterialMapping = {
   incremental: 'material_incremental',
@@ -101,6 +104,20 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
         // bottomMaterial: scene.getMaterialByName('material_bottom'),
       })(_, index)
     )
+  );
+
+  const prestigeRing = 7;
+
+  generateCornersArray(prestigeRing - 1).map(index =>
+    createRingPolygon(polygon, lathe, prestigeRing - 1, {
+      hideHexes: true,
+    })(undefined, index)
+  );
+
+  generateCornersArray(prestigeRing).map(index =>
+    createRingPolygon(polygon, lathe, prestigeRing, {
+      hideHexes: true,
+    })(undefined, index)
   );
 
   initializeMeshes(scene, sharedBabylonObject);
