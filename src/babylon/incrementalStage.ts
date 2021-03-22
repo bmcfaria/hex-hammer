@@ -2,7 +2,7 @@ import * as BABYLON from '@babylonjs/core';
 import { Scene } from '@babylonjs/core';
 import { incrementals } from '../helpers/incrementals';
 import { babylonTheme } from '../helpers/theme';
-import { flipsUntilRing } from '../helpers/utils';
+import { convertToColor4IfNecessary, flipsUntilRing } from '../helpers/utils';
 import { GameObjectRefType } from '../helpers/types';
 import {
   buildGround,
@@ -19,10 +19,10 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   // This creates a basic Babylon Scene object (non-mesh)
   //   let scene = new BABYLON.Scene(engine);
   scene.clearColor = BABYLON.Color4.FromHexString(
-    babylonTheme.colors.clearColor.incremental
+    convertToColor4IfNecessary(babylonTheme.colors.clearColor.incremental)
   );
   scene.ambientColor = BABYLON.Color3.FromHexString(
-    babylonTheme.colors.ambientColor.incremental
+    convertToColor4IfNecessary(babylonTheme.colors.ambientColor.incremental)
   );
 
   // This creates and positions a free camera (non-mesh)
@@ -44,12 +44,12 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
     new BABYLON.Vector3(0, 1, 0),
     scene
   );
-  // light.diffuse = new BABYLON.Color3(1, 0, 0);
-  // light.specular = new BABYLON.Color3(0, 1, 0);
-  // light.groundColor = new BABYLON.Color3(0, 1, 0);
+  // light.diffuse = new BABYLON.Color3(0, 0, 0);
+  // light.specular = new BABYLON.Color3(1, 1, 1);
+  light.groundColor = new BABYLON.Color3(1, 1, 1);
 
   // Default intensity is 1. Let's dim the light a small amount
-  light.intensity = 0.5;
+  light.intensity = 3;
 
   createMaterials(scene);
 
@@ -64,7 +64,7 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   });
 
   sharedBabylonObject.current.mainAction = (total: number) => {
-    turnCentralAnimation(polygonPivot, `material_${total % 5}`, scene);
+    turnCentralAnimation(polygonPivot, total, scene);
 
     const { flipsToExpand } = incrementals[
       sharedBabylonObject?.current?.selectedHex
@@ -80,6 +80,10 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   };
 
   initialize(scene);
+
+  // Update bonux hexes
+  updateBonusHexes(scene);
+
   sharedBabylonObject.current.sceneInitialization.incrementalScene = () => {
     initialize(scene);
   };
@@ -92,16 +96,21 @@ export const updateIncrementalState = (
   total: number,
   sharedBabylonObject: { current?: GameObjectRefType }
 ) => {
-  const centralMesh = scene.getMeshByName('polygon');
+  const centralMesh = scene.getMeshByName('hex_0_0');
 
   if (!centralMesh) {
     return;
   }
-  changeHexVisual(centralMesh, `material_${total % 5}`);
+
+  changeHexVisual(centralMesh, total);
+
+  const { flipsToExpand } = incrementals[
+    sharedBabylonObject?.current?.selectedHex || ''
+  ];
 
   // Generate rings of polygons
   [...Array(6)].forEach((_, ring) => {
-    const numberOfTurns = ~~(total / flipsUntilRing(5, ring + 1));
+    const numberOfTurns = ~~(total / flipsUntilRing(flipsToExpand, ring + 1));
     [...Array(6 * (ring + 1))].forEach((_, index) => {
       const mesh = scene.getMeshByName(`hex_${ring + 1}_${index}`);
       const lathe = scene.getMeshByName(`lathe_${ring + 1}_${index}`);
@@ -110,19 +119,16 @@ export const updateIncrementalState = (
         mesh.setEnabled(numberOfTurns !== 0);
         lathe.setEnabled(numberOfTurns !== 0);
 
-        changeHexVisual(mesh, `material_${(numberOfTurns - 1) % 5}`);
+        changeHexVisual(mesh, numberOfTurns);
       }
     });
   });
 
   // Update bonux hexes
-  updateBonusHexes(scene, total);
+  updateBonusHexes(scene);
 
   // Update camera distance
   if (total > 0) {
-    const { flipsToExpand } = incrementals[
-      sharedBabylonObject?.current?.selectedHex || ''
-    ];
     (scene.getCameraByName(
       'camera'
     ) as BABYLON.ArcRotateCamera).radius = cameraRadiusValue(
@@ -134,7 +140,7 @@ export const updateIncrementalState = (
   }
 };
 
-const updateBonusHexes = (scene: Scene, total: number) => {
+const updateBonusHexes = (scene: Scene) => {
   // TODO: not using total?
 
   // Update bonus
@@ -142,7 +148,7 @@ const updateBonusHexes = (scene: Scene, total: number) => {
     ([ring, index, type]: [number, number, string]) => {
       const lathe = scene.getMeshByName(`lathe_${ring}_${index}`);
       if (lathe) {
-        changeLatheVisual(lathe, `material_${type}`);
+        changeLatheVisual(lathe, type);
       }
     }
   );
@@ -152,7 +158,7 @@ const updateBonusHexes = (scene: Scene, total: number) => {
     [...Array(breakFreeRing * 6)].forEach((_, index) => {
       const lathe = scene.getMeshByName(`lathe_${breakFreeRing}_${index}`);
       if (lathe) {
-        changeLatheVisual(lathe, `material_break_free`);
+        changeLatheVisual(lathe, `break_free`);
       }
     });
   }

@@ -69,6 +69,7 @@ const StatusBar = () => {
   const incrementals = useSelector(incrementalsSelector);
   const { gameObject, scene } = useContext(GameObjectContext);
 
+  // TODO: move this to useScene
   useEffect(() => {
     // transition to incremental
     if (scene === 'incremental') {

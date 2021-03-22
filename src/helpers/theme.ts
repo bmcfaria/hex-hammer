@@ -96,13 +96,14 @@ export const babylonTheme = {
     flip: ['#eae2b7', '#fcbf49', '#f77f00', '#d62828', '#003049'],
     map: {
       central: '#ff0000',
-      border: '#000000',
+      border: '#495057',
       common: '#ffffff',
       incremental: '#ff0000',
       trade: '#00ff00',
       expand: '#0000ff',
       upgrade: '#FFFF00',
       bottom: '#293241',
+      wall: '#6c757d',
     },
   },
 };

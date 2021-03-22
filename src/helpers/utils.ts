@@ -15,3 +15,11 @@ export const formatMoney = (value: number) =>
     mantissa: 1,
     roundingFunction: Math.floor,
   });
+
+export const convertToColor4IfNecessary = (color: string) => {
+  if (color && color.startsWith('#') && color.length === 7) {
+    return `${color}ff`;
+  }
+
+  return color;
+};

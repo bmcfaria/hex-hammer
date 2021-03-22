@@ -1,6 +1,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { Scene } from '@babylonjs/core';
 import { babylonTheme } from '../helpers/theme';
+import { convertToColor4IfNecessary } from '../helpers/utils';
 
 export const createMaterials = (scene: Scene) => {
   new BABYLON.StandardMaterial(
@@ -23,19 +24,36 @@ export const createMaterials = (scene: Scene) => {
 
 export const changeLatheVisual = (
   lathe: BABYLON.AbstractMesh,
-  material: string
+  type: string
 ) => {
-  const scene = lathe.getScene();
+  const colors: { [index: string]: string } = {
+    default: '#000000ff',
+    break_free: '#ff0000ff',
+    expand: babylonTheme.colors.map.expand,
+  };
 
-  lathe.material = scene.getMaterialByName(material);
+  lathe.instancedBuffers.color = BABYLON.Color4.FromHexString(
+    convertToColor4IfNecessary(colors[type])
+  );
 };
 
 // It's equals to lathe logic but separated for now
 export const changeHexVisual = (
   hex: BABYLON.AbstractMesh,
-  material: string
+  variant: string | number
 ) => {
-  const scene = hex.getScene();
+  const colors: { [index: string]: string } = {
+    central_hex: babylonTheme.colors.map.central,
+  };
 
-  hex.material = scene.getMaterialByName(material);
+  let color: string;
+  if (typeof variant === 'number') {
+    color = babylonTheme.colors.flip[variant % 5];
+  } else {
+    color = colors[variant];
+  }
+
+  hex.instancedBuffers.color = BABYLON.Color4.FromHexString(
+    convertToColor4IfNecessary(color)
+  );
 };

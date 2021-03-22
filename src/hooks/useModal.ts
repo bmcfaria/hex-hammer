@@ -4,9 +4,11 @@ import { GameObjectContext, ModalContext } from '../helpers/context';
 import { modalsHex } from '../helpers/modals';
 import { ModalHexType } from '../helpers/types';
 import { incrementalsSelector, modalHexSelector } from '../state/selectors';
+import useScene from './useScene';
 
 const useModal = () => {
   const { modal, setModal } = useContext(ModalContext);
+  const { openIncremental } = useScene();
   const incrementals = useSelector(incrementalsSelector);
 
   const modalHexValues = useSelector(modalHexSelector);
@@ -31,13 +33,13 @@ const useModal = () => {
           incrementals[selectedHex]?.unlocked ||
           !modalsHex[selectedHex as ModalHexType]
         ) {
-          gameObject?.current?.changeScene?.('incremental', selectedHex);
+          openIncremental(selectedHex);
         } else {
           gameObject.current?.ui.openModal(selectedHex as ModalHexType);
         }
       };
     }
-  }, [incrementals, gameObject, setModal]);
+  }, [incrementals, gameObject, setModal, openIncremental]);
 
   const openModal = (modalKey: ModalHexType) => {
     setModal?.(modalKey);

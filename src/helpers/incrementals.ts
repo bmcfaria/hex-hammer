@@ -23,7 +23,7 @@ export const incrementals: { [index: string]: any } = {
         },
       },
     ],
-    flipsToExpand: 4,
+    flipsToExpand: 2,
     maxRings: 3,
     mainCurrency: 'base',
     breakFree: 3,

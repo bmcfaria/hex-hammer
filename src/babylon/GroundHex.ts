@@ -83,6 +83,7 @@ export const createLatheHex = (
 
 export const createRingPolygon = (
   polygon: Mesh,
+  originalLathe: Mesh,
   ring = 1,
   {
     meshMaterial,
@@ -102,7 +103,7 @@ export const createRingPolygon = (
     usePivot?: boolean;
   } = {}
 ) => (_: any, index: number) => {
-  let tmpPolygon = polygon.clone();
+  let tmpPolygon = polygon.createInstance(`hex_${ring}_${index}`);
   tmpPolygon.name = `hex_${ring}_${index}`;
   tmpPolygon.isPickable = false;
 
@@ -146,11 +147,11 @@ export const createRingPolygon = (
     tmpPolygon.setEnabled(false);
   }
 
-  if (meshMaterial) {
-    tmpPolygon.material = meshMaterial;
-  }
+  // if (meshMaterial) {
+  //   tmpPolygon.material = meshMaterial;
+  // }
 
-  const lathe = createLatheHex(`lathe_${ring}_${index}`, polygon.getScene());
+  const lathe = originalLathe.createInstance(`lathe_${ring}_${index}`);
   lathe.position = CoR_At.clone();
   lathe.position.y = 0;
 
@@ -158,9 +159,9 @@ export const createRingPolygon = (
     lathe.setEnabled(false);
   }
 
-  if (latheMaterial) {
-    lathe.material = latheMaterial;
-  }
+  // if (latheMaterial) {
+  //   lathe.material = latheMaterial;
+  // }
 
   if (drawBottom) {
     const latheBottom = createLatheHex(

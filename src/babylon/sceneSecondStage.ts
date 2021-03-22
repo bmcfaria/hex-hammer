@@ -10,6 +10,7 @@ import {
 } from './GroundHex';
 import { zoomLimit } from '../helpers/values';
 import { GameObjectRefType } from '../helpers/types';
+import { convertToColor4IfNecessary } from '../helpers/utils';
 
 const modalMaterialMapping = {
   incremental: 'material_incremental',
@@ -43,10 +44,10 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   scene: Scene
 ) => {
   scene.clearColor = BABYLON.Color4.FromHexString(
-    babylonTheme.colors.clearColor.secondStage
+    convertToColor4IfNecessary(babylonTheme.colors.clearColor.secondStage)
   );
   scene.ambientColor = BABYLON.Color3.FromHexString(
-    babylonTheme.colors.ambientColor.secondStage
+    convertToColor4IfNecessary(babylonTheme.colors.ambientColor.secondStage)
   );
 
   // Create a parent node for all meshes
@@ -63,8 +64,8 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   );
 
   // Default intensity is 1. Let's dim the light a small amount
-  light.intensity = 0.5;
-  // light.groundColor = new BABYLON.Color3(0, 1, 0);
+  light.intensity = 3;
+  light.groundColor = new BABYLON.Color3(1, 1, 1);
 
   // Generates / color
   createMaterials(scene);
@@ -74,9 +75,12 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   let polygon = createCenterPolygon(scene, 'hex_0_0', true);
   polygon.position.y = 0;
   polygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
+  polygon.registerInstancedBuffer('color', 4);
+  changeHexVisual(polygon, 'default');
   polygon.setParent(parentNode);
 
   const lathe = createLatheHex('lathe_0_0', scene);
+  lathe.registerInstancedBuffer('color', 4);
   lathe.setParent(parentNode);
 
   changeLatheVisual(lathe, 'default');
@@ -89,14 +93,12 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
 
   [...Array(5)].map((_, ring) =>
     [...Array(6 * (ring + 1))].map((_, index) =>
-      createRingPolygon(polygon, ring + 1, {
-        meshMaterial: scene.getMaterialByName('material_common_hex'),
-        latheMaterial: scene.getMaterialByName('material_lathe'),
+      createRingPolygon(polygon, lathe, ring + 1, {
+        // meshMaterial: scene.getMaterialByName('material_common_hex'),
+        // latheMaterial: scene.getMaterialByName('material_lathe'),
         hideHexes: true,
-        // drawBottom:
-        //   Object.keys(modalHex).includes(`hex_${ring + 1}_${index}`) ||
-        //   cornerNames.includes(`hex_${ring + 1}_${index}`),
-        bottomMaterial: scene.getMaterialByName('material_bottom'),
+        // drawBottom: true,
+        // bottomMaterial: scene.getMaterialByName('material_bottom'),
       })(_, index)
     )
   );
@@ -311,7 +313,7 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
   [...Array(6 * 5)].forEach((_, index) => {
     const tmpMesh = scene.getMeshByName(`hex_${5}_${index}`);
     if (tmpMesh) {
-      changeHexVisual(tmpMesh, 'default');
+      changeHexVisual(tmpMesh, 'wall');
       tmpMesh.setEnabled(true);
     }
   });
@@ -323,8 +325,8 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
 
       let textMesh = createTextMesh(scene, `text_${hexName}`);
       // TODO: In this scene the pivot is probably not necessary
-      textMesh.position.x = (tmpMesh.parent as BABYLON.TransformNode).position?.x;
-      textMesh.position.z = (tmpMesh.parent as BABYLON.TransformNode).position?.z;
+      textMesh.position.x = tmpMesh.position.x;
+      textMesh.position.z = tmpMesh.position.z;
     }
   });
 
@@ -463,30 +465,35 @@ const createMaterials = (scene: Scene) => {
 };
 
 const changeLatheVisual = (lathe: BABYLON.AbstractMesh, type: string) => {
-  const types: { [index: string]: string } = {
-    default: 'material_lathe',
-    incremental: 'material_incremental',
-    expand: 'material_expand',
-    trade: 'material_trade',
-    upgrade: 'material_upgrade',
+  const colors: { [index: string]: string } = {
+    default: babylonTheme.colors.map.border,
+    incremental: babylonTheme.colors.map.incremental,
+    expand: babylonTheme.colors.map.expand,
+    trade: babylonTheme.colors.map.trade,
+    upgrade: babylonTheme.colors.map.upgrade,
+    unlock: babylonTheme.colors.map.border,
   };
-  const scene = lathe.getScene();
 
-  lathe.material = scene.getMaterialByName(types[type]);
+  lathe.instancedBuffers.color = BABYLON.Color4.FromHexString(
+    convertToColor4IfNecessary(colors[type])
+  );
 };
 
 // It's equals to lathe logic but separated for now
 const changeHexVisual = (hex: BABYLON.AbstractMesh, type: string) => {
-  const types: { [index: string]: string } = {
-    default: 'material_lathe',
-    incremental: 'material_incremental',
-    expand: 'material_expand',
-    trade: 'material_trade',
-    upgrade: 'material_upgrade',
+  const colors: { [index: string]: string } = {
+    default: babylonTheme.colors.map.common,
+    incremental: babylonTheme.colors.map.incremental,
+    expand: babylonTheme.colors.map.expand,
+    trade: babylonTheme.colors.map.trade,
+    upgrade: babylonTheme.colors.map.upgrade,
+    unlock: babylonTheme.colors.map.incremental,
+    wall: babylonTheme.colors.map.wall,
   };
-  const scene = hex.getScene();
 
-  hex.material = scene.getMaterialByName(types[type]);
+  hex.instancedBuffers.color = BABYLON.Color4.FromHexString(
+    convertToColor4IfNecessary(colors[type])
+  );
 };
 
 const updateHexText = (hexName: string, scene: Scene, text: string) => {
