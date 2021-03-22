@@ -59,6 +59,12 @@ const Circle = styled.div`
   background-color: black;
 `;
 
+const ButtonCenter = styled(Button)`
+  position: absolute;
+  left: 54px;
+  bottom: 0;
+`;
+
 const ZoomControls = () => {
   const { scene } = useContext(GameObjectContext);
   const { center, minus, plus, isCentered, isMaxZoom } = useUIControl();
@@ -69,14 +75,6 @@ const ZoomControls = () => {
 
   return (
     <Container>
-      {!isCentered && (
-        <Button onClick={center}>
-          <HexStyled data-background />
-          <IconContainer data-icon>
-            <Circle data-circle />
-          </IconContainer>
-        </Button>
-      )}
       {!isMaxZoom && (
         <Button onClick={plus}>
           <HexStyled data-background />
@@ -91,6 +89,14 @@ const ZoomControls = () => {
           <Minus />
         </IconContainer>
       </Button>
+      {!isCentered && (
+        <ButtonCenter onClick={center}>
+          <HexStyled data-background />
+          <IconContainer data-icon>
+            <Circle data-circle />
+          </IconContainer>
+        </ButtonCenter>
+      )}
     </Container>
   );
 };
