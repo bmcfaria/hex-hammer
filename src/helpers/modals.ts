@@ -1,6 +1,7 @@
 import stringsObject from './strings.json';
 import {
   ModalExpandType,
+  ModalPrestigeType,
   ModalTradeType,
   ModalUnlockType,
   ModalUpgradeType,
@@ -10,7 +11,8 @@ type CombinedModalsType =
   | ModalExpandType
   | ModalTradeType
   | ModalUnlockType
-  | ModalUpgradeType;
+  | ModalUpgradeType
+  | ModalPrestigeType;
 
 export const modalsHex: { [index: string]: CombinedModalsType } = {
   hex_2_0: {
@@ -160,6 +162,22 @@ export const modalsHex: { [index: string]: CombinedModalsType } = {
     type: 'unlock',
     currency: 'base',
     prices: [100],
+    minReality: 0,
+  },
+  // Prestiges
+  hex_7_21: {
+    name: 'hex_7_21',
+    title: stringsObject.modal.prestige.title,
+    description: 'hex_7_21',
+    type: 'prestige',
+    actions: [
+      'Unlock interval upgrade',
+      'Unlock auto upgrade',
+      'Increase reality',
+      'Keep earned currencies',
+      'Will reset all hexes',
+    ],
+    prices: [],
     minReality: 0,
   },
 };

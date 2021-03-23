@@ -124,3 +124,13 @@ export interface ModalUpgradeType {
   prices: number[];
   minReality: number;
 }
+
+export interface ModalPrestigeType {
+  name: string;
+  title: string;
+  description: string;
+  type: 'prestige';
+  actions: string[];
+  prices: number[];
+  minReality: number;
+}

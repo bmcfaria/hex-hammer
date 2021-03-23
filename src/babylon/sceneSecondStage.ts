@@ -430,7 +430,7 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
             (modalsHex[hexName]?.minReality || 0) <=
             (sharedBabylonObject?.current?.reality || 0)
           ) {
-            changeLatheVisual(tmpMesh, type);
+            changeHexVisual(tmpMesh, type);
           }
         }
       }
@@ -516,6 +516,7 @@ const changeLatheVisual = (lathe: BABYLON.AbstractMesh, type: string) => {
     trade: babylonTheme.colors.map.trade,
     upgrade: babylonTheme.colors.map.upgrade,
     unlock: babylonTheme.colors.map.border,
+    prestige: babylonTheme.colors.map.border,
   };
 
   lathe.instancedBuffers.color = BABYLON.Color4.FromHexString(
@@ -533,6 +534,7 @@ const changeHexVisual = (hex: BABYLON.AbstractMesh, type: string) => {
     upgrade: babylonTheme.colors.map.upgrade,
     unlock: babylonTheme.colors.map.incremental,
     wall: babylonTheme.colors.map.wall,
+    prestige: babylonTheme.colors.map.prestige,
   };
 
   hex.instancedBuffers.color = BABYLON.Color4.FromHexString(

@@ -29,6 +29,10 @@
       "title": "Unlock upgrades",
       "description": "",
       "locked": "Locked"
+    },
+    "prestige": {
+      "title": "Prestige",
+      "description": ""
     }
   },
   "tutorial": {

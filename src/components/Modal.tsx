@@ -6,6 +6,7 @@ import ModalTrade from './ModalTrade';
 import ModalUnlock from './ModalUnlock';
 import useModal from '../hooks/useModal';
 import ModalUpgrade from './ModalUpgrade';
+import ModalPrestige from './ModalPrestige';
 
 const Name = styled.div`
   width: 100%;
@@ -31,6 +32,7 @@ const Modal = () => {
       {modalInfo.type === 'trade' && <ModalTrade modal={modal} />}
       {modalInfo.type === 'unlock' && <ModalUnlock modal={modal} />}
       {modalInfo.type === 'upgrade' && <ModalUpgrade modal={modal} />}
+      {modalInfo.type === 'prestige' && <ModalPrestige modal={modal} />}
     </BaseModal>
   );
 };

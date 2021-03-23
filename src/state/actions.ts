@@ -113,3 +113,9 @@ export const INCREASE_REALITY_TYPE = 'INCREASE_REALITY';
 export const increaseRealityAction = {
   type: INCREASE_REALITY_TYPE,
 };
+
+export const PRESTIGE_TYPE = 'PRESTIGE';
+export const prestigeAction = (modalId: string) => ({
+  type: PRESTIGE_TYPE,
+  modalId,
+});

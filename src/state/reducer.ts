@@ -28,6 +28,7 @@ import {
   DEV_TOGGLE_TYPE,
   UNLOCK_UPGRADE_TYPE,
   INCREASE_REALITY_TYPE,
+  PRESTIGE_TYPE,
 } from './actions';
 
 interface IncrementalType {
@@ -557,6 +558,30 @@ export const reducer = (state = initialState, payload: any) => {
     }
 
     case INCREASE_REALITY_TYPE: {
+      const newReality = state.reality + 1;
+      if (!Object.keys(initialHexes).includes(`${newReality}`)) {
+        return state;
+      }
+
+      return {
+        ...state,
+        reality: newReality,
+        modalHex: {
+          ...initialHexes[newReality as keyof typeof initialHexes],
+        },
+      };
+    }
+
+    case PRESTIGE_TYPE: {
+      const {
+        modalId,
+      }: {
+        modalId: ModalHexType;
+      } = payload;
+
+      // TODO: do something with this prestige
+      console.log(modalId);
+
       const newReality = state.reality + 1;
       if (!Object.keys(initialHexes).includes(`${newReality}`)) {
         return state;

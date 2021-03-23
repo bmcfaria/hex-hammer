@@ -105,6 +105,7 @@ export const babylonTheme = {
       upgrade: '#FFFF00',
       bottom: '#293241',
       wall: '#6c757d',
+      prestige: '#3D5A80',
     },
   },
 };
