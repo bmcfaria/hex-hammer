@@ -12,6 +12,11 @@ const ButtonContainer = styled.button`
   vertical-align: top;
   ${({ disabled }) => (disabled ? 'cursor: unset;' : '')}
 
+  & [data-button-hex-background] {
+    ${({ disabled }) =>
+      disabled ? `stroke: ${theme.colors.upgradeButtons.borderDisable};` : ''}
+  }
+
   &:hover [data-button-hex-background] {
     ${({ disabled }) =>
       disabled ? '' : `stroke: ${theme.colors.upgradeButtons.borderHover};`}

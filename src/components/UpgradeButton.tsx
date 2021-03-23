@@ -13,12 +13,12 @@ import theme, { resetButtonStyles } from '../helpers/theme';
 import { CurrencyType } from '../helpers/types';
 import { formatMoney } from '../helpers/utils';
 
-const ButtonContainer = styled.button<{ $disabled: boolean }>`
+const ButtonContainer = styled.button`
   ${resetButtonStyles}
   width: 208px;
   height: 68px;
-  background-color: ${({ $disabled }) =>
-    $disabled
+  background-color: ${({ disabled }) =>
+    disabled
       ? theme.colors.upgradeButtons.containerBackgroundDisabled
       : theme.colors.upgradeButtons.containerBackground};
   display: flex;
@@ -26,11 +26,16 @@ const ButtonContainer = styled.button<{ $disabled: boolean }>`
   align-items: center;
   margin-top: 8px;
   position: relative;
-  ${({ $disabled }) => ($disabled ? 'cursor: unset;' : '')}
+  ${({ disabled }) => (disabled ? 'cursor: unset;' : '')}
+
+  & [data-button-hex-background] {
+    ${({ disabled }) =>
+      disabled ? `stroke: ${theme.colors.upgradeButtons.borderDisable};` : ''}
+  }
 
   &:hover [data-button-hex-background] {
-    ${({ $disabled }) =>
-      $disabled ? '' : `stroke: ${theme.colors.upgradeButtons.borderHover};`}
+    ${({ disabled }) =>
+      disabled ? '' : `stroke: ${theme.colors.upgradeButtons.borderHover};`}
   }
 `;
 
@@ -136,7 +141,7 @@ const UpgradeButton = ({ upgradeId, selectedHex }: UpgradeButtonProps) => {
   const disabled = (currencies[currency] || 0) < price || !price || isLocked;
 
   return (
-    <ButtonContainer onClick={onClick} $disabled={disabled} disabled={disabled}>
+    <ButtonContainer onClick={onClick} disabled={disabled}>
       <HexRectangleStyled data-button-hex-background />
       <InfoContainer>
         <TextContainer>

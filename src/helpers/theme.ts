@@ -61,6 +61,7 @@ const theme = {
       containerBackgroundDisabled: baseColors.gray,
       border: baseColors.whiteBlue,
       borderHover: baseColors.orange,
+      borderDisable: baseColors.gray,
       icon: 'black',
       iconHover: baseColors.orange,
     },
