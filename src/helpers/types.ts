@@ -39,6 +39,8 @@ export interface GameObjectRefType {
   modalHexValues: { [index: string]: boolean };
   // To help synchronization
   incrementalLastCounter: { [index: string]: boolean | undefined };
+
+  reality: number;
 }
 
 export interface GameContextType {
@@ -86,6 +88,7 @@ export interface ModalExpandType {
   type: 'expand';
   currency: CurrencyType;
   prices: number[];
+  minReality: number;
 }
 
 export interface ModalTradeType {
@@ -97,6 +100,7 @@ export interface ModalTradeType {
   convertTo: CurrencyType;
   rate: number;
   prices: number[];
+  minReality: number;
 }
 
 export interface ModalUnlockType {
@@ -106,6 +110,7 @@ export interface ModalUnlockType {
   type: 'unlock';
   currency: CurrencyType;
   prices: number[];
+  minReality: number;
 }
 
 export interface ModalUpgradeType {
@@ -117,4 +122,5 @@ export interface ModalUpgradeType {
   lockIndex: number;
   currency: CurrencyType;
   prices: number[];
+  minReality: number;
 }

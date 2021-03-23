@@ -39,5 +39,7 @@ export const initializeGameObject = (gameObject: any) => {
       secondStageScene: undefined,
     };
     gameObject.current.incrementalLastCounter = {};
+
+    gameObject.current.reality = 0;
   }
 };

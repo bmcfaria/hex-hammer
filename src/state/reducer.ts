@@ -27,6 +27,7 @@ import {
   RESET_TYPE,
   DEV_TOGGLE_TYPE,
   UNLOCK_UPGRADE_TYPE,
+  INCREASE_REALITY_TYPE,
 } from './actions';
 
 interface IncrementalType {
@@ -84,6 +85,7 @@ export const initialState = {
     sidebar: true,
     secondStageMovement: true,
   },
+  reality: 0,
 };
 
 export const reducer = (state = initialState, payload: any) => {
@@ -550,6 +552,21 @@ export const reducer = (state = initialState, payload: any) => {
         tutorial: {
           ...state.tutorial,
           [tutorialKey]: false,
+        },
+      };
+    }
+
+    case INCREASE_REALITY_TYPE: {
+      const newReality = state.reality + 1;
+      if (!Object.keys(initialHexes).includes(`${newReality}`)) {
+        return state;
+      }
+
+      return {
+        ...state,
+        reality: newReality,
+        modalHex: {
+          ...initialHexes[newReality as keyof typeof initialHexes],
         },
       };
     }

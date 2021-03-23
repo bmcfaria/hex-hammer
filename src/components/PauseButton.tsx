@@ -8,6 +8,7 @@ import {
   devAddFundsAction,
   resetAction,
   devToggleAction,
+  increaseRealityAction,
 } from '../state/actions';
 import { devModeSelector } from '../state/selectors';
 import StatusBarButton from './StatusBarButton';
@@ -76,6 +77,10 @@ const PauseButton = () => {
     dispatch(devAddFundsAction);
   };
 
+  const increateReality = () => {
+    dispatch(increaseRealityAction);
+  };
+
   return (
     <>
       {modalOpen && (
@@ -90,6 +95,9 @@ const PauseButton = () => {
             </DevModeRow>
             <div>
               <Button onClick={devAddFunds}>DEV: add funds</Button>
+            </div>
+            <div>
+              <Button onClick={increateReality}>DEV: increase reality</Button>
             </div>
           </ModalContainer>
         </BackgroundShadow>

@@ -108,3 +108,8 @@ export const disableTutorialAction = (tutorialKey: string) => ({
   type: DISABLE_TUTORIAL_TYPE,
   tutorialKey,
 });
+
+export const INCREASE_REALITY_TYPE = 'INCREASE_REALITY';
+export const increaseRealityAction = {
+  type: INCREASE_REALITY_TYPE,
+};

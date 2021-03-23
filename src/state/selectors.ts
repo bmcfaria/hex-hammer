@@ -12,3 +12,5 @@ export const modalHexUpgradeSelector = (state: any) => state.modalHexUpgrade;
 export const notificationsSelector = (state: any) => state.notifications;
 
 export const tutorialSelector = (state: any) => state.tutorial;
+
+export const realitySelector = (state: any) => state.reality;

@@ -287,7 +287,10 @@ const initializeCamera = (
   return camera;
 };
 
-const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
+const initializeMeshes = (
+  scene: Scene,
+  sharedBabylonObject: { current?: GameObjectRefType }
+) => {
   // Hide every hex
   [...Array(5)].forEach((_, ring) =>
     [...Array(6 * (ring + 1))].forEach((_, index) => {
@@ -304,6 +307,13 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
     const currentRing = ~~values[1];
     const currentIndex = ~~values[2];
     const type = modalValue.type as keyof typeof modalMaterialMapping;
+
+    if (
+      (modalValue?.minReality || 0) >
+      (sharedBabylonObject?.current?.reality || 0)
+    ) {
+      return;
+    }
 
     const tmpMesh = scene.getMeshByName(modalKey);
     if (tmpMesh) {
@@ -390,7 +400,7 @@ const initializeMeshes = (scene: Scene, sharedBabylonObject: any) => {
               trigger: BABYLON.ActionManager.NothingTrigger,
             },
             () => {
-              sharedBabylonObject.current.ui.openIncremental(
+              sharedBabylonObject?.current?.ui?.openIncremental?.(
                 `hex_${5}_${index}`
               );
             }
@@ -407,7 +417,24 @@ export const onRenderSecondStage = (scene: Scene, sharedBabylonObject: any) => {
 
   Object.keys(sharedBabylonObject?.current.modalHexValues || {}).forEach(
     hexName => {
-      scene.getMeshByName(hexName)?.setEnabled(true);
+      const tmpMesh = scene.getMeshByName(hexName);
+
+      if (tmpMesh) {
+        tmpMesh.setEnabled(true);
+
+        if (Object.keys(modalsHex).includes(hexName)) {
+          const type = modalsHex[hexName]
+            .type as keyof typeof modalMaterialMapping;
+
+          if (
+            (modalsHex[hexName]?.minReality || 0) <=
+            (sharedBabylonObject?.current?.reality || 0)
+          ) {
+            changeLatheVisual(tmpMesh, type);
+          }
+        }
+      }
+
       // Hide bottom if exists
       scene.getMeshByName(`${hexName}_bottom`)?.setEnabled(false);
 
