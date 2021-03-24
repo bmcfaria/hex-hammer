@@ -200,6 +200,30 @@ export const reducer = (state = initialState, payload: any) => {
         );
       }
 
+      // Check if prestige unlocked
+      const incrementalTotal = (currentSelectedHex.total || 0) + 1;
+      const didBreakFree =
+        incrementalTotal >=
+        flipsUntilRing(
+          incrementals[selectedHex].flipsToExpand,
+          incrementals[selectedHex].breakFree
+        );
+
+      let unlockedHexes: { [index: string]: boolean } = {};
+      if (didBreakFree) {
+        const hexNameSplit = selectedHex.split('_');
+        // Check if corner
+        if (hexNameSplit.length === 3 && hexNameSplit[1] === '5') {
+          // Unlock next hexes
+          unlockedHexes[
+            `${hexNameSplit[0]}_6_${(hexNameSplit[2] / 5) * 6}`
+          ] = true;
+          unlockedHexes[
+            `${hexNameSplit[0]}_7_${(hexNameSplit[2] / 5) * 7}`
+          ] = true;
+        }
+      }
+
       // Bonus may override the increment value
       let stateUpdateCurrencies = {
         ...state.currency,
@@ -238,6 +262,10 @@ export const reducer = (state = initialState, payload: any) => {
               ...bonusEarned.unlockedBonus,
             },
           },
+        },
+        modalHex: {
+          ...state.modalHex,
+          ...unlockedHexes,
         },
         ...(bonusEarned.notifications.length > 0 && {
           notifications: [...state.notifications, ...bonusEarned.notifications],

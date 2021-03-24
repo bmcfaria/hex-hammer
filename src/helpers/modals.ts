@@ -48,7 +48,7 @@ export const modalsHex: { [index: string]: CombinedModalsType } = {
     description: stringsObject.modal.expand.description,
     type: 'expand',
     currency: 'blue',
-    prices: [6, 20],
+    prices: [2, 4],
     minReality: 0,
   },
   hex_2_8: {
@@ -161,7 +161,7 @@ export const modalsHex: { [index: string]: CombinedModalsType } = {
     description: stringsObject.modal.unlock.description,
     type: 'unlock',
     currency: 'base',
-    prices: [100],
+    prices: [12],
     minReality: 0,
   },
   // Prestiges

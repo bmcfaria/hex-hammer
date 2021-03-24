@@ -119,22 +119,11 @@ export const incrementals: { [index: string]: any } = {
       [2, 8, 'expand'],
       [2, 10, 'expand'],
     ],
-    bonus: [
-      {
-        name: stringsObject.modal.info.bonus[0],
-        type: 'atRing',
-        value: 2,
-        reward: {
-          type: 'currency',
-          key: 'blue',
-          value: 6,
-        },
-      },
-    ],
-    flipsToExpand: 5,
-    maxRings: 5,
+    bonus: [],
+    flipsToExpand: 2,
+    maxRings: 3,
     mainCurrency: 'base',
-    breakFree: 5,
+    breakFree: 3,
   },
   hex_5_20: {
     name: 'South/West Inc',
