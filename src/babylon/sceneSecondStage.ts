@@ -287,10 +287,7 @@ const initializeCamera = (
   return camera;
 };
 
-const initializeMeshes = (
-  scene: Scene,
-  sharedBabylonObject: { current?: GameObjectRefType }
-) => {
+const resetHexes = (scene: Scene) => {
   // Hide every hex
   [...Array(5)].forEach((_, ring) =>
     [...Array(6 * (ring + 1))].forEach((_, index) => {
@@ -300,6 +297,14 @@ const initializeMeshes = (
       }
     })
   );
+};
+
+const initializeMeshes = (
+  scene: Scene,
+  sharedBabylonObject: { current?: GameObjectRefType }
+) => {
+  // Hide every hex
+  resetHexes(scene);
 
   // Mark special lathes
   Object.entries(modalsHex).forEach(([modalKey, modalValue]) => {
@@ -330,8 +335,8 @@ const initializeMeshes = (
   // Reset camera
   const camera = scene.getCameraByName('camera_map') as BABYLON.ArcRotateCamera;
   if (camera) {
-    // This targets the camera to scene origin
-    camera.setTarget(BABYLON.Vector3.Zero());
+    // Center camera
+    camera.target.subtractInPlace(camera.target);
     camera.radius = 15;
     sharedBabylonObject?.current?.ui?.setZoom?.(camera.radius);
   }

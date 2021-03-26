@@ -14,3 +14,4 @@ export const notificationsSelector = (state: any) => state.notifications;
 export const tutorialSelector = (state: any) => state.tutorial;
 
 export const realitySelector = (state: any) => state.reality;
+export const prestigeSelector = (state: any) => state.prestige;

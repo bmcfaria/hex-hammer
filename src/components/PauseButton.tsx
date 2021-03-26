@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { ReactComponent as Pause } from '../assets/Pause.svg';
 import { GameObjectContext } from '../helpers/context';
 import theme from '../helpers/theme';
+import useScene from '../hooks/useScene';
 import {
   devAddFundsAction,
   resetAction,
@@ -53,6 +54,7 @@ const PauseButton = () => {
   const dispatch = useDispatch();
   const { gameObject } = useContext(GameObjectContext);
   const devMode = useSelector(devModeSelector);
+  const { resetSecondStage } = useScene();
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
@@ -98,6 +100,11 @@ const PauseButton = () => {
             </div>
             <div>
               <Button onClick={increateReality}>DEV: increase reality</Button>
+            </div>
+            <div>
+              <Button onClick={resetSecondStage}>
+                DEV: reset second stage
+              </Button>
             </div>
           </ModalContainer>
         </BackgroundShadow>

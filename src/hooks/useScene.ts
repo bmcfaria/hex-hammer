@@ -12,7 +12,11 @@ const useScene = () => {
     gameObject?.current?.changeScene('secondStage');
   };
 
-  return { openIncremental, openSecondStage };
+  const resetSecondStage = () => {
+    gameObject?.current?.sceneInitialization?.secondStageScene?.();
+  };
+
+  return { openIncremental, openSecondStage, resetSecondStage };
 };
 
 export default useScene;

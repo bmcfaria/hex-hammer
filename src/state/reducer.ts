@@ -61,8 +61,9 @@ const upgradesState: { [index: string]: UpgradeType } = {};
 
 const notificationsState: NotificationType[] = [];
 
-const modalHexUpgrade: { [index: string]: any } = {};
-const trades: { [index: string]: boolean } = {};
+const modalHexUpgradeState: { [index: string]: any } = {};
+const tradesState: { [index: string]: boolean } = {};
+const prestigeState: { [index: string]: boolean } = {};
 export const initialState = {
   devMode: false,
   currency: {
@@ -76,8 +77,8 @@ export const initialState = {
   modalHex: {
     ...initialHexes[0],
   },
-  modalHexUpgrade,
-  trades,
+  modalHexUpgrade: modalHexUpgradeState,
+  trades: tradesState,
   notifications: notificationsState,
   tutorial: {
     mainButton: true,
@@ -87,6 +88,7 @@ export const initialState = {
     secondStageMovement: true,
   },
   reality: 0,
+  prestige: prestigeState,
 };
 
 export const reducer = (state = initialState, payload: any) => {
@@ -607,19 +609,27 @@ export const reducer = (state = initialState, payload: any) => {
         modalId: ModalHexType;
       } = payload;
 
-      // TODO: do something with this prestige
-      console.log(modalId);
-
       const newReality = state.reality + 1;
-      if (!Object.keys(initialHexes).includes(`${newReality}`)) {
+      if (
+        !Object.keys(initialHexes).includes(`${newReality}`) ||
+        state.prestige[modalId]
+      ) {
         return state;
       }
 
       return {
         ...state,
         reality: newReality,
+        incrementals: { ...incrementalsState },
         modalHex: {
           ...initialHexes[newReality as keyof typeof initialHexes],
+        },
+        upgrades: { ...upgradesState },
+        modalHexUpgrade: { ...modalHexUpgradeState },
+        trades: { ...tradesState },
+        prestige: {
+          ...state.prestige,
+          [modalId]: true,
         },
       };
     }
