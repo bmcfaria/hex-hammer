@@ -1,8 +1,11 @@
 import * as BABYLON from '@babylonjs/core';
 import { Scene } from '@babylonjs/core';
-import { incrementals } from '../helpers/incrementals';
 import { babylonTheme } from '../helpers/theme';
-import { convertToColor4IfNecessary, flipsUntilRing } from '../helpers/utils';
+import {
+  convertToColor4IfNecessary,
+  flipsUntilRing,
+  incrementalInfoReality,
+} from '../helpers/utils';
 import { GameObjectRefType } from '../helpers/types';
 import {
   buildGround,
@@ -66,9 +69,12 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   sharedBabylonObject.current.mainAction = (total: number) => {
     turnCentralAnimation(polygonPivot, total, scene);
 
-    const { flipsToExpand } = incrementals[
-      sharedBabylonObject?.current?.selectedHex
-    ];
+    const incrementalInfo = incrementalInfoReality(
+      sharedBabylonObject?.current?.selectedHex || '',
+      sharedBabylonObject?.current?.reality || 0
+    );
+
+    const { flipsToExpand } = incrementalInfo;
 
     // TODO: take into account the max ring property
 
@@ -82,7 +88,7 @@ const createScene = (sharedBabylonObject: any) => (scene: Scene) => {
   initialize(scene);
 
   // Update bonux hexes
-  updateBonusHexes(scene);
+  updateBonusHexes(scene, sharedBabylonObject);
 
   sharedBabylonObject.current.sceneInitialization.incrementalScene = () => {
     initialize(scene);
@@ -104,9 +110,12 @@ export const updateIncrementalState = (
 
   changeHexVisual(centralMesh, total);
 
-  const { flipsToExpand } = incrementals[
-    sharedBabylonObject?.current?.selectedHex || ''
-  ];
+  const incrementalInfo = incrementalInfoReality(
+    sharedBabylonObject?.current?.selectedHex || '',
+    sharedBabylonObject?.current?.reality || 0
+  );
+
+  const { flipsToExpand } = incrementalInfo;
 
   // Generate rings of polygons
   [...Array(6)].forEach((_, ring) => {
@@ -125,7 +134,7 @@ export const updateIncrementalState = (
   });
 
   // Update bonux hexes
-  updateBonusHexes(scene);
+  updateBonusHexes(scene, sharedBabylonObject);
 
   // Update camera distance
   if (total > 0) {
@@ -140,11 +149,27 @@ export const updateIncrementalState = (
   }
 };
 
-const updateBonusHexes = (scene: Scene) => {
-  // TODO: not using total?
+const updateBonusHexes = (
+  scene: Scene,
+  sharedBabylonObject: { current?: GameObjectRefType }
+) => {
+  const incrementalInfo = incrementalInfoReality(
+    sharedBabylonObject?.current?.selectedHex || '',
+    sharedBabylonObject?.current?.reality || 0
+  );
+
+  /// reset lathes
+  [...Array(5)].forEach((_, ring) =>
+    [...Array(6 * (ring + 1))].forEach((_, index) => {
+      const lathe = scene.getMeshByName(`lathe_${ring}_${index}`);
+      if (lathe) {
+        changeLatheVisual(lathe, 'default');
+      }
+    })
+  );
 
   // Update bonus
-  (incrementals['hex_0_0'].bonusModels || []).forEach(
+  (incrementalInfo.bonusModels || []).forEach(
     ([ring, index, type]: [number, number, string]) => {
       const lathe = scene.getMeshByName(`lathe_${ring}_${index}`);
       if (lathe) {
@@ -153,7 +178,7 @@ const updateBonusHexes = (scene: Scene) => {
     }
   );
 
-  const breakFreeRing = incrementals['hex_0_0'].breakFree;
+  const breakFreeRing = incrementalInfo.breakFree;
   if (breakFreeRing) {
     [...Array(breakFreeRing * 6)].forEach((_, index) => {
       const lathe = scene.getMeshByName(`lathe_${breakFreeRing}_${index}`);

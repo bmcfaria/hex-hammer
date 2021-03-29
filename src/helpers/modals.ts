@@ -30,7 +30,7 @@ export const modalsHex: { [index: string]: CombinedModalsType } = {
     description: stringsObject.modal.expand.description,
     type: 'expand',
     currency: 'blue',
-    prices: [6, 20],
+    prices: [2, 4],
     minReality: 1,
   },
   hex_2_4: {
@@ -66,7 +66,7 @@ export const modalsHex: { [index: string]: CombinedModalsType } = {
     description: stringsObject.modal.expand.description,
     type: 'expand',
     currency: 'blue',
-    prices: [6, 20],
+    prices: [2, 4],
     minReality: 1,
   },
   hex_2_5: {

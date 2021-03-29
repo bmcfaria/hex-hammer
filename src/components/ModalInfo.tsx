@@ -3,12 +3,11 @@ import styled from 'styled-components';
 import theme from '../helpers/theme';
 import { CurrencyType } from '../helpers/types';
 import stringsObject from '../helpers/strings.json';
-import { incrementals } from '../helpers/incrementals';
 import { ReactComponent as Hex } from '../assets/Hex.svg';
 import { ReactComponent as Checkmark } from '../assets/Checkmark.svg';
 import { useSelector } from 'react-redux';
-import { incrementalsSelector } from '../state/selectors';
-import { flipsUntilRing } from '../helpers/utils';
+import { incrementalsSelector, realitySelector } from '../state/selectors';
+import { flipsUntilRing, incrementalInfoReality } from '../helpers/utils';
 
 const Container = styled.div`
   width: 100%;
@@ -100,7 +99,8 @@ const BonusRow = ({ text, active }: { text: string; active: boolean }) => {
 
 const ModalInfo = ({ selectedHex }: ModalInfoProps) => {
   const increment = useSelector(incrementalsSelector);
-  const incrementalObject = incrementals[selectedHex];
+  const reality = useSelector(realitySelector);
+  const incrementalInfo = incrementalInfoReality(selectedHex, reality);
 
   const isBonusActive = (bonus: any) => {
     switch (bonus.type) {
@@ -108,7 +108,7 @@ const ModalInfo = ({ selectedHex }: ModalInfoProps) => {
         const currentTotal = increment[selectedHex]?.total;
         if (
           currentTotal >=
-          flipsUntilRing(incrementalObject.flipsToExpand, bonus.value)
+          flipsUntilRing(incrementalInfo.flipsToExpand, bonus.value)
         ) {
           return true;
         }
@@ -123,7 +123,7 @@ const ModalInfo = ({ selectedHex }: ModalInfoProps) => {
     <Container>
       <Row>
         <div>{stringsObject.modal.info.name}:</div>
-        <div>{incrementalObject.name}</div>
+        <div>{incrementalInfo.name}</div>
       </Row>
       <Row>
         <div>{stringsObject.modal.info.type}:</div>
@@ -135,28 +135,28 @@ const ModalInfo = ({ selectedHex }: ModalInfoProps) => {
       </Row>
       <Row>
         <div>{stringsObject.modal.info['flips to expand']}:</div>
-        <div>{incrementalObject.flipsToExpand}</div>
+        <div>{incrementalInfo.flipsToExpand}</div>
       </Row>
       <Row>
         <div>{stringsObject.modal.info['max rings']}:</div>
-        <div>{incrementalObject.maxRings}</div>
+        <div>{incrementalInfo.maxRings}</div>
       </Row>
       <Row>
         <div>{stringsObject.modal.info['main currency']}:</div>
-        <HexStyled $currency={incrementalObject.mainCurrency} />
+        <HexStyled $currency={incrementalInfo.mainCurrency} />
       </Row>
       <Row>
         <BoldText>{stringsObject.modal.info['break free']}:</BoldText>
-        <BoldText>{incrementalObject.breakFree}</BoldText>
+        <BoldText>{incrementalInfo.breakFree}</BoldText>
       </Row>
-      {incrementalObject.bonus.length > 0 && (
+      {incrementalInfo.bonus.length > 0 && (
         <>
           <Row>
             <CenterText>
               <BoldText>{stringsObject.modal.info.bonusTitle}</BoldText>
             </CenterText>
           </Row>
-          {incrementalObject.bonus.map((bonus: any, index: number) => (
+          {incrementalInfo.bonus.map((bonus: any, index: number) => (
             <BonusRow
               text={bonus.name}
               active={isBonusActive(bonus)}

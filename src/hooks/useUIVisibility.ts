@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
-import { incrementals } from '../helpers/incrementals';
-import { flipsUntilRing } from '../helpers/utils';
+import { flipsUntilRing, incrementalInfoReality } from '../helpers/utils';
 import {
   devModeSelector,
   incrementalsSelector,
@@ -14,11 +13,13 @@ const useUIVisibility = () => {
 
   const baseHexTotal = incrementalsState?.hex_0_0?.total;
 
+  const centralIncrementalInfo = incrementalInfoReality('hex_0_0', reality);
+
   const didBreakFree =
     baseHexTotal >=
     flipsUntilRing(
-      incrementals.hex_0_0.flipsToExpand,
-      incrementals.hex_0_0.breakFree
+      centralIncrementalInfo.flipsToExpand,
+      centralIncrementalInfo.breakFree
     );
 
   return {
@@ -26,7 +27,7 @@ const useUIVisibility = () => {
       controls: {
         info:
           baseHexTotal >=
-            flipsUntilRing(incrementals.hex_0_0.flipsToExpand, 1) ||
+            flipsUntilRing(centralIncrementalInfo.flipsToExpand, 1) ||
           devMode ||
           reality > 0,
         name: didBreakFree || devMode || reality > 0,
@@ -34,7 +35,7 @@ const useUIVisibility = () => {
       },
     },
     sidebar:
-      baseHexTotal >= flipsUntilRing(incrementals.hex_0_0.flipsToExpand, 1) ||
+      baseHexTotal >= flipsUntilRing(centralIncrementalInfo.flipsToExpand, 1) ||
       devMode ||
       reality > 0,
   };

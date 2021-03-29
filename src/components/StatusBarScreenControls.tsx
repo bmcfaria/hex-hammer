@@ -6,15 +6,15 @@ import { ReactComponent as Arrow } from '../assets/Arrow.svg';
 import theme, { resetButtonStyles } from '../helpers/theme';
 import { useContext, useState } from 'react';
 import { GameObjectContext } from '../helpers/context';
-import { incrementals } from '../helpers/incrementals';
 import BaseModal from './BaseModal';
 import ModalInfo from './ModalInfo';
 import useUIVisibility from '../hooks/useUIVisibility';
 import { useDispatch, useSelector } from 'react-redux';
-import { tutorialSelector } from '../state/selectors';
+import { realitySelector, tutorialSelector } from '../state/selectors';
 import { disableTutorialAction } from '../state/actions';
 import stringsObject from '../helpers/strings.json';
 import useScene from '../hooks/useScene';
+import { incrementalInfoReality } from '../helpers/utils';
 
 const Container = styled.div`
   position: absolute;
@@ -130,6 +130,7 @@ const StatusBarScreenControls = () => {
   const dispatch = useDispatch();
   const visibility = useUIVisibility()?.statusBar?.controls;
   const { openSecondStage } = useScene();
+  const reality = useSelector(realitySelector);
 
   if (scene !== 'incremental') {
     return null;
@@ -154,9 +155,12 @@ const StatusBarScreenControls = () => {
     setInfoOpen(false);
   };
 
-  const text =
-    incrementals[gameObject?.current?.selectedHex || '']?.name ||
-    `${gameObject?.current?.selectedHex}`;
+  const incrementalInfo = incrementalInfoReality(
+    gameObject?.current?.selectedHex || '',
+    reality
+  );
+
+  const text = incrementalInfo?.name || `${gameObject?.current?.selectedHex}`;
 
   return (
     <>

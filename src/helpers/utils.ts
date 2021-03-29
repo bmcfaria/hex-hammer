@@ -1,4 +1,5 @@
 import numbro from 'numbro';
+import { incrementals } from './incrementals';
 
 export const flipsUntilRing = (flipsToExpand: number, ring: number) =>
   flipsToExpand ** ring;
@@ -26,3 +27,7 @@ export const convertToColor4IfNecessary = (color: string) => {
 
 export const generateCornersArray = (ring: number) =>
   [...Array(6)].map((_, tmpIndex) => tmpIndex * ring);
+
+export const incrementalInfoReality = (incremental: string, reality: number) =>
+  incrementals[incremental][reality] ||
+  incrementals[incremental][incrementals[incremental].length - 1];

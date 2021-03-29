@@ -1,4 +1,3 @@
-import { incrementals } from '../helpers/incrementals';
 import { initialHexes } from '../helpers/initialHexes';
 import { modalsHex } from '../helpers/modals';
 import {
@@ -13,6 +12,7 @@ import {
 import {
   flipsUntilRing,
   generateNotificationIncrementalBonusId,
+  incrementalInfoReality,
 } from '../helpers/utils';
 import { UpgradeKeyType, upgrades } from '../helpers/values';
 import {
@@ -151,8 +151,14 @@ export const reducer = (state = initialState, payload: any) => {
         currencies: {},
         notifications: [],
       };
-      if (incrementals[selectedHex]?.bonus) {
-        bonusEarned = incrementals[selectedHex].bonus.reduce(
+
+      const incrementalInfo = incrementalInfoReality(
+        selectedHex,
+        state.reality
+      );
+
+      if (incrementalInfo?.bonus) {
+        bonusEarned = incrementalInfo.bonus.reduce(
           (results: any, bonus: BonusType, index: number) => {
             if (currentSelectedHex.unlockedBonus?.[index]) {
               return results;
@@ -162,10 +168,7 @@ export const reducer = (state = initialState, payload: any) => {
             if (bonus.type === 'atRing') {
               const isAtRing =
                 (currentSelectedHex.total || 0) + 1 >=
-                flipsUntilRing(
-                  incrementals[selectedHex].flipsToExpand,
-                  bonus.value
-                );
+                flipsUntilRing(incrementalInfo.flipsToExpand, bonus.value);
 
               if (isAtRing) {
                 // only handles currency type at the moment
@@ -183,7 +186,7 @@ export const reducer = (state = initialState, payload: any) => {
                     ...results.notifications,
                     {
                       id: generateNotificationIncrementalBonusId(
-                        incrementals[selectedHex],
+                        incrementalInfo,
                         index
                       ),
                       timestamp: currentTime,
@@ -207,8 +210,8 @@ export const reducer = (state = initialState, payload: any) => {
       const didBreakFree =
         incrementalTotal >=
         flipsUntilRing(
-          incrementals[selectedHex].flipsToExpand,
-          incrementals[selectedHex].breakFree
+          incrementalInfo.flipsToExpand,
+          incrementalInfo.breakFree
         );
 
       let unlockedHexes: { [index: string]: boolean } = {};

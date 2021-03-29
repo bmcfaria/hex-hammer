@@ -1,11 +1,15 @@
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { incrementalsSelector, tradesSelector } from '../state/selectors';
+import {
+  incrementalsSelector,
+  realitySelector,
+  tradesSelector,
+} from '../state/selectors';
 import ExpandUpgradeButton from './ExpandUpgradeButton';
 import SidebarIncrementalUpgrades from './SidebarIncrementalUpgrades';
 import { ModalHexType, UpgradeCategoryType } from '../helpers/types';
-import { incrementals } from '../helpers/incrementals';
 import TradeButton from './TradeButton';
+import { incrementalInfoReality } from '../helpers/utils';
 
 const Container = styled.div`
   width: 100%;
@@ -21,6 +25,7 @@ const UpgradeCategoryButton = ({
 }: UpgradeCategoryButtonProps) => {
   const incrementalsState = useSelector(incrementalsSelector);
   const trades = useSelector(tradesSelector);
+  const reality = useSelector(realitySelector);
 
   let text = '';
   switch (upgradeCategoryId) {
@@ -36,6 +41,12 @@ const UpgradeCategoryButton = ({
     return null;
   }
 
+  const incrementalName = (incremental: string) => {
+    const incrementalInfo = incrementalInfoReality(incremental, reality);
+
+    return incrementalInfo?.name;
+  };
+
   return (
     <Container>
       <ExpandUpgradeButton id={upgradeCategoryId} text={text}>
@@ -44,7 +55,7 @@ const UpgradeCategoryButton = ({
             <ExpandUpgradeButton
               id={`${upgradeCategoryId}_${incremental}`}
               parentId={upgradeCategoryId}
-              text={incrementals[incremental].name}
+              text={incrementalName(incremental)}
               key={incremental}
             >
               <SidebarIncrementalUpgrades selectedHex={incremental} showInfo />
