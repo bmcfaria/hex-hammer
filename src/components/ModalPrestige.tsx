@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ModalHexType } from '../helpers/types';
 import { modalsHex } from '../helpers/modals';
 import { prestigeAction } from '../state/actions';
-import { realitySelector } from '../state/selectors';
+import { prestigeSelector } from '../state/selectors';
 import theme, { resetButtonStyles } from '../helpers/theme';
 
 import { ReactComponent as HexRectangle } from '../assets/HexRectangle.svg';
@@ -87,16 +87,16 @@ interface ModalUpgradeProps {
 
 const ModalPrestige = ({ modal }: ModalUpgradeProps) => {
   const dispatch = useDispatch();
-  const currentReality = useSelector(realitySelector);
+  const prestiges = useSelector(prestigeSelector);
 
   const modalInfo = modalsHex[modal];
   if (!modalInfo || modalInfo.type !== 'prestige') {
     return null;
   }
 
-  const { title, name, description, actions, minReality } = modalInfo;
+  const { title, name, description, actions } = modalInfo;
 
-  const alreadyPrestiged = currentReality > minReality;
+  const alreadyPrestiged = !!prestiges[modal];
 
   const prestige = () => {
     if (!alreadyPrestiged) {

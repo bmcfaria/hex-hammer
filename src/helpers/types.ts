@@ -133,4 +133,5 @@ export interface ModalPrestigeType {
   actions: string[];
   prices: number[];
   minReality: number;
+  realityUpgrade: boolean;
 }

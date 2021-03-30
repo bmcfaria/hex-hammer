@@ -4,6 +4,7 @@ import {
   BonusType,
   CurrencyType,
   ModalHexType,
+  ModalPrestigeType,
   ModalTradeType,
   ModalUnlockType,
   ModalUpgradeType,
@@ -612,10 +613,17 @@ export const reducer = (state = initialState, payload: any) => {
         modalId: ModalHexType;
       } = payload;
 
-      const newReality = state.reality + 1;
+      if (modalsHex[modalId]?.type !== 'prestige' || state.prestige[modalId]) {
+        return state;
+      }
+
+      const prestigeInfo = modalsHex[modalId] as ModalPrestigeType;
+
+      const newReality = state.reality + ~~prestigeInfo.realityUpgrade;
+
       if (
-        !Object.keys(initialHexes).includes(`${newReality}`) ||
-        state.prestige[modalId]
+        prestigeInfo.realityUpgrade &&
+        !Object.keys(initialHexes).includes(`${newReality}`)
       ) {
         return state;
       }
