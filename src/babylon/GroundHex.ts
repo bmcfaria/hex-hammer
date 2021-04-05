@@ -49,7 +49,8 @@ const hexCoordinates = (ring: number, index: number) => {
 export const createLatheHex = (
   name: string,
   scene: Scene,
-  bottom?: boolean
+  bottom?: boolean,
+  height = 1
 ) => {
   let myShape;
   if (bottom) {
@@ -58,8 +59,8 @@ export const createLatheHex = (
     myShape = [
       new BABYLON.Vector3(radius, 0, 0),
       new BABYLON.Vector3(radius + margin / 2, 0, 0),
-      new BABYLON.Vector3(radius + margin / 2, 1, 0),
-      new BABYLON.Vector3(radius, 1, 0),
+      new BABYLON.Vector3(radius + margin / 2, height, 0),
+      new BABYLON.Vector3(radius, height, 0),
       new BABYLON.Vector3(radius, 0, 0),
     ];
   }
@@ -93,6 +94,7 @@ export const createRingPolygon = (
     drawBottom,
     bottomMaterial,
     usePivot,
+    namePrefix = '',
   }: {
     meshMaterial?: Nullable<BABYLON.Material>;
     latheMaterial?: Nullable<BABYLON.Material>;
@@ -101,10 +103,10 @@ export const createRingPolygon = (
     drawBottom?: boolean;
     bottomMaterial?: Nullable<BABYLON.Material>;
     usePivot?: boolean;
+    namePrefix?: string;
   } = {}
 ) => (_: any, index: number) => {
-  let tmpPolygon = polygon.createInstance(`hex_${ring}_${index}`);
-  tmpPolygon.name = `hex_${ring}_${index}`;
+  let tmpPolygon = polygon.createInstance(`${namePrefix}hex_${ring}_${index}`);
   tmpPolygon.isPickable = false;
 
   let CoR_At = hexCoordinates(ring, index);
@@ -151,7 +153,9 @@ export const createRingPolygon = (
   //   tmpPolygon.material = meshMaterial;
   // }
 
-  const lathe = originalLathe.createInstance(`lathe_${ring}_${index}`);
+  const lathe = originalLathe.createInstance(
+    `${namePrefix}lathe_${ring}_${index}`
+  );
   lathe.position = CoR_At.clone();
   lathe.position.y = 0;
 
@@ -182,18 +186,22 @@ export const createRingPolygon = (
 export const createCenterPolygon = (
   scene: Scene,
   name: string = 'polygon',
-  top = false
+  top = false,
+  height = 1
 ) => {
   let myShape;
 
   if (top) {
-    myShape = [new BABYLON.Vector3(radius, 1, 0), new BABYLON.Vector3(0, 1, 0)];
+    myShape = [
+      new BABYLON.Vector3(radius, height, 0),
+      new BABYLON.Vector3(0, height, 0),
+    ];
   } else {
     myShape = [
       new BABYLON.Vector3(0, 0, 0),
       new BABYLON.Vector3(radius, 0, 0),
-      new BABYLON.Vector3(radius, 1, 0),
-      new BABYLON.Vector3(0, 1, 0),
+      new BABYLON.Vector3(radius, height, 0),
+      new BABYLON.Vector3(0, height, 0),
     ];
   }
 

@@ -82,11 +82,24 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
   changeHexVisual(polygon, 'default');
   polygon.setParent(parentNode);
 
+  let tallPolygon = createCenterPolygon(scene, 'tall_hex', true, 2);
+  tallPolygon.position.y = 0;
+  tallPolygon.rotation.y = polygonOrientation ? Math.PI / 2 : 0;
+  tallPolygon.registerInstancedBuffer('color', 4);
+  changeHexVisual(tallPolygon, 'default');
+  tallPolygon.setParent(parentNode);
+  tallPolygon.setEnabled(false);
+
   const lathe = createLatheHex('lathe_0_0', scene);
   lathe.registerInstancedBuffer('color', 4);
   lathe.setParent(parentNode);
-
   changeLatheVisual(lathe, 'default');
+
+  const tallLathe = createLatheHex('tall_lathe', scene, false, 2);
+  tallLathe.registerInstancedBuffer('color', 4);
+  tallLathe.setParent(parentNode);
+  changeLatheVisual(tallLathe, 'default');
+  tallLathe.setEnabled(false);
 
   // Disable parent
   parentNode.setEnabled(false);
@@ -104,6 +117,15 @@ export const createSceneSecondStage = (sharedBabylonObject: any) => (
         // bottomMaterial: scene.getMaterialByName('material_bottom'),
       })(_, index)
     )
+  );
+
+  // Tall Hexes
+  [...Array(6 * 5)].map((_, index) =>
+    createRingPolygon(tallPolygon, tallLathe, 5, {
+      hideHexes: true,
+      hideLathes: true,
+      namePrefix: 'tall_',
+    })(_, index)
   );
 
   const prestigeRing = 7;
@@ -341,12 +363,30 @@ const initializeMeshes = (
     sharedBabylonObject?.current?.ui?.setZoom?.(camera.radius);
   }
 
+  const tallWalls = (sharedBabylonObject?.current?.reality || 0) > 0;
+
   // Initialize colors for the last ring
   [...Array(6 * 5)].forEach((_, index) => {
     const tmpMesh = scene.getMeshByName(`hex_${5}_${index}`);
-    if (tmpMesh) {
+    const tmpLathe = scene.getMeshByName(`lathe_${5}_${index}`);
+    const tmpTallMesh = scene.getMeshByName(`tall_hex_${5}_${index}`);
+    const tmpTallLathe = scene.getMeshByName(`tall_lathe_${5}_${index}`);
+    if (tmpMesh && tmpLathe) {
       changeHexVisual(tmpMesh, 'wall');
-      tmpMesh.setEnabled(true);
+      tmpMesh.setEnabled(!tallWalls);
+      tmpLathe.setEnabled(!tallWalls);
+    }
+
+    if (tmpTallMesh && tmpTallLathe) {
+      if (incrementalHexes.includes(`hex_${5}_${index}`)) {
+        changeHexVisual(tmpTallMesh, 'incremental');
+        changeHexVisual(tmpTallLathe, 'incremental');
+      } else {
+        changeHexVisual(tmpTallMesh, 'wall');
+      }
+
+      tmpTallMesh.setEnabled(tallWalls);
+      tmpTallLathe.setEnabled(tallWalls);
     }
   });
 
